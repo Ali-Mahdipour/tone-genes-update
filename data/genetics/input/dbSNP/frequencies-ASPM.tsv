@@ -1,0 +1,147 @@
+SNP	Allele_major	Allele_minor	Database	Population	Group	N_alleles	MAF
+rs41310927	T	C	gnomAD - Exomes	Global	Study-wide	248174	0.335176
+rs41310927	T	C	gnomAD - Exomes	European	Sub	132618	0.422137
+rs41310927	T	C	gnomAD - Exomes	Asian	Sub	48922	0.25385
+rs41310927	T	C	gnomAD - Exomes	American	Sub	34334	0.2095
+rs41310927	T	C	gnomAD - Exomes	African	Sub	16204	0.08881
+rs41310927	T	C	gnomAD - Exomes	Ashkenazi Jewish	Sub	10056	0.39002
+rs41310927	T	C	gnomAD - Exomes	Other	Sub	6040	0.3685
+rs41310927	T	C	TopMed	Global	Study-wide	125568	0.294964
+rs41310927	T	C	ExAC	Global	Study-wide	120334	0.340885
+rs41310927	T	C	ExAC	Europe	Sub	72776	0.42753
+rs41310927	T	C	ExAC	Asian	Sub	25022	0.25869
+rs41310927	T	C	ExAC	American	Sub	11292	0.19323
+rs41310927	T	C	ExAC	African	Sub	10340	0.09236
+rs41310927	T	C	ExAC	Other	Sub	904	0.327
+rs41310927	T	C	The PAGE Study	Global	Study-wide	78700	0.1759
+rs41310927	T	C	The PAGE Study	AfricanAmerican	Sub	32516	0.10687
+rs41310927	T	C	The PAGE Study	Mexican	Sub	10810	0.22738
+rs41310927	T	C	The PAGE Study	Asian	Sub	8316	0.1376
+rs41310927	T	C	The PAGE Study	PuertoRican	Sub	7918	0.248
+rs41310927	T	C	The PAGE Study	NativeHawaiian	Sub	4534	0.1976
+rs41310927	T	C	The PAGE Study	Cuban	Sub	4230	0.3565
+rs41310927	T	C	The PAGE Study	Dominican	Sub	3828	0.2173
+rs41310927	T	C	The PAGE Study	CentralAmerican	Sub	2450	0.2073
+rs41310927	T	C	The PAGE Study	SouthAmerican	Sub	1982	0.2139
+rs41310927	T	C	The PAGE Study	NativeAmerican	Sub	1260	0.304
+rs41310927	T	C	The PAGE Study	SouthAsian	Sub	856	0.293
+rs41310927	T	C	gnomAD - Genomes	Global	Study-wide	31234	0.31466
+rs41310927	T	C	gnomAD - Genomes	European	Sub	18786	0.42793
+rs41310927	T	C	gnomAD - Genomes	African	Sub	8698	0.09
+rs41310927	T	C	gnomAD - Genomes	East Asian	Sub	1534	0.1714
+rs41310927	T	C	gnomAD - Genomes	Other	Sub	1086	0.4088
+rs41310927	T	C	gnomAD - Genomes	American	Sub	840	0.217
+rs41310927	T	C	gnomAD - Genomes	Ashkenazi Jewish	Sub	290	0.403
+rs41310927	T	C	GO Exome Sequencing Project	Global	Study-wide	13000	0.32108
+rs41310927	T	C	GO Exome Sequencing Project	European American	Sub	8596	0.4325
+rs41310927	T	C	GO Exome Sequencing Project	African American	Sub	4404	0.1035
+rs41310927	T	C	1000Genomes	Global	Study-wide	5008	0.2143
+rs41310927	T	C	1000Genomes	African	Sub	1322	0.0431
+rs41310927	T	C	1000Genomes	East Asian	Sub	1008	0.1637
+rs41310927	T	C	1000Genomes	Europe	Sub	1006	0.4105
+rs41310927	T	C	1000Genomes	South Asian	Sub	978	0.286
+rs41310927	T	C	1000Genomes	American	Sub	694	0.228
+rs41310927	T	C	Genetic variation in the Estonian population	Estonian	Study-wide	4480	0.4614
+rs41310927	T	C	The Avon Longitudinal Study of Parents and Children	PARENT AND CHILD COHORT	Study-wide	3854	0.4284
+rs41310927	T	C	UK 10K study - Twins	TWIN COHORT	Study-wide	3708	0.4326
+rs41310927	T	C	Northern Sweden	ACPOP	Study-wide	600	0.495
+rs41308365	G	A	TopMed	Global	Study-wide	125568	0.294725
+rs41308365	G	A	GO Exome Sequencing Project	Global	Study-wide	13002	0.32172
+rs41308365	G	A	GO Exome Sequencing Project	European American	Sub	8596	0.4329
+rs41308365	G	A	GO Exome Sequencing Project	African American	Sub	4406	0.1049
+rs41308365	G	A	1000Genomes	Global	Study-wide	5008	0.2143
+rs41308365	G	A	1000Genomes	African	Sub	1322	0.0431
+rs41308365	G	A	1000Genomes	East Asian	Sub	1008	0.1637
+rs41308365	G	A	1000Genomes	Europe	Sub	1006	0.4105
+rs41308365	G	A	1000Genomes	South Asian	Sub	978	0.286
+rs41308365	G	A	1000Genomes	American	Sub	694	0.228
+rs41308365	G	A	Genetic variation in the Estonian population	Estonian	Study-wide	4474	0.4611
+rs41308365	G	A	Northern Sweden	ACPOP	Study-wide	600	0.493
+rs3762271	G	T	TopMed	Global	Study-wide	125568	0.294948
+rs3762271	G	T	The PAGE Study	Global	Study-wide	78700	0.17583
+rs3762271	G	T	The PAGE Study	AfricanAmerican	Sub	32516	0.10684
+rs3762271	G	T	The PAGE Study	Mexican	Sub	10808	0.22715
+rs3762271	G	T	The PAGE Study	Asian	Sub	8318	0.1375
+rs3762271	G	T	The PAGE Study	PuertoRican	Sub	7918	0.248
+rs3762271	G	T	The PAGE Study	NativeHawaiian	Sub	4534	0.1978
+rs3762271	G	T	The PAGE Study	Cuban	Sub	4230	0.356
+rs3762271	G	T	The PAGE Study	Dominican	Sub	3828	0.2173
+rs3762271	G	T	The PAGE Study	CentralAmerican	Sub	2450	0.2073
+rs3762271	G	T	The PAGE Study	SouthAmerican	Sub	1982	0.2139
+rs3762271	G	T	The PAGE Study	NativeAmerican	Sub	1260	0.304
+rs3762271	G	T	The PAGE Study	SouthAsian	Sub	856	0.293
+rs3762271	G	T	gnomAD - Genomes	Global	Study-wide	31270	0.31653
+rs3762271	G	T	gnomAD - Genomes	European	Sub	18816	0.4307
+rs3762271	G	T	gnomAD - Genomes	African	Sub	8704	0.0908
+rs3762271	G	T	gnomAD - Genomes	East Asian	Sub	1534	0.1721
+rs3762271	G	T	gnomAD - Genomes	Other	Sub	1084	0.4059
+rs3762271	G	T	gnomAD - Genomes	American	Sub	842	0.217
+rs3762271	G	T	gnomAD - Genomes	Ashkenazi Jewish	Sub	290	0.403
+rs3762271	G	T	GO Exome Sequencing Project	Global	Study-wide	12998	0.3229
+rs3762271	G	T	GO Exome Sequencing Project	European American	Sub	8596	0.4347
+rs3762271	G	T	GO Exome Sequencing Project	African American	Sub	4402	0.1045
+rs3762271	G	T	1000Genomes	Global	Study-wide	5008	0.2143
+rs3762271	G	T	1000Genomes	African	Sub	1322	0.0431
+rs3762271	G	T	1000Genomes	East Asian	Sub	1008	0.1637
+rs3762271	G	T	1000Genomes	Europe	Sub	1006	0.4105
+rs3762271	G	T	1000Genomes	South Asian	Sub	978	0.286
+rs3762271	G	T	1000Genomes	American	Sub	694	0.228
+rs3762271	G	T	Genetic variation in the Estonian population	Estonian	Study-wide	4480	0.4632
+rs3762271	G	T	The Avon Longitudinal Study of Parents and Children	PARENT AND CHILD COHORT	Study-wide	3854	0.4297
+rs3762271	G	T	UK 10K study - Twins	TWIN COHORT	Study-wide	3708	0.4339
+rs3762271	G	T	A Vietnamese Genetic Variation Database	Global	Study-wide	613	0.148
+rs3762271	G	T	Northern Sweden	ACPOP	Study-wide	600	0.495
+rs41304071	C	T	gnomAD - Exomes	Global	Study-wide	195088	0.331886
+rs41304071	C	T	gnomAD - Exomes	European	Sub	98614	0.42066
+rs41304071	C	T	gnomAD - Exomes	Asian	Sub	40568	0.2567
+rs41304071	C	T	gnomAD - Exomes	American	Sub	29680	0.21422
+rs41304071	C	T	gnomAD - Exomes	African	Sub	12112	0.09131
+rs41304071	C	T	gnomAD - Exomes	Ashkenazi Jewish	Sub	9008	0.3889
+rs41304071	C	T	gnomAD - Exomes	Other	Sub	5106	0.3688
+rs41304071	C	T	TopMed	Global	Study-wide	125568	0.294972
+rs41304071	C	T	ExAC	Global	Study-wide	60438	0.34806
+rs41304071	C	T	ExAC	Europe	Sub	33100	0.44568
+rs41304071	C	T	ExAC	Asian	Sub	15444	0.27979
+rs41304071	C	T	ExAC	African	Sub	5994	0.1046
+rs41304071	C	T	ExAC	American	Sub	5390	0.2167
+rs41304071	C	T	ExAC	Other	Sub	510	0.329
+rs41304071	C	T	gnomAD - Genomes	Global	Study-wide	31294	0.31693
+rs41304071	C	T	gnomAD - Genomes	European	Sub	18834	0.4314
+rs41304071	C	T	gnomAD - Genomes	African	Sub	8706	0.0905
+rs41304071	C	T	gnomAD - Genomes	East Asian	Sub	1542	0.1699
+rs41304071	C	T	gnomAD - Genomes	Other	Sub	1080	0.4102
+rs41304071	C	T	gnomAD - Genomes	American	Sub	842	0.217
+rs41304071	C	T	gnomAD - Genomes	Ashkenazi Jewish	Sub	290	0.403
+rs41304071	C	T	GO Exome Sequencing Project	Global	Study-wide	12910	0.31325
+rs41304071	C	T	GO Exome Sequencing Project	European American	Sub	8540	0.4226
+rs41304071	C	T	GO Exome Sequencing Project	African American	Sub	4370	0.0995
+rs41304071	C	T	1000Genomes	Global	Study-wide	5008	0.2143
+rs41304071	C	T	1000Genomes	African	Sub	1322	0.0431
+rs41304071	C	T	1000Genomes	East Asian	Sub	1008	0.1637
+rs41304071	C	T	1000Genomes	Europe	Sub	1006	0.4105
+rs41304071	C	T	1000Genomes	South Asian	Sub	978	0.286
+rs41304071	C	T	1000Genomes	American	Sub	694	0.228
+rs41304071	C	T	Genetic variation in the Estonian population	Estonian	Study-wide	4480	0.4636
+rs41304071	C	T	The Avon Longitudinal Study of Parents and Children	PARENT AND CHILD COHORT	Study-wide	3854	0.4299
+rs41304071	C	T	UK 10K study - Twins	TWIN COHORT	Study-wide	3708	0.4347
+rs41304071	C	T	Northern Sweden	ACPOP	Study-wide	600	0.495
+rs41304071	C	T	A Vietnamese Genetic Variation Database	Global	Study-wide	214	0.145
+rs61819087	C	G	TopMed	Global	Study-wide	125568	0.294828
+rs61819087	C	G	gnomAD - Genomes	Global	Study-wide	31348	0.31705
+rs61819087	C	G	gnomAD - Genomes	European	Sub	18866	0.43146
+rs61819087	C	G	gnomAD - Genomes	African	Sub	8704	0.0905
+rs61819087	C	G	gnomAD - Genomes	East Asian	Sub	1552	0.1714
+rs61819087	C	G	gnomAD - Genomes	Other	Sub	1088	0.4081
+rs61819087	C	G	gnomAD - Genomes	American	Sub	848	0.218
+rs61819087	C	G	gnomAD - Genomes	Ashkenazi Jewish	Sub	290	0.4
+rs61819087	C	G	1000Genomes	Global	Study-wide	5008	0.2143
+rs61819087	C	G	1000Genomes	African	Sub	1322	0.0431
+rs61819087	C	G	1000Genomes	East Asian	Sub	1008	0.1637
+rs61819087	C	G	1000Genomes	Europe	Sub	1006	0.4105
+rs61819087	C	G	1000Genomes	South Asian	Sub	978	0.286
+rs61819087	C	G	1000Genomes	American	Sub	694	0.228
+rs61819087	C	G	Genetic variation in the Estonian population	Estonian	Study-wide	4480	0.4632
+rs61819087	C	G	The Avon Longitudinal Study of Parents and Children	PARENT AND CHILD COHORT	Study-wide	3854	0.4294
+rs61819087	C	G	UK 10K study - Twins	TWIN COHORT	Study-wide	3708	0.435
+rs61819087	C	G	Northern Sweden	ACPOP	Study-wide	600	0.495
+rs61819087	C	G	A Vietnamese Genetic Variation Database	Global	Study-wide	214	0.15

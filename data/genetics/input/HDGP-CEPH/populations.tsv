@@ -1,0 +1,58 @@
+population_id	population_name	nickname	latitude	longitude	comment	geo_origin_id
+1	Adygei	Ady	44N	39E		24
+2	Balochi	Bal	30-31N	66-67E		22
+3	Bantu_N.E.	BanN	3S	37E		16
+4	Bantu_S.E._Pedi	BanP	29S	30E		27
+5	Bantu_S.E._S.Sotho	BanS	29S	29E		27
+6	Bantu_S.E._Tswana	BanT	28S	24E		27
+7	Bantu_S.E._Zulu	BanZ	28S	31E		27
+8	Bantu_S.W._Herero	BanH	22S	19E		27
+9	Bantu_S.W._Ovambo	BanO	19S	18E		27
+10	Bedouin	Bed	31N	35E		12
+11	Biaka_Pygmies	Bia	4N	17E		5
+12	Brahui	Bra	30-31	66-67E		22
+13	Burusho	Bur	36-37N	73-75E		22
+14	Cambodians	Cam	12N	105E		4
+15	Colombians	Col	3N	68W	Piapoco and others	7
+16	Dai	Dai	21N	100E	minority	6
+17	Daur	Dau	48-49N	124E	minority	6
+18	Druze	Dru	32N	35E		10
+19	French	Fre	46N	2E	Various regions	9
+20	French_Basque	Fre	43N	0		9
+21	Han	Han	36-39N	108-120E		6
+22	Hazara	Haz	33-34N	70E		22
+23	Hezhen	Hez	47-48N	132-135E	minority	6
+24	Japanese	Jap	38N	138E		15
+25	Kalash	Kal	35-37N	71-72E		22
+26	Karitiana	Kar	10S	63W	Relative pairs	3
+27	Lahu	Lah	22N	100E	minority	6
+28	Makrani	Mak	26N	62-66E		22
+29	Mandenka	Man	12N	12W		25
+30	Maya	May	19N	91W	Relative pairs	17
+31	Mbuti_Pygmies	Mbu	1N	29E		8
+32	Miaozu	Mia	28N	109E	minority	6
+33	Mongola	Mon	45N	111E	minority	6
+34	Mozabite	Moz	32N	3E		1
+35	NAN_Melanesian	NAN	6S	155E		2
+36	Naxi	Nax	26N	100E	minority	6
+37	North_Italian	Nor	46N	10E		14
+38	Orcadian	Orc	59N	3W		21
+39	Oroqen	Oro	48-53N	122-131E	minority	6
+40	Palestinian	Pal	32N	35E		11
+41	Papuan	Pap	4S	143E		19
+42	Pathan	Pat	32-35N69-72E			22
+43	Pima	Pim	29N	108W	Relative pairs	17
+44	Russian	Rus	61N	39-41E		23
+45	San	San	21S	20E		18
+46	Sardinian	Sar	40N	9E		13
+47	She	She	27N	119E	minority	6
+48	Sindhi	Sin	24-27N	68-70E		22
+49	Surui	Sur	11S	62W	Relative pairs	3
+50	Tu	Tu	36N	101E	minority	6
+51	Tujia	Tuj	29N	109E	minority	6
+52	Tuscan	Tus	43N	11E		13
+53	Uygur	Uyg	44N	81E	minority	6
+54	Xibo	Xib	43-44N	81-82E	minority	6
+55	Yakut	Yak	62-64N	129-130E		26
+56	Yizu	Yiz	28N	103E	minority	6
+57	Yoruba	Yor	6-10N	2-8E		20

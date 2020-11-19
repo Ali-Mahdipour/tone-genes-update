@@ -1,0 +1,33 @@
+SNP	Allele_major	Allele_minor	Population	Code	N_individuals	MAF
+rs930557	C	G	All Populations	ALL	2504	0.355
+rs930557	C	G	African	AFR	661	0.754
+rs930557	C	G	Yoruba in Ibadan, Nigeria	YRI	108	0.741
+rs930557	C	G	Luhya in Webuye, Kenya	LWK	99	0.773
+rs930557	C	G	Gambian in Western Divisions in the Gambia	GWD	113	0.796
+rs930557	C	G	Mende in Sierra Leone	MSL	85	0.835
+rs930557	C	G	Esan in Nigeria	ESN	99	0.748
+rs930557	C	G	Americans of African Ancestry in SW USA	ASW	61	0.639
+rs930557	C	G	African Caribbeans in Barbados	ACB	96	0.708
+rs930557	C	G	Ad Mixed American	AMR	347	0.1744
+rs930557	C	G	Mexican Ancestry from Los Angeles USA	MXL	64	0.1562
+rs930557	C	G	Puerto Ricans from Puerto Rico	PUR	104	0.2115
+rs930557	C	G	Colombians from Medellin, Colombia	CLM	94	0.1809
+rs930557	C	G	Peruvians from Lima, Peru	PEL	85	0.1353
+rs930557	C	G	East Asian	EAS	504	0.2361
+rs930557	C	G	Han Chinese in Beijing, China	CHB	103	0.1942
+rs930557	C	G	Japanese in Tokyo, Japan	JPT	104	0.25
+rs930557	C	G	Southern Han Chinese	CHS	105	0.219
+rs930557	C	G	Chinese Dai in Xishuangbanna, China	CDX	93	0.2903
+rs930557	C	G	Kinh in Ho Chi Minh City, Vietnam	KHV	99	0.2323
+rs930557	C	G	European	EUR	503	0.2018
+rs930557	C	G	Utah Residents (CEPH) with Northern and Western European Ancestry	CEU	99	0.202
+rs930557	C	G	Toscani in Italia	TSI	107	0.2243
+rs930557	C	G	Finnish in Finland	FIN	99	0.1414
+rs930557	C	G	British in England and Scotland	GBR	91	0.1758
+rs930557	C	G	Iberian Population in Spain	IBS	107	0.257
+rs930557	C	G	South Asian	SAS	489	0.2249
+rs930557	C	G	Gujarati Indian from Houston, Texas	GIH	103	0.2282
+rs930557	C	G	Punjabi from Lahore, Pakistan	PJL	96	0.2344
+rs930557	C	G	Bengali from Bangladesh	BEB	86	0.2035
+rs930557	C	G	Sri Lankan Tamil from the UK	STU	102	0.2059
+rs930557	C	G	Indian Telugu from the UK	ITU	102	0.25

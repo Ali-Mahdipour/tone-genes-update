@@ -30,10 +30,29 @@ vignettes/*.pdf
 # knitr and R markdown default cache directories
 *_cache/
 /cache/
+code/cache_results/*
 
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
+code/tone-genes-v*_files/*
+code/tone-genes-v*_cache/*
 
 # R Environment Variables
 .Renviron
+*.RData
+*.html
+
+# LaTeX:
+/paper/*/*.pdf
+/paper/*/*.aux
+/paper/*/*.bbl
+/paper/*/*.blg
+/paper/*/*.log
+/paper/*/*.out
+/paper/*/*.synctex.gz
+
+# Input data:
+data/language/input/wals-2014/language.csv
+data/language/input/wals-2014/README.txt
+data/language/input/phoible-v2.0.1/cldf-*

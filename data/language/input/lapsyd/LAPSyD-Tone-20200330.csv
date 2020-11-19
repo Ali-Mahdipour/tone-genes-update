@@ -1,0 +1,573 @@
+ISO	Name	Tone	Tone_number	Tone_comments
+abk	Abkhaz	None	0	
+acr	Achi\', Rabinal dialect	None	0	
+acv	Achumawi	Simple	2	
+adj	Adjukru	Complex	4	
+adz	Adzera	None	0	
+aey	Amele	None	0	
+agm	Angaatiha	Moderately complex	3	
+agq	Aghem	Simple	2	
+aht	Ahtna	None	0	
+aid	Anguthimri	None	0	
+ain	Ainu, Hokkaido dialect	Marginal	1	pitch-accent
+akc	Mpur	Complex	4	
+akz	Alabama	Simple	2	
+alc	Qawasqar	None	0	
+ale	Aleut, Eastern	None	0	
+alh	Alawa	None	0	
+als	Albanian, Tosk dialect	None	0	
+amc	Amahuaca	None	0	
+ame	Yanesha\'	None	0	
+amh	Amharic	None	0	
+amp	Alamblak	None	0	
+amy	Emmi	None	0	
+anc	Angas	Moderately complex	3	
+ano	Andoke	Simple	2	
+ape	Bukiyip	None	0	
+apj	Jicarilla Apache	Moderately complex	3	
+apn	Apinaye	None	0	
+apu	Apurinã	None	0	
+apy	Apalaí	None	0	
+arh	Ika (Colombia)	None	0	
+arl	Arabela	None	0	
+arn	Mapudungun	None	0	
+ary	Arabic, Moroccan	None	0	
+arz	Egyptian Arabic	None	0	
+asm	Assamese	None	0	
+awn	Awngi	Simple	2	
+axb	Abipon	None	0	
+ayr	Aymara, Central	None	0	
+ayz	Maybrat, Mayhapeh dialect of Ayawasi village	None	0	
+bae	Baré	None	0	
+bak	Bashkir	None	0	
+bam	Bambara	Simple	2	
+bao	Barasano, Northern	Simple	2	
+bba	Bariba	Complex	4	
+bbc	Batak, Toba	None	0	
+bbl	Bats	None	0	
+bcj	Bardi	None	0	
+bck	Bunuba	None	0	
+bcs	Kohumono	Moderately complex	3	
+bdy	Bandjalang (Yugumbir)	None	0	
+bej	Beja	None	0	not clear
+ben	Bengali	None	0	
+bgr	Bawm	Simple	2	
+bjh	Bahinemo	None	0	pitch-accent
+bkq	Bakairi	None	0	
+blb	Bilua	None	0	
+blc	Nuxalk	None	0	
+blf	Buol	None	0	
+bmi	Bagirmi	Moderately complex	3	
+bmr	Muinane	Simple	2	
+boa	Bora	Simple	2	
+bom	Birom	Complex	7	
+bor	Borôro	None	0	
+brh	Brahui	None	0	
+bsc	Basari (Guinée, Sénégal)	Moderately complex	4	
+btx	Batak, Karo	None	0	
+bul	Bulgarian	None	0	
+bvr	Burarra	None	0	
+byx	Baining	None	0	
+bzd	Bribri	Simple	2	
+bzi	Bisu	Moderately complex	3	
+bzr	Biri	None	0	
+cab	Garifuna	None	0	
+cad	Caddo	Simple	2	Pitch-accent ?
+caq	Car Nicobarese	None	0	
+car	Kalihna	None	0	
+cat	Catalan, Eastern	None	0	
+cav	Cavineña	None	0	
+cbg	Chimila	Simple	2	
+cbi	Chachi	None	0	
+cbv	Kakwa (Colombia)	Complex	4	
+ccc	Chamicuro	None	0	
+ces	Czech	None	0	
+cgg	Nkore-Kiga	Simple	2	
+cha	Chamorro	None	0	
+chl	Cahuilla	None	0	
+chv	Chuvash	None	0	
+cjv	Chuave	None	0	Simple ?
+ckt	Chukchi	None	0	
+cku	Koasati	Moderately complex	3	
+cmi	Emberá 	None	0	
+cmn	Mandarin	Complex	4	
+cns	Asmat, Central, Kawenal dialect	Marginal	2	
+cof	Tsafiki	None	0	
+com	Comanche	None	0	
+con	Cofan	None	0	
+cow	Cowlitz	None	0	
+cpc	Ajyîninka	None	0	
+crk	Cree, Plains	None	0	
+css	Mutsun	None	0	
+ctp	Chatino, Western Highland	Complex	6	
+cub	Cubeo	Simple	2	
+cui	Cuiba	None	0	
+cuk	Kuna	None	0	
+cuy	Cuitlatec	None	0	
+cyb	Cayuvava	None	0	
+cym	Welsh, Northern	None	0	
+dag	Dagbani	Moderately complex	3	
+daj	Dar Fur Daju	Simple	2	
+dbl	Dyirbal	None	0	
+deu	German	None	0	
+dgz	Daga	None	0	
+dhv	Drehu	None	0	
+dif	Diyari	None	0	
+dir	Dawro			
+div	Dhivehi	None	0	
+djc	Dar Daju Daju	Simple	2	
+djj	Ndjébbana	None	0	
+djk	Ndyuka	Simple	2	
+dni	Dani, Lower Grand Valley	None	0	
+dru	Rukai, Tanan dialect	None	0	
+dry	Darai	None	0	
+dwr	Dawro	Simple	2	
+dwu	Dhuwal	None	0	
+dyo	Diola-Fogny	None	0	
+efi	Efik	Moderately complex	3	
+ekg	Ekari	Marginal	1	pitch-accent
+ell	Greek	None	0	
+ell	Grico	None	0	
+eme	Emerillon	None	0	
+eng	English (Standard Southern British)	None	0	
+ese	Ese Ejja	None	0	
+etu	Ejagham	Complex	6	
+eus	Basque, central	None	0	
+evn	Evenki	None	0	
+ewo	Ewondo	Complex	5	
+eya	Eyak	None	0	
+faa	Fasu	Simple	2	
+fia	Nobiin	Simple	2	
+fij	Fijian, Boumaa dialect	None	0	
+fin	Finnish	None	0	
+fra	French	None	0	
+fun	Yaathe	None	0	contrastive accent
+fvr	Fur	Simple	2	
+gaj	Gadsup	Complex	4	
+gdl	Diraytata	Simple	2	pitch-accent
+gil	Kiribati	None	0	
+gla	Scottish Gaelic	Simple	2	pitch-accent
+gld	Nanai	None	0	
+gle	Irish, Donegal dialect	None	0	
+gni	Gooniyandi	None	0	
+gnu	Gojri	Moderately complex	3	
+gqu	Qua Gelao	Complex	6	
+grj	Grebo	Complex	4	
+guc	Wayuu	None	0	
+gug	Guarani, Paraguayan	None	0	
+guk	Gumuz, Southern	Simple	2	
+gum	Guambiano	None	0	
+gup	Kunwinjku	None	0	
+guq	Ache	None	0	
+gut	Maléku Jaika	None	0	
+gvn	Kuku Yalanji	None	0	
+gwc	Kalami	Complex	5	
+gww	Gunin	None	0	
+gyd	Kayardild	None	0	
+had	Hatam, Tinam dialect	None	0	
+hae	Oromo, Harar	Simple	2	pitch-accent
+hau	Hausa	Moderately complex	3	
+haw	Hawaiian	None	0	
+heb	Hebrew (modern Ashkenazic)	None	0	
+hin	Hindi	None	0	
+hix	Hixkaryana	None	0	
+hmm	Manange	Complex	4	
+hmt	Hamtai	Moderately complex	3	
+hnj	Mong Njua	Complex	7	
+hop	Hopi	None	0	
+hsb	Sorbian, Upper dialect	None	0	
+hub	Huambisa	None	0	
+hun	Hungarian	None	0	
+hup	Hupa	None	0	
+hus	Huastec	None	0	
+huu	Witoto, Murui dialect	None	0	
+huz	Hunzib	None	0	
+hvn	Havu	None	0	
+hye	Armenian, Eastern	None	0	
+iai	Iaai	None	0	
+iba	Iban	None	0	
+ibo	Igbo	Moderately complex	3	
+ign	Moxo	None	0	
+ikx	Ik	Simple	3	
+imn	Imonda	None	0	
+inb	Inga	None	0	
+ind	Indonesian	None	0	
+inh	Ingush	None	0	
+inp	Iñapari	Simple	2	pitch-accent
+irn	Irantxe	None	0	
+iso	Isoko, Uzere dialect	Simple	2	
+ita	Italian	None	0	
+ito	Itonama	None	0	
+iwm	Iwam, May River	None	0	
+jaa	Madi (Brazil), Banawa dialect	None	0	
+jac	Jacaltec, Eastern	None	0	
+jae	Yabem	Simple	2	
+jao	Yanyuwa	None	0	
+jeb	Jebero	None	0	
+jic	Tol	None	0	
+jig	Jingulu	None	0	
+jpn	Japanese	Marginal	1	pitch-accent
+jru	Japreria	None	0	
+jua	Júma	None	0	
+kal	West Greenlandic Inuktitut	None	0	
+kan	Kannada	None	0	
+kas	Kashmiri	None	0	
+kat	Georgian	None	0	
+kbh	Camsa	None	0	
+kbk	Koiari	None	0	
+kbr	Kafa	Simple	2	
+kbv	Dla, Menggwa dialect	None	0	
+kca	Khanty, Northern	None	0	
+kea	Cape Verde Creole, Santiago dialect	None	0	
+kek	K\'ekchi	None	0	
+ker	Kera	Moderately complex	3	
+kew	Kewa, Western	Simple	2	
+kfe	Kota (India)	None	0	
+kff	Koya	None	0	
+kfz	Koromfe	None	0	
+kgo	Krongo	Simple	2	
+kgr	Abun	Moderately complex	3	
+kha	Khasi	None	0	
+khb	Ly	Complex	6	
+khc	Tukang Besi, Wanci (Northern) dialect	None	0	
+khk	Khalkha	None	0	
+khl	Kaliai	None	0	
+khq	Songhay, Koyra Chiini dialect	None	0	
+khr	Kharia, Dudh	None	0	
+kic	Kickapoo	None	0	
+kij	Kilivila	None	0	
+kio	Kiowa	Simple	2	
+kir	Kyrgyz	None	0	
+kjd	Southern Kiwai, Island dialect	Simple	2	
+kjh	Khakas	None	0	
+kjl	Kham, Takale dialect	Complex	4	
+kjq	Western Keres	Moderately complex	3	
+kkk	Kokota	None	0	
+kkw	Teke, Kukuya dialect	Simple	2	
+kla	Klamath	None	0	
+kmo	Kwoma	None	0	
+kna	Kanakuru	Simple	2	
+knc	Kanuri	Simple	2	
+knn	Konkani	None	0	
+kog	Kogi	None	0	
+kor	Korean	None	0	
+kpk	Kpan	Complex	3	
+kpm	Sre	Simple	2	
+kpw	Kobon	None	0	
+kpy	Koryak	None	0	
+krc	Karachay-Balkar, Karachay dialect	None	0	
+kru	Kurukh	None	0	
+ksi	I\'saka	Complex	4	
+kss	Kisi, Southern dialect	Simple	2	
+ksx	Kedang	None	0	
+ktg	Kalkatungu	None	0	
+kto	Kuot, South	None	0	
+kun	Kunama	Moderately complex	3	
+kup	Kunimaipa	None	0	
+kut	Kutenai	None	0	
+kwd	Kwaio	None	0	
+kwi	Awa Pit	None	0	
+kwk	Kwakw\'ala	None	0	
+kyh	Karuk	Simple	2	
+kyj	Karao	None	0	
+lbj	Ladakhi, dialect of Leh	None	0	
+lbz	Lardil	None	0	
+lef	Lelemi	Moderately complex	3	
+lep	Lepcha	Marginal	2	
+lez	Lezgian	None	0	
+lgg	Lugbara, Western	Complex	4	
+lhu	Lahu	Complex	7	
+lic	Hlai, Lauhut (Baoding) dialect	Moderately complex	3	
+lit	Lithuanian	Simple	2	
+lkt	Lakota, Teton	None	0	
+lln	Lele (Chad)	Moderately complex	3	
+lmc	Limilngan	None	0	
+lpa	Lelepa	None	0	
+lui	Luiseño	None	0	
+lvk	Lavukaleve	None	0	
+mai	Maithili	None	0	
+mak	Makassarese	None	0	
+maz	Mazahua, Central	Complex	4	
+mbl	Maxakalí	None	0	
+mbp	Damana	None	0	
+mca	Maká	None	0	
+mdd	Mbum	Simple	2	
+mde	Maba	Moderately complex	3	
+mei	Midob, Kaargedi dialect	Simple	2	
+mfc	Mbane	Moderately complex	3	
+mhi	Ma\'di, Southern (Lokai) dialect	Moderately complex	3	
+mhj	Moghol	None	0	
+mhl	Mauwake	None	0	
+mhq	Mandan	None	0	
+mhu	Digaro	Complex	4	
+mhz	Mor (Indonesia)	Moderately complex	3	
+mia	Miami-Illinois	None	0	
+mif	Mofu-Gugur	Simple	2	
+mig	Mixtec, Chalcatongo (Western Alta)	Moderately complex	3	
+miq	Miskitu	None	0	
+mjg	Mangghuer, Minxe dialect	None	0	
+mky	Taba, Waikyon dialect	None	0	
+mla	Tamambo, western	None	0	
+mlt	Maltese, Standard	None	0	
+mni	Meithei	Simple	2	
+mns	Mansi, Northern	None	0	
+mpb	Malakmalak	None	0	
+mpc	Mangarrayi	None	0	
+mph	Maung	None	0	
+mps	Dadibi	Simple	2	
+mpt	Mian	Complex	5	
+mqs	West Makian	None	0	
+mrc	Maricopa	None	0	
+mri	Māori	None	0	
+mtg	Una (Papua)	Simple	2	
+mur	Murle	Simple	3	
+mwf	Murrinhpatha	None	0	
+mwp	Kala Lagau Ya	None	0	
+mxf	Malgbe	Simple	2	
+mxu	Mada (Cameroun)	Moderately complex	3	
+mya	Burmese	Moderately complex	3	
+myh	Makah	None	0	
+myp	Pirahã	Simple	2	
+myu	Mundurukú	Simple	2	
+mzm	Mumuye	Moderately complex	3	
+mzp	Movima	None	0	
+nab	Southern Nambiquara	Complex	3	
+nan	Hainanese	Complex	6	
+naq	Khoekhoe	Complex	6	
+nas	Naasioi	None	0	
+nav	Navajo	Simple	2	
+ncb	Central Nicobarese, Nancowry dialect	None	0	
+ncj	Nahuatl, North Puebla	None	0	
+nck	Nakkara	None	0	
+ncz	Natchez	None	0	
+ndv	Ndut	None	0	
+npi	Nepali, Kathmandu dialect.	None	0	
+new	Newari, Kathmandu dialect	None	0	
+nez	Nez Perce	None	0	
+ngi	Ngizim	Moderately complex	3	
+nha	Nhanda	None	0	
+nhg	Nahuatl, Tetelcingo	None	0	
+nhu	Noni	Complex	5	
+nio	Nganasan	None	0	
+niq	Nandi	Simple	3	
+nir	Nimboran	None	0	
+niv	Nivkh	Simple	2	
+niy	Ngiti	Complex	4	
+njo	Ao, Mongsen dialect	Moderately complex	3	
+njz	Nyishi	Simple	3	
+nld	Dutch	None	0	
+nmk	Namakir	None	0	
+nmu	Maidu, Northeastern	None	0	
+nna	Nyangumarda	None	0	
+nod	Nzadi (B865)	Simple	2	
+nor	Norwegian	Simple	2	pitch-accent
+nrb	Nara	Simple	2	
+ntu	Natügu	None	0	
+nut	Nung	Complex	6	
+nuy	Nunggubuyu	None	0	
+nya	Nyanja, Chichewa dialect	Simple	2	
+nyi	Ama	Moderately complex	3	
+nyp	Nyangi	Simple	2	
+oca	Ocaina	Simple	2	
+ogb	Ogbia	Simple	2	
+ona	Selknam, Central dialect	None	0	
+one	Oneida	Marginal	1	
+ood	Tohono O\'odham	None	0	
+ote	Otomi, Mezquital	Simple	3	
+oym	Wayampi	None	0	
+pab	Paresí	None	0	
+pac	Pacoh	None	0	
+pad	Paumarí	None	0	
+pap	Papiamentu	Simple	2	
+pav	Wari\'	None	0	
+pay	Pech, Culmí dialect	Simple	3	
+pbb	Paez	None	0	
+pbh	Panare	None	0	
+pes	Farsi, Western	None	0	
+pib	Yine	None	0	
+pid	Piaróa	None	0	
+pio	Piapoco	Simple	2	
+pjt	Pitjantjatjara	None	0	
+plw	Palawan, Brookes Point	None	0	
+pma	Paamese	None	0	
+pol	Polish	None	0	
+pom	Southeastern Pomo	None	0	
+pqm	Passamaquoddy	Simple	2	
+pui	Wanshöhöt	Complex	4	
+pwa	Pawaian, Oyobe dialect	Simple	2	
+pwn	Paiwan, Southern	None	0	
+pww	Phlong	Complex	4	
+quh	Quechua, Cochabamba	None	0	
+qvi	Quechua, Imbabura 	None	0	
+ram	Canela-Krahô	None	0	
+rao	Rao	None	0	
+rap	Rapanui	None	0	
+rgr	Resigaro	Simple	2	
+rma	Rama	None	0	
+roo	Rotokas	None	0	
+rro	Roro	None	0	
+rth	Toratán	None	0	
+rtm	Rotuman	None	0	
+rus	Russian	None	0	
+sab	Bocotá, Chiriquí dialect	None	0	
+sad	Sandawe	Complex	4	
+sag	Sango	Moderately complex	3	
+sah	Yakut	None	0	
+sat	Santali	None	0	
+sbc	Kele (Papua New Guinea)	None	0	
+scs	Slave, Hare dialect (North)	Simple	2	
+sed	Sedang	None	0	
+see	Seneca	Marginal	1	
+sei	Seri	None	0	
+sel	Selkup, Taz (Northern) dialect	None	0	
+set	Sentani	None	0	
+sgw	Chaha	None	0	
+she	Sheko	Complex	9	
+shi	Tashlhiyt	None	0	
+shp	Shipibo-Konibo	None	0	
+sht	Shasta	Simple	2	
+sin	Sinhala	None	0	
+siz	Siwi	None	0	
+sja	Epena	None	0	
+skd	Sierra Miwok, Southern	None	0	
+slc	Saliba (Colombia)	None	0	
+slv	Slovene	Simple	2	pitch-accent
+snd	Sindhi	None	0	
+snf	Noon	None	0	
+snn	Siona	None	0	
+spa	Spanish (Peninsular Castilian)	None	0	
+spl	Selepet	None	0	
+spp	Supyire, Kampwo dialect	Complex	4	
+spu	Sapuan	None	0	
+srb	Sora	None	0	
+stv	Silt\'i	None	0	
+sue	Suena	Simple	2	
+sun	Sundanese	None	0	
+sva	Svan, Lower Bal dialect	None	0	
+svs	Savosavo	None	0	
+swe	Swedish	Simple	2	pitch-accent
+swh	KiSwahili	None	0	
+sxm	Samre	Moderately complex	3	
+sza	Semelai	None	0	
+tab	Tabasaran	None	0	
+tae	Tariana	None	0	
+tam	Tamil	None	0	
+tan	Tangale, Shongom dialect	Simple	2	
+tbi	Gaahmg	Complex	4	
+tca	Ticuna	Complex	5	
+tcf	Tlapanec, Malinaltepec	Complex	11	
+tcy	Tulu	None	0	
+teh	Tehuelche	None	0	
+tem	Themne	Simple	2	
+tet	Tetun, Western dialect	None	0	
+teu	So	None	0	
+tez	Tetserret	None	0	
+tgc	Tigak	None	0	
+tgl	Tagalog	None	0	
+tha	Thai, Standard	Complex	5	
+thd	Kuuk Thaayorre	None	0	
+ths	Thakali, Tukche dialect	Simple	2	
+tig	Tigre	None	0	
+tiw	Tiwi	None	0	
+tiy	Teduray	None	0	
+tjm	Timucua (Mocama dialect)	None	0	
+tlc	Totonac, Misantla dialect	None	0	
+tli	Tlingit	Simple	2	
+tlo	Jomang	Simple	2	
+tnc	Tanimuca-Retuarã	Simple	2	
+tnl	Lenakel	None	0	
+tob	Toba	None	0	
+tol	Tolowa	Simple	2	pitch-accent
+top	Totonac, Papantla dialect	None	0	
+tow	Towa	Moderately complex	3	
+tpm	Tampulma	Simple	2	
+tpy	Trumai	None	0	
+tqo	Toaripi	None	0	
+tqw	Tonkawa	None	0	
+tri	Trio	None	0	
+tsb	Ts\'amakko	Simple	2	
+tsg	Tausug	None	0	
+tsi	Tsimshian, Coast	None	0	
+tsu	Tsou	None	0	
+tsz	Purépecha	None	0	
+tti	Tobati	None	0	
+ttr	Tera	Moderately complex	3	
+tun	Tunica	None	0	
+tur	Turkish	None	0	
+twf	Tiwa, Northern	Simple	3	
+tyv	Tuva	None	0	
+tzh	Tzeltal, Aguacatenango dialect	None	0	
+tzj	Tzutujil, Eastern (San Juan la Laguna dialect)	None	0	
+tzm	Tamazight (Central Atlas)	None	0	
+ugb	Kugu Nganhcara	None	0	
+uig	Uyghur, Standard dialect of Urumqi	None	0	
+ulk	Meriam Mer	None	0	
+umb	UMbundu	Simple	2	
+ung	Ngarinyin	None	0	
+unr	Mundari	None	0	
+ura	Urarina	Simple	2	pitch-accent
+urb	Urubu-Kaapor	None	0	
+urk	Urak Lawoi\'	None	0	
+uwa	Kugu Nganhcara	None	0	
+uzn	Northern Uzbek, Tashkent dialect	None	0	
+vam	Dumo	Simple	2	
+vie	Vietnamese	Complex	6	
+vma	Martuthunira	None	0	
+vmb	Mbabaram	None	0	
+wap	Wapishana	None	0	
+wba	Warao	None	0	
+wgi	Mid-Wahgi	Moderately complex	3	
+wic	Wichita	Marginal	1	
+wij	Kugu Nganhcara	None	0	
+wim	Wik-Munkan	None	0	
+wmb	Wambaya	None	0	
+wnc	Wantoat	None	0	
+wno	Wano	None	0	
+wnu	Usan	None	0	
+wnw	Wintu	None	0	
+woi	Kamang	None	0	
+wol	Wolof	None	0	
+wrk	Garrwa	None	0	
+wrr	Wardaman	None	0	
+wrs	Waris	None	0	
+wrz	Waray (Australia)	None	0	
+wuv	Wuvulu	None	0	
+wwr	Warrwa	None	0	
+wyb	Ngiyambaa	None	0	
+xav	Xavante	None	0	
+xaw	Kawaiisu	None	0	
+xmh	Kugu Nganhcara	None	0	
+xmp	Kugu Nganhcara	None	0	
+xnu	Kunuz Nubian	None	0	
+xpe	Kpelle	Moderately complex	3	
+xsu	Sanuma	None	0	
+xtc	Kadugli	Moderately complex	3	
+xwa	Kwaza	None	0	
+yab	Yuhup	Complex	4	
+yad	Yagua	Simple	2	
+yan	Sumu	None	0	
+yaq	Yaqui	Simple	2	
+ybe	Saryg Yugur	None	0	
+ycn	Yucuna	None	0	
+yee	Yimas	None	0	
+yeu	Yerukala	None	0	
+ygr	Yagaria, Move dialect	Simple	2	
+yii	Yidiny	None	0	
+ykg	Tundra Yukaghir	None	0	
+yle	Yelî Dnye	None	0	
+ynn	Yana, Northern dialect	None	0	
+yok	Chukchansi	None	0	
+yor	Yoruba	Moderately complex	3	
+yrb	Yareba	None	0	
+yss	Yessan-Mayo	None	0	
+yua	Yucatec	Simple	2	
+yui	Yurutí	Simple	2	
+yul	Yulu	Complex	4	
+yur	Yurok	None	0	
+yux	Kolyma Yukaghir	None	0	
+yva	Yawa	None	0	
+zmc	Gunya	None	0	
+zmr	Maranungku	None	0	
+zne	Azande	Simple	2	
+zoc	Zoque, Copainalá	None	0	
+zun	Zuni	None	0	

@@ -1,0 +1,193 @@
+SNP	Allele_major	Allele_minor	Population	Code	N_individuals	MAF	Allele frequencies
+rs41310927	T	C	All Populations	ALL	2504	0.2143	T: 78.57%, C: 21.43%
+rs41310927	T	C	African	AFR	661	0.0431	T: 95.69%, C: 4.31%
+rs41310927	T	C	Yoruba in Ibadan, Nigeria	YRI	108	0.0139	T: 98.61%, C: 1.39%
+rs41310927	T	C	Luhya in Webuye, Kenya	LWK	99	0.0354	T: 96.46%, C: 3.54%
+rs41310927	T	C	Gambian in Western Divisions in the Gambia	GWD	113	0.0265	T: 97.35%, C: 2.65%
+rs41310927	T	C	Mende in Sierra Leone	MSL	85	0.0412	T: 95.88%, C: 4.12%
+rs41310927	T	C	Esan in Nigeria	ESN	99	0.0303	T: 96.97%, C: 3.03%
+rs41310927	T	C	Americans of African Ancestry in SW USA	ASW	61	0.0738	T: 92.62%, C: 7.38%
+rs41310927	T	C	African Caribbeans in Barbados	ACB	96	0.099	T: 90.1%, C: 9.9%
+rs41310927	T	C	Ad Mixed American	AMR	347	0.2277	T: 77.23%, C: 22.77%
+rs41310927	T	C	Mexican Ancestry from Los Angeles USA	MXL	64	0.2422	T: 75.78%, C: 24.22%
+rs41310927	T	C	Puerto Ricans from Puerto Rico	PUR	104	0.2356	T: 76.44%, C: 23.56%
+rs41310927	T	C	Colombians from Medellin, Colombia	CLM	94	0.3138	T: 68.62%, C: 31.38%
+rs41310927	T	C	Peruvians from Lima, Peru	PEL	85	0.1118	T: 88.82%, C: 11.18%
+rs41310927	T	C	East Asian	EAS	504	0.1637	T: 83.63%, C: 16.37%
+rs41310927	T	C	Han Chinese in Beijing, China	CHB	103	0.2039	T: 79.61%, C: 20.39%
+rs41310927	T	C	Japanese in Tokyo, Japan	JPT	104	0.1587	T: 84.13%, C: 15.87%
+rs41310927	T	C	Southern Han Chinese	CHS	105	0.1476	T: 85.24%, C: 14.76%
+rs41310927	T	C	Chinese Dai in Xishuangbanna, China	CDX	93	0.1613	T: 83.87%, C: 16.13%
+rs41310927	T	C	Kinh in Ho Chi Minh City, Vietnam	KHV	99	0.1465	T: 85.35%, C: 14.65%
+rs41310927	T	C	European	EUR	503	0.4105	T: 58.95%, C: 41.05%
+rs41310927	T	C	Utah Residents (CEPH) with Northern and Western European Ancestry	CEU	99	0.399	T: 60.1%, C: 39.9%
+rs41310927	T	C	Toscani in Italia	TSI	107	0.4299	T: 57.01%, C: 42.99%
+rs41310927	T	C	Finnish in Finland	FIN	99	0.3535	T: 64.65%, C: 35.35%
+rs41310927	T	C	British in England and Scotland	GBR	91	0.4835	T: 51.65%, C: 48.35%
+rs41310927	T	C	Iberian Population in Spain	IBS	107	0.3925	T: 60.75%, C: 39.25%
+rs41310927	T	C	South Asian	SAS	489	0.2863	T: 71.37%, C: 28.63%
+rs41310927	T	C	Gujarati Indian from Houston, Texas	GIH	103	0.2913	T: 70.87%, C: 29.13%
+rs41310927	T	C	Punjabi from Lahore, Pakistan	PJL	96	0.3073	T: 69.27%, C: 30.73%
+rs41310927	T	C	Bengali from Bangladesh	BEB	86	0.2674	T: 73.26%, C: 26.74%
+rs41310927	T	C	Sri Lankan Tamil from the UK	STU	102	0.3039	T: 69.61%, C: 30.39%
+rs41310927	T	C	Indian Telugu from the UK	ITU	102	0.2598	T: 74.02%, C: 25.98%
+rs41308365	G	A	All Populations	ALL	2504	0.2143	G: 78.57%, A: 21.43%
+rs41308365	G	A	African	AFR	661	0.0431	G: 95.69%, A: 4.31%
+rs41308365	G	A	Yoruba in Ibadan, Nigeria	YRI	108	0.0139	G: 98.61%, A: 1.39%
+rs41308365	G	A	Luhya in Webuye, Kenya	LWK	99	0.0354	G: 96.46%, A: 3.54%
+rs41308365	G	A	Gambian in Western Divisions in the Gambia	GWD	113	0.0265	G: 97.35%, A: 2.65%
+rs41308365	G	A	Mende in Sierra Leone	MSL	85	0.0412	G: 95.88%, A: 4.12%
+rs41308365	G	A	Esan in Nigeria	ESN	99	0.0303	G: 96.97%, A: 3.03%
+rs41308365	G	A	Americans of African Ancestry in SW USA	ASW	61	0.0738	G: 92.62%, A: 7.38%
+rs41308365	G	A	African Caribbeans in Barbados	ACB	96	0.099	G: 90.1%, A: 9.9%
+rs41308365	G	A	Ad Mixed American	AMR	347	0.2277	G: 77.23%, A: 22.77%
+rs41308365	G	A	Mexican Ancestry from Los Angeles USA	MXL	64	0.2422	G: 75.78%, A: 24.22%
+rs41308365	G	A	Puerto Ricans from Puerto Rico	PUR	104	0.2356	G: 76.44%, A: 23.56%
+rs41308365	G	A	Colombians from Medellin, Colombia	CLM	94	0.3138	G: 68.62%, A: 31.38%
+rs41308365	G	A	Peruvians from Lima, Peru	PEL	85	0.1118	G: 88.82%, A: 11.18%
+rs41308365	G	A	East Asian	EAS	504	0.1637	G: 83.63%, A: 16.37%
+rs41308365	G	A	Han Chinese in Beijing, China	CHB	103	0.2039	G: 79.61%, A: 20.39%
+rs41308365	G	A	Japanese in Tokyo, Japan	JPT	104	0.1587	G: 84.13%, A: 15.87%
+rs41308365	G	A	Southern Han Chinese	CHS	105	0.1476	G: 85.24%, A: 14.76%
+rs41308365	G	A	Chinese Dai in Xishuangbanna, China	CDX	93	0.1613	G: 83.87%, A: 16.13%
+rs41308365	G	A	Kinh in Ho Chi Minh City, Vietnam	KHV	99	0.1465	G: 85.35%, A: 14.65%
+rs41308365	G	A	European	EUR	503	0.4105	G: 58.95%, A: 41.05%
+rs41308365	G	A	Utah Residents (CEPH) with Northern and Western European Ancestry	CEU	99	0.399	G: 60.1%, A: 39.9%
+rs41308365	G	A	Toscani in Italia	TSI	107	0.4299	G: 57.01%, A: 42.99%
+rs41308365	G	A	Finnish in Finland	FIN	99	0.3535	G: 64.65%, A: 35.35%
+rs41308365	G	A	British in England and Scotland	GBR	91	0.4835	G: 51.65%, A: 48.35%
+rs41308365	G	A	Iberian Population in Spain	IBS	107	0.3925	G: 60.75%, A: 39.25%
+rs41308365	G	A	South Asian	SAS	489	0.2863	G: 71.37%, A: 28.63%
+rs41308365	G	A	Gujarati Indian from Houston, Texas	GIH	103	0.2913	G: 70.87%, A: 29.13%
+rs41308365	G	A	Punjabi from Lahore, Pakistan	PJL	96	0.3073	G: 69.27%, A: 30.73%
+rs41308365	G	A	Bengali from Bangladesh	BEB	86	0.2674	G: 73.26%, A: 26.74%
+rs41308365	G	A	Sri Lankan Tamil from the UK	STU	102	0.3039	G: 69.61%, A: 30.39%
+rs41308365	G	A	Indian Telugu from the UK	ITU	102	0.2598	G: 74.02%, A: 25.98%
+rs3762271	G	T	All Populations	ALL	2504	0.2143	G: 78.57%, T: 21.43%
+rs3762271	G	T	African	AFR	661	0.0431	G: 95.69%, T: 4.31%
+rs3762271	G	T	Yoruba in Ibadan, Nigeria	YRI	108	0.0139	G: 98.61%, T: 1.39%
+rs3762271	G	T	Luhya in Webuye, Kenya	LWK	99	0.0354	G: 96.46%, T: 3.54%
+rs3762271	G	T	Gambian in Western Divisions in the Gambia	GWD	113	0.0265	G: 97.35%, T: 2.65%
+rs3762271	G	T	Mende in Sierra Leone	MSL	85	0.0412	G: 95.88%, T: 4.12%
+rs3762271	G	T	Esan in Nigeria	ESN	99	0.0303	G: 96.97%, T: 3.03%
+rs3762271	G	T	Americans of African Ancestry in SW USA	ASW	61	0.0738	G: 92.62%, T: 7.38%
+rs3762271	G	T	African Caribbeans in Barbados	ACB	96	0.099	G: 90.1%, T: 9.9%
+rs3762271	G	T	Ad Mixed American	AMR	347	0.2277	G: 77.23%, T: 22.77%
+rs3762271	G	T	Mexican Ancestry from Los Angeles USA	MXL	64	0.2422	G: 75.78%, T: 24.22%
+rs3762271	G	T	Puerto Ricans from Puerto Rico	PUR	104	0.2356	G: 76.44%, T: 23.56%
+rs3762271	G	T	Colombians from Medellin, Colombia	CLM	94	0.3138	G: 68.62%, T: 31.38%
+rs3762271	G	T	Peruvians from Lima, Peru	PEL	85	0.1118	G: 88.82%, T: 11.18%
+rs3762271	G	T	East Asian	EAS	504	0.1637	G: 83.63%, T: 16.37%
+rs3762271	G	T	Han Chinese in Beijing, China	CHB	103	0.2039	G: 79.61%, T: 20.39%
+rs3762271	G	T	Japanese in Tokyo, Japan	JPT	104	0.1587	G: 84.13%, T: 15.87%
+rs3762271	G	T	Southern Han Chinese	CHS	105	0.1476	G: 85.24%, T: 14.76%
+rs3762271	G	T	Chinese Dai in Xishuangbanna, China	CDX	93	0.1613	G: 83.87%, T: 16.13%
+rs3762271	G	T	Kinh in Ho Chi Minh City, Vietnam	KHV	99	0.1465	G: 85.35%, T: 14.65%
+rs3762271	G	T	European	EUR	503	0.4105	G: 58.95%, T: 41.05%
+rs3762271	G	T	Utah Residents (CEPH) with Northern and Western European Ancestry	CEU	99	0.399	G: 60.1%, T: 39.9%
+rs3762271	G	T	Toscani in Italia	TSI	107	0.4299	G: 57.01%, T: 42.99%
+rs3762271	G	T	Finnish in Finland	FIN	99	0.3535	G: 64.65%, T: 35.35%
+rs3762271	G	T	British in England and Scotland	GBR	91	0.4835	G: 51.65%, T: 48.35%
+rs3762271	G	T	Iberian Population in Spain	IBS	107	0.3925	G: 60.75%, T: 39.25%
+rs3762271	G	T	South Asian	SAS	489	0.2863	G: 71.37%, T: 28.63%
+rs3762271	G	T	Gujarati Indian from Houston, Texas	GIH	103	0.2913	G: 70.87%, T: 29.13%
+rs3762271	G	T	Punjabi from Lahore, Pakistan	PJL	96	0.3073	G: 69.27%, T: 30.73%
+rs3762271	G	T	Bengali from Bangladesh	BEB	86	0.2674	G: 73.26%, T: 26.74%
+rs3762271	G	T	Sri Lankan Tamil from the UK	STU	102	0.3039	G: 69.61%, T: 30.39%
+rs3762271	G	T	Indian Telugu from the UK	ITU	102	0.2598	G: 74.02%, T: 25.98%
+rs41304071	C	T	All Populations	ALL	2504	0.2143	C: 78.57%, T: 21.43%
+rs41304071	C	T	African	AFR	661	0.0431	C: 95.69%, T: 4.31%
+rs41304071	C	T	Yoruba in Ibadan, Nigeria	YRI	108	0.0139	C: 98.61%, T: 1.39%
+rs41304071	C	T	Luhya in Webuye, Kenya	LWK	99	0.0354	C: 96.46%, T: 3.54%
+rs41304071	C	T	Gambian in Western Divisions in the Gambia	GWD	113	0.0265	C: 97.35%, T: 2.65%
+rs41304071	C	T	Mende in Sierra Leone	MSL	85	0.0412	C: 95.88%, T: 4.12%
+rs41304071	C	T	Esan in Nigeria	ESN	99	0.0303	C: 96.97%, T: 3.03%
+rs41304071	C	T	Americans of African Ancestry in SW USA	ASW	61	0.0738	C: 92.62%, T: 7.38%
+rs41304071	C	T	African Caribbeans in Barbados	ACB	96	0.099	C: 90.1%, T: 9.9%
+rs41304071	C	T	Ad Mixed American	AMR	347	0.2277	C: 77.23%, T: 22.77%
+rs41304071	C	T	Mexican Ancestry from Los Angeles USA	MXL	64	0.2422	C: 75.78%, T: 24.22%
+rs41304071	C	T	Puerto Ricans from Puerto Rico	PUR	104	0.2356	C: 76.44%, T: 23.56%
+rs41304071	C	T	Colombians from Medellin, Colombia	CLM	94	0.3138	C: 68.62%, T: 31.38%
+rs41304071	C	T	Peruvians from Lima, Peru	PEL	85	0.1118	C: 88.82%, T: 11.18%
+rs41304071	C	T	East Asian	EAS	504	0.1637	C: 83.63%, T: 16.37%
+rs41304071	C	T	Han Chinese in Beijing, China	CHB	103	0.2039	C: 79.61%, T: 20.39%
+rs41304071	C	T	Japanese in Tokyo, Japan	JPT	104	0.1587	C: 84.13%, T: 15.87%
+rs41304071	C	T	Southern Han Chinese	CHS	105	0.1476	C: 85.24%, T: 14.76%
+rs41304071	C	T	Chinese Dai in Xishuangbanna, China	CDX	93	0.1613	C: 83.87%, T: 16.13%
+rs41304071	C	T	Kinh in Ho Chi Minh City, Vietnam	KHV	99	0.1465	C: 85.35%, T: 14.65%
+rs41304071	C	T	European	EUR	503	0.4105	C: 58.95%, T: 41.05%
+rs41304071	C	T	Utah Residents (CEPH) with Northern and Western European Ancestry	CEU	99	0.399	C: 60.1%, T: 39.9%
+rs41304071	C	T	Toscani in Italia	TSI	107	0.4299	C: 57.01%, T: 42.99%
+rs41304071	C	T	Finnish in Finland	FIN	99	0.3535	C: 64.65%, T: 35.35%
+rs41304071	C	T	British in England and Scotland	GBR	91	0.4835	C: 51.65%, T: 48.35%
+rs41304071	C	T	Iberian Population in Spain	IBS	107	0.3925	C: 60.75%, T: 39.25%
+rs41304071	C	T	South Asian	SAS	489	0.2863	C: 71.37%, T: 28.63%
+rs41304071	C	T	Gujarati Indian from Houston, Texas	GIH	103	0.2913	C: 70.87%, T: 29.13%
+rs41304071	C	T	Punjabi from Lahore, Pakistan	PJL	96	0.3073	C: 69.27%, T: 30.73%
+rs41304071	C	T	Bengali from Bangladesh	BEB	86	0.2674	C: 73.26%, T: 26.74%
+rs41304071	C	T	Sri Lankan Tamil from the UK	STU	102	0.3039	C: 69.61%, T: 30.39%
+rs41304071	C	T	Indian Telugu from the UK	ITU	102	0.2598	C: 74.02%, T: 25.98%
+rs147068597	AATAAC	A	All Populations	ALL	2504	0.2143	AATAAC: 78.57%, A: 21.43%
+rs147068597	AATAAC	A	African	AFR	661	0.0431	AATAAC: 95.69%, A: 4.31%
+rs147068597	AATAAC	A	Yoruba in Ibadan, Nigeria	YRI	108	0.0139	AATAAC: 98.61%, A: 1.39%
+rs147068597	AATAAC	A	Luhya in Webuye, Kenya	LWK	99	0.0354	AATAAC: 96.46%, A: 3.54%
+rs147068597	AATAAC	A	Gambian in Western Divisions in the Gambia	GWD	113	0.0265	AATAAC: 97.35%, A: 2.65%
+rs147068597	AATAAC	A	Mende in Sierra Leone	MSL	85	0.0412	AATAAC: 95.88%, A: 4.12%
+rs147068597	AATAAC	A	Esan in Nigeria	ESN	99	0.0303	AATAAC: 96.97%, A: 3.03%
+rs147068597	AATAAC	A	Americans of African Ancestry in SW USA	ASW	61	0.0738	AATAAC: 92.62%, A: 7.38%
+rs147068597	AATAAC	A	African Caribbeans in Barbados	ACB	96	0.099	AATAAC: 90.1%, A: 9.9%
+rs147068597	AATAAC	A	Ad Mixed American	AMR	347	0.2277	AATAAC: 77.23%, A: 22.77%
+rs147068597	AATAAC	A	Mexican Ancestry from Los Angeles USA	MXL	64	0.2422	AATAAC: 75.78%, A: 24.22%
+rs147068597	AATAAC	A	Puerto Ricans from Puerto Rico	PUR	104	0.2356	AATAAC: 76.44%, A: 23.56%
+rs147068597	AATAAC	A	Colombians from Medellin, Colombia	CLM	94	0.3138	AATAAC: 68.62%, A: 31.38%
+rs147068597	AATAAC	A	Peruvians from Lima, Peru	PEL	85	0.1118	AATAAC: 88.82%, A: 11.18%
+rs147068597	AATAAC	A	East Asian	EAS	504	0.1637	AATAAC: 83.63%, A: 16.37%
+rs147068597	AATAAC	A	Han Chinese in Beijing, China	CHB	103	0.2039	AATAAC: 79.61%, A: 20.39%
+rs147068597	AATAAC	A	Japanese in Tokyo, Japan	JPT	104	0.1587	AATAAC: 84.13%, A: 15.87%
+rs147068597	AATAAC	A	Southern Han Chinese	CHS	105	0.1476	AATAAC: 85.24%, A: 14.76%
+rs147068597	AATAAC	A	Chinese Dai in Xishuangbanna, China	CDX	93	0.1613	AATAAC: 83.87%, A: 16.13%
+rs147068597	AATAAC	A	Kinh in Ho Chi Minh City, Vietnam	KHV	99	0.1465	AATAAC: 85.35%, A: 14.65%
+rs147068597	AATAAC	A	European	EUR	503	0.4105	AATAAC: 58.95%, A: 41.05%
+rs147068597	AATAAC	A	Utah Residents (CEPH) with Northern and Western European Ancestry	CEU	99	0.399	AATAAC: 60.1%, A: 39.9%
+rs147068597	AATAAC	A	Toscani in Italia	TSI	107	0.4299	AATAAC: 57.01%, A: 42.99%
+rs147068597	AATAAC	A	Finnish in Finland	FIN	99	0.3535	AATAAC: 64.65%, A: 35.35%
+rs147068597	AATAAC	A	British in England and Scotland	GBR	91	0.4835	AATAAC: 51.65%, A: 48.35%
+rs147068597	AATAAC	A	Iberian Population in Spain	IBS	107	0.3925	AATAAC: 60.75%, A: 39.25%
+rs147068597	AATAAC	A	South Asian	SAS	489	0.2863	AATAAC: 71.37%, A: 28.63%
+rs147068597	AATAAC	A	Gujarati Indian from Houston, Texas	GIH	103	0.2913	AATAAC: 70.87%, A: 29.13%
+rs147068597	AATAAC	A	Punjabi from Lahore, Pakistan	PJL	96	0.3073	AATAAC: 69.27%, A: 30.73%
+rs147068597	AATAAC	A	Bengali from Bangladesh	BEB	86	0.2674	AATAAC: 73.26%, A: 26.74%
+rs147068597	AATAAC	A	Sri Lankan Tamil from the UK	STU	102	0.3039	AATAAC: 69.61%, A: 30.39%
+rs147068597	AATAAC	A	Indian Telugu from the UK	ITU	102	0.2598	AATAAC: 74.02%, A: 25.98%
+rs61819087	C	G	All Populations	ALL	2504	0.2143	C: 78.57%, G: 21.43%
+rs61819087	C	G	African	AFR	661	0.0431	C: 95.69%, G: 4.31%
+rs61819087	C	G	Yoruba in Ibadan, Nigeria	YRI	108	0.0139	C: 98.61%, G: 1.39%
+rs61819087	C	G	Luhya in Webuye, Kenya	LWK	99	0.0354	C: 96.46%, G: 3.54%
+rs61819087	C	G	Gambian in Western Divisions in the Gambia	GWD	113	0.0265	C: 97.35%, G: 2.65%
+rs61819087	C	G	Mende in Sierra Leone	MSL	85	0.0412	C: 95.88%, G: 4.12%
+rs61819087	C	G	Esan in Nigeria	ESN	99	0.0303	C: 96.97%, G: 3.03%
+rs61819087	C	G	Americans of African Ancestry in SW USA	ASW	61	0.0738	C: 92.62%, G: 7.38%
+rs61819087	C	G	African Caribbeans in Barbados	ACB	96	0.099	C: 90.1%, G: 9.9%
+rs61819087	C	G	Ad Mixed American	AMR	347	0.2277	C: 77.23%, G: 22.77%
+rs61819087	C	G	Mexican Ancestry from Los Angeles USA	MXL	64	0.2422	C: 75.78%, G: 24.22%
+rs61819087	C	G	Puerto Ricans from Puerto Rico	PUR	104	0.2356	C: 76.44%, G: 23.56%
+rs61819087	C	G	Colombians from Medellin, Colombia	CLM	94	0.3138	C: 68.62%, G: 31.38%
+rs61819087	C	G	Peruvians from Lima, Peru	PEL	85	0.1118	C: 88.82%, G: 11.18%
+rs61819087	C	G	East Asian	EAS	504	0.1637	C: 83.63%, G: 16.37%
+rs61819087	C	G	Han Chinese in Beijing, China	CHB	103	0.2039	C: 79.61%, G: 20.39%
+rs61819087	C	G	Japanese in Tokyo, Japan	JPT	104	0.1587	C: 84.13%, G: 15.87%
+rs61819087	C	G	Southern Han Chinese	CHS	105	0.1476	C: 85.24%, G: 14.76%
+rs61819087	C	G	Chinese Dai in Xishuangbanna, China	CDX	93	0.1613	C: 83.87%, G: 16.13%
+rs61819087	C	G	Kinh in Ho Chi Minh City, Vietnam	KHV	99	0.1465	C: 85.35%, G: 14.65%
+rs61819087	C	G	European	EUR	503	0.4105	C: 58.95%, G: 41.05%
+rs61819087	C	G	Utah Residents (CEPH) with Northern and Western European Ancestry	CEU	99	0.399	C: 60.1%, G: 39.9%
+rs61819087	C	G	Toscani in Italia	TSI	107	0.4299	C: 57.01%, G: 42.99%
+rs61819087	C	G	Finnish in Finland	FIN	99	0.3535	C: 64.65%, G: 35.35%
+rs61819087	C	G	British in England and Scotland	GBR	91	0.4835	C: 51.65%, G: 48.35%
+rs61819087	C	G	Iberian Population in Spain	IBS	107	0.3925	C: 60.75%, G: 39.25%
+rs61819087	C	G	South Asian	SAS	489	0.2863	C: 71.37%, G: 28.63%
+rs61819087	C	G	Gujarati Indian from Houston, Texas	GIH	103	0.2913	C: 70.87%, G: 29.13%
+rs61819087	C	G	Punjabi from Lahore, Pakistan	PJL	96	0.3073	C: 69.27%, G: 30.73%
+rs61819087	C	G	Bengali from Bangladesh	BEB	86	0.2674	C: 73.26%, G: 26.74%
+rs61819087	C	G	Sri Lankan Tamil from the UK	STU	102	0.3039	C: 69.61%, G: 30.39%
+rs61819087	C	G	Indian Telugu from the UK	ITU	102	0.2598	C: 74.02%, G: 25.98%

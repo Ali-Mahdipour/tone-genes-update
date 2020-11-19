@@ -1,0 +1,2 @@
+Gene	SNP	Allele_major	Allele_minor	Population	N_individuals	MAF	Genotypes
+ASPM	rs41310927	T	C	WONG2020	424	0.162	TT=299; TC=113; CC=12

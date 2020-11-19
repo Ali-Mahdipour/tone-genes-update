@@ -1,0 +1,335 @@
+Source	Code	Description	Group_area	Group_area_code	ALFRED_sample_UID	Metapopulation_ID	Metapopulation_name	URL	Comments	Language_ISOs	Language_comments
+1000Genomes	ALL	All Populations				WRLD	World			?	
+1000Genomes	AFR	﻿African				AFR	African			?	
+1000Genomes	AMR	Ad Mixed American				AMER_ADMIX	Admixed_American			?	
+1000Genomes	EUR	European				EURO	European			?	
+1000Genomes	EAS	East Asian				ASIA_E	East_Asian			?	
+1000Genomes	SAS	South Asian				ASIA_S	South_Asian			?	
+1000Genomes	CHB	Han Chinese in Beijing, China	East Asian	EAS	SA004058R			https://www.internationalgenome.org/faq/which-populations-are-part-your-study/			
+1000Genomes	JPT	Japanese in Tokyo, Japan	East Asian	EAS	SA004060K						
+1000Genomes	CHS	Southern Han Chinese	East Asian	EAS	SA004059S						
+1000Genomes	CDX	Chinese Dai in Xishuangbanna, China	East Asian	EAS	SA004238R						
+1000Genomes	KHV	Kinh in Ho Chi Minh City, Vietnam	East Asian	EAS	SA004249T						
+1000Genomes	CEU	Utah Residents (CEPH) with Northern and Western European Ancestry	European	EUR	SA004250L						
+1000Genomes	TSI	Toscani in Italia	European	EUR	SA004057Q						
+1000Genomes	FIN	Finnish in Finland	European	EUR	SA004049R						
+1000Genomes	GBR	British in England and Scotland	European	EUR	SA004050J						
+1000Genomes	IBS	Iberian Population in Spain	European	EUR	SA004108N						
+1000Genomes	YRI	Yoruba in Ibadan, Nigeria	African	AFR	SA004048Q						
+1000Genomes	LWK	Luhya in Webuye, Kenya	African	AFR	SA004046O						
+1000Genomes	GWD	Gambian in Western Divisions in the Gambia	African	AFR	SA003646T						
+1000Genomes	MSL	Mende in Sierra Leone	African	AFR	SA004244O						
+1000Genomes	ESN	Esan in Nigeria	African	AFR	SA004248S						
+1000Genomes	ASW	Americans of African Ancestry in SW USA	African	AFR	SA004047P						
+1000Genomes	ACB	African Caribbeans in Barbados	African	AFR	SA004242M						
+1000Genomes	MXL	Mexican Ancestry from Los Angeles USA	Ad Mixed American	AMR	SA004110G						
+1000Genomes	PUR	Puerto Ricans from Puerto Rico	Ad Mixed American	AMR	SA004111H						
+1000Genomes	CLM	Colombians from Medellin, Colombia	Ad Mixed American	AMR	SA004109O						
+1000Genomes	PEL	Peruvians from Lima, Peru	Ad Mixed American	AMR	SA004245P						
+1000Genomes	GIH	Gujarati Indian from Houston, Texas	South Asian	SAS	SA004246Q						
+1000Genomes	PJL	Punjabi from Lahore, Pakistan	South Asian	SAS	SA004240K						
+1000Genomes	BEB	Bengali from Bangladesh	South Asian	SAS	SA004239S						
+1000Genomes	STU	Sri Lankan Tamil from the UK	South Asian	SAS	SA004241L						
+1000Genomes	ITU	Indian Telugu from the UK	South Asian	SAS	SA004247R						
+gnomAD	afr	African/African-American				AFR	African	https://gnomad.broadinstitute.org/ https://macarthurlab.org/2018/10/17/gnomad-v2-1/ 	V2.1.1; controls only	?	
+gnomAD	amr	Latino/Admixed American				AMER_ADMIX	Admixed_American			?	
+gnomAD	asj	Ashkenazi Jewish				PO000038L	Jews_Ashkenazi			yid, heb	
+gnomAD	kor	Koreans	East Asian	eas		PO000030D	Koreans			kor	
+gnomAD	jpn	Japanese	East Asian	eas		PO000010B	Japanese			jpn	
+gnomAD	oea	Other East Asian	East Asian	eas		ASIA_E	East_Asian			?	Sino-Tibetan, Thai-Kadai ?
+gnomAD	fin	Finnish				PO000018J	Finns			fin	
+gnomAD	bgr	Bulgarian	Non-Finnish European	nfe		PO000397T	Bulgarian			bul	
+gnomAD	est	Estonian	Non-Finnish European	nfe		PO000742N	Estonian			ekk, est	
+gnomAD	nwe	North-Western European	Non-Finnish European	nfe		EURO_NW	NW_European			?	Germanic, Celtic ?
+gnomAD	seu	Southern European	Non-Finnish European	nfe		EURO_S	S_European			?	Italic, Slavic, Greek, Albanian ?
+gnomAD	swe	Swedish	Non-Finnish European	nfe		PO000413I	Swedes			swe	
+gnomAD	onf	Other non-Finnish European	Non-Finnish European	nfe		EURO	European			?	Indo-European, Fino-Urgic, Basque ?
+gnomAD	sas	South Asian				ASIA_S	South_Asian			?	Indo-Aryan, Dravidian ?
+gnomAD	oth	Other (population not assigned)				OTHER	Other			?	
+LDLink	ALL	All Populations			see 1000Genomes	WRLD	World	https://ldlink.nci.nih.gov/?tab=home 			
+LDLink	AFR	African			see 1000Genomes	AFR	African				
+LDLink	YRI	Yoruba in Ibadan, Nigera			see 1000Genomes						
+LDLink	LWK	Luhya in Webuye, Kenya			see 1000Genomes						
+LDLink	GWD	Gambian in Western Gambia			see 1000Genomes						
+LDLink	MSL	Mende in Sierra Leone			see 1000Genomes						
+LDLink	ESN	Esan in Nigera			see 1000Genomes						
+LDLink	ASW	Americans of African Ancestry in SW USA			see 1000Genomes						
+LDLink	ACB	African Carribbeans in Barbados			see 1000Genomes						
+LDLink	AMR	Ad Mixed American			see 1000Genomes	AMER_ADMIX	Admixed_American				
+LDLink	MXL	Mexican Ancestry from Los Angeles, USA			see 1000Genomes						
+LDLink	PUR	Puerto Ricans from Puerto Rico			see 1000Genomes						
+LDLink	CLM	Colombians from Medellin, Colombia			see 1000Genomes						
+LDLink	PEL	Peruvians from Lima, Peru			see 1000Genomes						
+LDLink	EAS	East Asian			see 1000Genomes	ASIA_E	East_Asian				
+LDLink	CHB	Han Chinese in Bejing, China			see 1000Genomes						
+LDLink	JPT	Japanese in Tokyo, Japan			see 1000Genomes						
+LDLink	CHS	Southern Han Chinese			see 1000Genomes						
+LDLink	CDX	Chinese Dai in Xishuangbanna, China			see 1000Genomes						
+LDLink	KHV	Kinh in Ho Chi Minh City, Vietnam			see 1000Genomes						
+LDLink	EUR	European			see 1000Genomes	EURO	European				
+LDLink	CEU	Utah Residents from North and West Europe			see 1000Genomes						
+LDLink	TSI	Toscani in Italia			see 1000Genomes						
+LDLink	FIN	Finnish in Finland			see 1000Genomes						
+LDLink	GBR	British in England and Scotland			see 1000Genomes						
+LDLink	IBS	Iberian population in Spain			see 1000Genomes						
+LDLink	SAS	South Asian			see 1000Genomes	ASIA_S	South_Asian				
+LDLink	GIH	Gujarati Indian from Houston, Texas			see 1000Genomes						
+LDLink	PJL	Punjabi from Lahore, Pakistan			see 1000Genomes						
+LDLink	BEB	Bengali from Bangladesh			see 1000Genomes						
+LDLink	STU	Sri Lankan Tamil from the UK			see 1000Genomes						
+LDLink	ITU	Indian Telugu from the UK 			see 1000Genomes						
+The PAGE Study		Global				WRLD	World	https://www.ncbi.nlm.nih.gov/biosample/SAMN10868975	Global population for the PAGE study	?	
+The PAGE Study		AfricanAmerican				PO000098R	African_Americans	https://www.ncbi.nlm.nih.gov/biosample/SAMN10868721	This population includes 16258 participants of African American descent.	eng	various Western African Bantu languages
+The PAGE Study		Mexican				PO000504J	Mexicans	https://www.ncbi.nlm.nih.gov/biosample/SAMN10868735	This population includes 5405 participants of Mexican descent	spa	
+The PAGE Study		Asian				ASIA	Asian	https://www.ncbi.nlm.nih.gov/biosample/SAMN10868722	This population includes 4159 participants of Asian descent.	?	
+The PAGE Study		PuertoRican				PO000638R	Puerto_Rican	https://www.ncbi.nlm.nih.gov/biosample/SAMN10868968	This population includes 3959 participants of Puerto Rican descent.	spa	
+The PAGE Study		NativeHawaiian				HAWAII	Hawaiian	https://www.ncbi.nlm.nih.gov/biosample/SAMN10868777	This population includes 2267 participants of Native Hawaiian descent.	haw	
+The PAGE Study		Cuban				PO000596U	Cuban	https://www.ncbi.nlm.nih.gov/biosample/SAMN10868733	This population includes 2115 participants of Cuban descent.	spa	
+The PAGE Study		Dominican				DOMINICAN	Dominican	https://www.ncbi.nlm.nih.gov/biosample/SAMN10868734	This population includes 1914 participants of Dominican descent.	spa	
+The PAGE Study		CentralAmerican				AMER_C	Central_American	https://www.ncbi.nlm.nih.gov/biosample/SAMN10868729	This population includes 1225 participants of Central American descent.	spa	
+The PAGE Study		SouthAmerican				AMER_S	South_American	https://www.ncbi.nlm.nih.gov/biosample/SAMN10868969	This population includes 991 participants of South American descent.	spa	
+The PAGE Study		NativeAmerican				AMER_NATIVE	Native_American	https://www.ncbi.nlm.nih.gov/biosample/SAMN10868739	This population includes 630 participants of Native American descent.	?	
+The PAGE Study		SouthAsian				ASIA_S	South_Asian	https://www.ncbi.nlm.nih.gov/biosample/SAMN10868970	This population includes 428 participants of South Asian descent.	?	Draividian, Indo-Aryan ?
+Genetic variation in the Estonian population		Estonian				PO000742N	Estonian	https://www.ncbi.nlm.nih.gov/bioproject/PRJNA489787	Genetic variation in the Estonian population	est, ekk, vro	
+The Avon Longitudinal Study of Parents and Children	AVON	PARENT AND CHILD COHORT, UK				PO000412H	British	https://www.ncbi.nlm.nih.gov/bioproject/PRJEB7217	samples from the Department of Twin Research and Genetic Epidemiology (TwinsUK) and Avon Longitudinal Study of Parents and Children (ALSPAC) cohorts	eng	Possibly others
+UK 10K study - Twins	UK10K	TWIN COHORT, UK				PO000412H	British	https://www.uk10k.org/studies/		eng	Possibly others
+Northern Sweden	ACPOP	Swedish with Saami admixture				PO000413I	Swedes	https://www.biorxiv.org/content/10.1101/2020.02.18.933622v1.full	Västerbotten County, a sparsely populated region in northern Sweden previously shown to be genetically different from southern Sweden; Historically, the inland region has predominantly been inhabited by the indigenous Sami population, but settlement programs were initiated by the state during the mid- to late-17th century with the main part of the in-migration taking place from mid-18th to mid-19th century 	swe, sju	
+A Vietnamese Genetic Variation Database		A Vietnamese Genetic Variation Database				PO000110C	Vietnamese			vie	
+ALFRED	SA004058R	Han Chinese in Beijing, China (CHB)				PO000009J	Han	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000009J		cmn	
+ALFRED	SA004060K	Japanese in Tokyo, Japan (JPT)				PO000010B	Japanese	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000010B		jpn	
+ALFRED	SA004059S	Han Chinese South, China (CHS)				PO000009J	Han	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000009J		yue	
+ALFRED	SA004238R	Chinese Dai in Xishuangbanna,China (CDX)				PO000464O	Dai	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000464O		khb, tdd, thi, cuu, zhd	
+ALFRED	SA004249T	Kinh in Ho Chi Minh City, Vietnam (KHV)				PO000110C	Vietnamese	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000110C		vie	
+ALFRED	SA004250L	Utah residents with Northern and Western European ancestry (CEU) 				PO000329O	European_Americans	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000329O		eng	
+ALFRED	SA004057Q	Toscani in Italia (TSI)				PO000137L	Italians	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000137L		ita	
+ALFRED	SA004049R	Finnish in Finland (FIN)				PO000018J	Finns	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000018J		fin	
+ALFRED	SA004050J	British from England and Scotland (GBR)				PO000412H	British	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000412H		eng	
+ALFRED	SA004108N	Iberian Populations in Spain (IBS)				PO000626O	Iberian	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000626O		spa	
+ALFRED	SA004048Q	Yoruba in Ibadan, Nigeria (YRI)				PO000036J	Yoruba	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000036J		yor	
+ALFRED	SA004046O	Luhya in Webuye, Kenya (LWK)				PO000867V	Luhya	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000867V		luy, bxk, ida, lkb, lko, lks, lri, lrm, lsm, lto, lts, lwg, nle, nyd, rag	
+ALFRED	SA003646T	Gambians				PO000789Y	Gambian	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000789Y	Not the actual match (seems to be missing from ALFRED) but close enough	man, emk, mku, mlq, mnk, msc, mwk	
+ALFRED	SA004244O	Mende in Sierra Leone (MSL)				PO000640K	Mende	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000640K		men	
+ALFRED	SA004248S	Esan in Nigera (ESN)				PO000892T	Esan	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000892T		ish	
+ALFRED	SA004047P	African Ancestry in SW USA (ASW)				PO000098R	African_Americans	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000098R		eng	various Western African Bantu languages
+ALFRED	SA004242M	African Caribbean in Barbados (ACB)				PO000336M	Afro_Caribbeans	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000336M		bjs	English-based creole
+ALFRED	SA004110G	Mexican Ancestry in Los Angeles, CA (MXL)				PO000504J	Mexicans	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000504J		spa	lots of indigineous languages, including Nahuatl, Mayan, Oto-Manguean and Mixe–Zoquean
+ALFRED	SA004111H	Puerto Rican in Puerto Rico (PUR)				PO000638R	Puerto_Rican	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000638R		eng, spa	influences from Taíno and various Western African Bantu languages
+ALFRED	SA004109O	Colombian in Medellín, Colombia (CLM)				PO000503I	Colombian	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000503I		spa	
+ALFRED	SA004245P	Peruvian in Lima, Peru (PEL)				PO000680O	Peruvian	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000680O		spa, que, aym	
+ALFRED	SA004246Q	Gujarati Indians in Houston, Texas, USA (GIH)				PO000785U	Gujarati	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000785U		guj	
+ALFRED	SA004240K	Punjabi in Lahore, Pakistan (PJL)				PO000675S	Punjabi	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000675S		pan, pnb	
+ALFRED	SA004239S	Bengali in Bangladesh (BEB)				PO000839U	Bengali	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000839U		ben	
+ALFRED	SA004241L	Sri Lankan Tamil in the UK (STU)				PO000354M	Tamil	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000354M		tam	
+ALFRED	SA004247R	Indian Telugu in the UK (ITU) 				PO000891S	Telugu	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000891S		tel	
+ALFRED	SA001818S	Bantu (southern Africa), HGDP-CEPH				PO000041F	Bantu	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271818%27)	HGDP-CEPH individuals 993, 994, 1028, 1030, 1031, 1033, 1034, and 1035	nso, sot, her, tsn, kua, ndo, kwm, lnb, nne, zul	
+ALFRED	SA001819T	Bantu (Kenya), HGDP-CEPH				PO000041F	Bantu	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271819%27)		kik, kam, guz, mer, luy	
+ALFRED	SA001469U	San, HGDP-CEPH				PO000073K	San	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271469%27)		naq, hgm, vaj, knw, ktz, nmn	
+ALFRED	SA004242M	African Caribbean in Barbados (ACB)				PO000336M	Afro_Caribbeans	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274242%27)		bjs, eng	
+ALFRED	SA002256P	Biaka Pygmies, HGDP-CEPH				PO000005F	Biaka	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%272256%27)		axk	
+ALFRED	SA004248S	Esan in Nigera (ESN) 				PO000892T	Esan	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274248%27)		ish	
+ALFRED	SA004363Q	Hausa				PO000097Q	Hausa	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274363%27)		hau	
+ALFRED	SA004362P	Ibo				PO000096P	Ibo	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274362%27)		ibo	
+ALFRED	SA004243N	Gambian in Western Division , Mandinka (GWD)				PO000284O	Malinke	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274243%27)		mnk	
+ALFRED	SA001466R	Mbuti Pygmies, HGDP-CEPH				PO000006G	Mbuti	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271466%27)	Subsample of SA004361O	les, efe, asv	
+ALFRED	SA004361O	Mbuti Pygmies				PO000006G	Mbuti	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274361%27)	Supersample of SA001466R	les, efe, asv	
+ALFRED	SA001468T	Yoruba, HGDP-CEPH				PO000036J	Yoruba	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271468%27)		yor	
+ALFRED	SA004048Q	Yoruba in Ibadan, Nigeria (YRI)				PO000036J	Yoruba	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274048%27)		yor	
+ALFRED	SA004365S	Chagga				PO000324J	Chagga	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274365%27)		hka, old, vun, rof, jmc, rwk	
+ALFRED	SA004368V	Ethiopian Jews				PO000015G	Jews_Ethiopian	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274368%27)		amh, tir, gez, awn, byn, xan, ahg	
+ALFRED	SA004046O	Luhya in Webuye, Kenya (LWK)				PO000867V	Luhya	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274046%27)		luy, myx, bxk, lts	
+ALFRED	SA004364R	Masai				PO000456P	Masai	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274364%27)		mas	
+ALFRED	SA004366T	Sandawe				PO000661N	Sandawe	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274366%27)		sad	
+ALFRED	SA004367U	Zaramo				PO000807P	Zaramo	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274367%27)		zaj, swa, swh	
+ALFRED	SA004369W	African Americans				PO000098R	African_Americans	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274369%27)		eng	various Western African Bantu languages
+ALFRED	SA004047P	African Ancestry in SW USA (ASW)				PO000098R	African_Americans	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274047%27)		eng	various Western African Bantu languages
+ALFRED	SA001467S	Mandenka, HGDP-CEPH				PO000543M	Mandenka	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271467%27)	Claimed to be from “Central African Republic”, but there’s no such ethnic group there and the geographic coordinates given by the HGDP-CEPTH (12N 12W) fall within Guinea and close to Senegal, within the attested area of the Mandinka/Malinke ethnic group. 	man, emk, mku, mlq, mnk, msc, mwk	
+ALFRED	SA004244O	Mende in Sierra Leone (MSL)				PO000640K	Mende	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274244%27)		men	
+ALFRED	SA001471N	Mozabite, HGDP-CEPH				PO000570M	Mozabite	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271471%27)		mzb	
+ALFRED	SA002254N	Bedouin, HGDP-CEPH				PO000571N	Bedouin	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%272254%27)		ara, arb, ajp	
+ALFRED	SA002257Q	Druze, HGDP-CEPH				PO000008I	Druze	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%272257%27)		ara, arb, ajp	
+ALFRED	SA004370O	Yemenite Jews				PO000085N	Jews_Yemenite	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274370%27)		jye, heb	
+ALFRED	SA001474Q	Palestinian, HGDP-CEPH				PO000572O	Palestinian	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271474%27)		ara, arb, ajp	
+ALFRED	SA004371P	Samaritans				PO000095O	Samaritans	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274371%27)		sam, heb, smp, ara, arb, ajp	
+ALFRED	SA004584V	Abhaz				PO000844Q	Abkhaz	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274584%27)		abk	
+ALFRED	SA001509P	Adygei, HGDP-CEPH				PO000017I	Adygei	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271509%27)		ady	
+ALFRED	SA004585W	Adygei				PO000017I	Adygei	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274585%27)		ady	
+ALFRED	SA004373R	Adygei				PO000017I	Adygei			ady	
+ALFRED	SA004615Q	Bashkir				PO000564P	Bashkir	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274615%27)		bak	
+ALFRED	SA001504K	Basques, HGDP-CEPH 				PO000042G	Basque	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271504%27)		eus	
+ALFRED	SA004586X	Belarus				PO000437O	Belarusian	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274586%27)		bel	
+ALFRED	SA004589A	Chechen				PO000922N	Chechen	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274589%27)		che	
+ALFRED	SA004588Z	Cherkes				PO000345M	Cherkess	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274588%27)		kbd	
+ALFRED	SA004374S	Chuvash				PO000327M	Chuvash	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274374%27)		chv	
+ALFRED	SA004600K	Chuvash				PO000327M	Chuvash	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274600%27)		chv	
+ALFRED	SA004392S	Danes				PO000007H	Danes	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274392%27)		dan	
+ALFRED	SA003028N	Estonian				PO000742N	Estonian	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%273028%27)		est, ekk, vro	
+ALFRED	SA004377V	Finns				PO000018J	Finns	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274377%27)		fin	
+ALFRED	SA001503J	French, HGDP-CEPH				PO000111D	French	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271503%27)		fra	
+ALFRED	SA004375T	Hungarians				PO000453M	Hungarian	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274375%27)		hun	
+ALFRED	SA004378W	Irish				PO000057M	Irish	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274378%27)		gle, eng	
+ALFRED	SA001507N	Tuscan, HGDP-CEPH				PO000137L	Italians	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271507%27)		ita	
+ALFRED	SA002255O	Italian - (Bergamo, HGDP-CEPH)				PO000137L	Italians	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%272255%27)		ita	
+ALFRED	SA004372Q	Ashkenazi				PO000038L	Jews_Ashkenazi	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274372%27)		yid, heb	
+ALFRED	SA004590S	Kabardin				PO000406K	Kabardinian	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274590%27)		kbd	
+ALFRED	SA004591T	Karachay				PO000642M	Karachay	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274591%27)		krc	
+ALFRED	SA004617S	Karelian				PO000923O	Karelians	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274617%27)		krl	
+ALFRED	SA004623P	Megrel				PO000925Q	Megrelians	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274623%27)		xmf, kat	
+ALFRED	SA004598A	Moldovan				PO000674R	Moldovan	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274598%27)		mol, ron, rum	
+ALFRED	SA004599B	Mordva				PO000117J	Mordvin	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274599%27)		myv, mdf	
+ALFRED	SA001508O	Orcadians, HGDP-CEPH				PO000586T	Orcadian	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271508%27)		nrn, sco, eng	
+ALFRED	SA001510H	Russians, HGDP-CEPH				PO000019K	Russians	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271510%27)		rus	
+ALFRED	SA004376U	Russian Archangel'sk				PO000019K	Russians	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274376%27)		rus	
+ALFRED	SA004601L	Russian Novosibirsk				PO000019K	Russians	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274601%27)		rus	
+ALFRED	SA004603N	Russian Starover 				PO000019K	Russians	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274603%27)		rus, chu	
+ALFRED	SA001505L	Sardinian, HGDP-CEPH				PO000411G	Sardinian	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271505%27)		srd, ita	
+ALFRED	SA004604O	Tatar				PO000565Q	Tatar	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274604%27)		tat	
+ALFRED	SA004607R	Udmurt				PO000566R	Udmurt	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274607%27)		udm	
+ALFRED	SA004608S	Ukrainian				PO000624M	Ukrainian	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274608%27)		ukr	
+ALFRED	SA001482P	Burusho, HGDP-CEPH				PO000450J	Burusho	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271482%27)		bsk	
+ALFRED	SA001481O	Kalash, HGDP-CEPH				PO000449R	Kalash	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271481%27)		kls	
+ALFRED	SA002262M	Pathan, HGDP-CEPH				PO000355N	Pashtun	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%272262%27)		pus, pbt, pbu, pst	
+ALFRED	SA004593V	Kazakh				PO000089R	Kazakh	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274593%27)		kaz	
+ALFRED	SA004380P	Khanty				PO000325K	Khanty	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274380%27)		kca	
+ALFRED	SA004595X	Khanty				PO000325K	Khanty	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274595%27)		kca	
+ALFRED	SA004379X	KomiZyriane				PO000326L	Komi_Zyrian	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274379%27)		kom, kpv	
+ALFRED	SA004596Y	Komi				PO000326L	Komi_Zyrian	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274596%27)		kom, kpv	
+ALFRED	SA004597Z	Kyrgyz				PO000478T	Kyrgyz	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274597%27)		kir	
+ALFRED	SA001489W	Mongola, HGDP-CEPH				PO000502H	Mongolian	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271489%27)		mon, khk	
+ALFRED	SA004609T	Uzbek				PO000479U	Uzbek	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274609%27)		uzb, uzn, uzs	
+ALFRED	SA001476S	Balochi, HGDP-CEPH				PO000574Q	Balochi	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271476%27)		bal, bcc, bgn, bgp	
+ALFRED	SA001478U	Makrani, HGDP-CEPH				PO000574Q	Balochi	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271478%27)		bal, bcc, bgn, bgp	
+ALFRED	SA001475R	Brahui, HGDP-CEPH				PO000573P	Brahui	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271475%27)		brh	
+ALFRED	SA001477T	Hazara, HGDP-CEPH				PO000575R	Hazara	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271477%27)		haz	
+ALFRED	SA001479V	Sindhi, HGDP-CEPH				PO000576S	Sindhi	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271479%27)		snd	
+ALFRED	SA004386V	Ami				PO000002C	Ami	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274386%27)		ami	
+ALFRED	SA004387W	Atayal				PO000021D	Atayal	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274387%27)		tay	
+ALFRED	SA001493R	Dai, HGDP-CEPH				PO000464O	Dai	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271493%27)		khb, tdd, thi, cuu, zhd	
+ALFRED	SA001488V	Daur, HGDP-CEPH				PO000578U	Daur	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271488%27)		dta	
+ALFRED	SA001483Q	Han, HGDP-CEPH				PO000009J	Han	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271483%27)		zho, cmn, yue	
+ALFRED	SA004592U	Chinese				PO000009J	Han	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274592%27)		zho, cmn, yue	
+ALFRED	SA001490O	Hezhen, HGDP-CEPH				PO000579V	Hezhe	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271490%27)		gld	
+ALFRED	SA002260K	Japanese, HGDP-CEPH				PO000010B	Japanese	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%272260%27)		jpn	
+ALFRED	SA003027M	Koreans				PO000030D	Koreans	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%273027%27)		kor	
+ALFRED	SA001494S	Lahu, HGDP-CEPH				PO000581O	Lahu	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271494%27)		lhu, lhi	
+ALFRED	SA001486T	Miaozu, HGDP-CEPH				PO000487T	Miao	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271486%27)		hmn, hnj, hmm	
+ALFRED	SA001496U	Naxi, HGDP-CEPH				PO000583Q	Naxi	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271496%27)		nxq	
+ALFRED	SA001487U	Oroqen, HGDP-CEPH				PO000541K	Oroqen	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271487%27)		orh	
+ALFRED	SA001495T	She, HGDP-CEPH				PO000582P	She	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271495%27)		shx	Not clear if speakers of She or Shehua: assuming She
+ALFRED	SA001497V	Tu, HGDP-CEPH				PO000584R	Tu	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271497%27)		mjg	
+ALFRED	SA001484R	Tujia, HGDP-CEPH				PO000486S	Tujia	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271484%27)		tjs, tji	
+ALFRED	SA001492Q	Uygur, HGDP-CEPH				PO000399V	Uyghur	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271492%27)		uig	
+ALFRED	SA001491P	Xibo, HGDP-CEPH				PO000580N	Xibe	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271491%27)		sjo	
+ALFRED	SA001485S	Yizu, HGDP-CEPH				PO000577T	Yi	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271485%27)		iii	
+ALFRED	SA001500G	Cambodian, HGDP-CEPH				PO000022E	Cambodians_Khmer	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271500%27)		khm	
+ALFRED	SA004384T	Cambodians				PO000022E	Cambodians_Khmer	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274384%27)		khm	
+ALFRED	SA004385U	Hakka				PO000003D	Hakka	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274385%27)		hak	
+ALFRED	SA004383S	Laotians				PO000671O	Lao_Loum	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274383%27)		lao	
+ALFRED	SA001501H	Papuan, HGDP-CEPH				PO000084M	PNG	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271501%27)		aau, amp, abt, kmn, bjh, bzf, can, wos, ian, iwm, kct, kbx, geb, kmo, mle, nux, msy, mtf, nnm, rao, dju, wax, wog, yss, yee	Coordinates seem to suggest the (Eastern) Sepik region, but there are lots of languages there; I seleted all languages in the Sepik and Lower Sepik-Ramu in WALS
+ALFRED	SA002261L	Melanesian - (NAN Melanesian, HGDP-CEPH)				PO000012D	Melanesian_Nasioi	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%272261%27)		nas	
+ALFRED	SA004382R	Micronesians				PO000063J	Micronesians	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274382%27)		adz, aji, nrz, aie, omb, aty, akr, alu, laz, apr, aia, upv, aul, nfl, bbn, wiv, bcm, tkw, cal, cam, mrn, chk, dhv, erk, erg, fij, wyy, fut, fud, pwg, nlg, gvs, hla, haw, hoa, iai, viv, mxe, jae, kxa, kpg, leu, pss, kcl, sbc, kij, gil, kkk, kos, kwd, tnk, lbu, lmu, llu, tnl, lww, lgu, los, crc, loj, ojv, khl, mme, mbq, mgl, mva, mna, mri, mqm, mrq, mah, mjk, mek, mvn, mkj, mte, meu, msu, emi, myw, mlv, fij, nak, nal, nmb, tvl, ntu, nau, nsn, nee, nen, llp, num, niu, nkr, yly, pma, duf, ptp, gfk, piv, pif, fwa, pon, psw, puw, lml, rap, mnv, rro, rtm, rug, apb, sku, sbe, smo, sjr, snc, xsi, baa, sob, sov, tvk, tgo, sgz, tah, sps, tbc, mla, hrc, nwi, tbo, tio, tgc, cir, tti, tkl, ksd, ton, mlu, pmt, tmq, lcm, tvl, uli, uur, vnm, wls, wed, woe, ane	Probably languages from the Micronesian branch of Austronesian; I selected all languages from the Oceanic genus of Austronesian in WALS
+ALFRED	SA004587Y	Buryat				PO000393P	Buryat	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274587%27)		bxr, bua, bxu, bxm	
+ALFRED	SA004594W	Ket				PO000823N	Ket	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274594%27)		ket	
+ALFRED	SA004605P	Tuva				PO000387S	Tuva	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274605%27)		tyv	
+ALFRED	SA001498W	Yakut, HGDP-CEPH				PO000011C	Yakut	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271498%27)		sah	
+ALFRED	SA004381Q	Yakut				PO000011C	Yakut	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274381%27)		sah	
+ALFRED	SA004610L	Yakut				PO000011C	Yakut	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274610%27)		sah	
+ALFRED	SA001511I	Pima, HGDP-CEPH				PO000034H	Pima	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271511%27)		ood	
+ALFRED	SA001512J	Maya, HGDP-CEPH				PO000013E	Maya	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271512%27)		yua	
+ALFRED	SA004388X	Maya				PO000013E	Maya	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274388%27)		yua	
+ALFRED	SA001513K	Amerindian, HGDP-CEPH				PO000264M	Amerindians	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271513%27)		pio	Probably several Arawakan, Chocoan and other families
+ALFRED	SA001514L	Karitiana, HGDP-CEPH				PO000028K	Karitiana	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271514%27)		ktn	
+ALFRED	SA004391R	Karitiana				PO000028K	Karitiana	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274391%27)		ktn	
+ALFRED	SA000069P	Peruvian Quechuan				PO000069P	Quechua	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%2769%27)		qwe, quh, qwc	Various Quetchuan languages
+ALFRED	SA001515M	Surui, HGDP-CEPH				PO000014F	Surui	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%271515%27)		sru	
+ALFRED	SA004390Q	Rondonian Surui				PO000014F	Surui	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274390%27)		sru	
+ALFRED	SA004389Y	Ticuna				PO000027J	Ticuna	https://alfred.med.yale.edu/alfred/sampleDescrip.asp?sampleID=%274389%27)		tca	
+ALFRED	SA001681Q	Burunge				PO000637Q	Burunge	https://alfred.med.yale.edu/alfred/recordinfo.asp?UNID=PO000637Q		bds	
+Wong et al. 2020	WONG2020	Cantonese speakers				PO000009J	Han			yue	
+Mekel-Bobrov et al. 2005	SE & SW Bantu				SA001818S						
+Mekel-Bobrov et al. 2005	San				SA001469U						
+Mekel-Bobrov et al. 2005	Mbuti Pygmy				SA001466R						
+Mekel-Bobrov et al. 2005	Masai				SA004364R						
+Mekel-Bobrov et al. 2005	Sandawe				SA004366T						
+Mekel-Bobrov et al. 2005	Burunge				SA001681Q						
+Mekel-Bobrov et al. 2005	Turu					TURU	Turu		Turu (Nyaturu, Rimi)	rim	
+Mekel-Bobrov et al. 2005	NE Bantu				SA001819T						
+Mekel-Bobrov et al. 2005	Biaka Pygmy				SA002256P						
+Mekel-Bobrov et al. 2005	Zime					ZIME	Zime		Zime	lme, nnn, hed	
+Mekel-Bobrov et al. 2005	Bakola Pygmy					BAKOLA	Bakola		Gyele (Bagyele / Bajele), Kola (Bakola) or Koya (Bakoya)	gyi, nmg	
+Mekel-Bobrov et al. 2005	Bamoun					BAMOUN	Bamoun		Bamum (Shü Pamom), also spelled Bamun or Bamoun	bax	
+Mekel-Bobrov et al. 2005	Yoruba				SA001468T						
+Mekel-Bobrov et al. 2005	Mandenka				SA001467S						
+Mekel-Bobrov et al. 2005	Mozabite				SA001471N						
+Mekel-Bobrov et al. 2005	Druze				SA002257Q						
+Mekel-Bobrov et al. 2005	Palestinian				SA001474Q						
+Mekel-Bobrov et al. 2005	Bedouin				SA002254N						
+Mekel-Bobrov et al. 2005	Hazara				SA001477T						
+Mekel-Bobrov et al. 2005	Balochi				SA001476S						
+Mekel-Bobrov et al. 2005	Pathan				SA002262M						
+Mekel-Bobrov et al. 2005	Burusho				SA001482P						
+Mekel-Bobrov et al. 2005	Makrani				SA001478U						
+Mekel-Bobrov et al. 2005	Brahui				SA001475R						
+Mekel-Bobrov et al. 2005	Kalash				SA001481O						
+Mekel-Bobrov et al. 2005	Sindhi				SA001479V						
+Mekel-Bobrov et al. 2005	Hezhen				SA001490O						
+Mekel-Bobrov et al. 2005	Mongola				SA001489W						
+Mekel-Bobrov et al. 2005	Daur				SA001488V						
+Mekel-Bobrov et al. 2005	Orogen				SA001487U				Oroqen		
+Mekel-Bobrov et al. 2005	Miaozu				SA001486T						
+Mekel-Bobrov et al. 2005	Yizu				SA001485S						
+Mekel-Bobrov et al. 2005	Tujia				SA001484R						
+Mekel-Bobrov et al. 2005	Han				SA001483Q						
+Mekel-Bobrov et al. 2005	Xibo				SA001491P						
+Mekel-Bobrov et al. 2005	Uygur				SA001492Q						
+Mekel-Bobrov et al. 2005	Dai				SA001493R						
+Mekel-Bobrov et al. 2005	Lahu				SA001494S						
+Mekel-Bobrov et al. 2005	She				SA001495T						
+Mekel-Bobrov et al. 2005	Naxi				SA001496U						
+Mekel-Bobrov et al. 2005	Tu				SA001497V						
+Mekel-Bobrov et al. 2005	Cambodian				SA001500G						
+Mekel-Bobrov et al. 2005	Japanese				SA002260K						
+Mekel-Bobrov et al. 2005	Yakut				SA001498W						
+Mekel-Bobrov et al. 2005	Papuan				SA001501H						
+Mekel-Bobrov et al. 2005	NAN Melanesian				SA002261L						
+Mekel-Bobrov et al. 2005	French Basque				SA001504K						
+Mekel-Bobrov et al. 2005	French				SA001503J						
+Mekel-Bobrov et al. 2005	Sardinian				SA001505L						
+Mekel-Bobrov et al. 2005	North Italian				SA002255O						
+Mekel-Bobrov et al. 2005	Tuscan				SA001507N						
+Mekel-Bobrov et al. 2005	Orcadian				SA001508O						
+Mekel-Bobrov et al. 2005	Russian				SA001510H						
+Mekel-Bobrov et al. 2005	Adygei				SA001509P						
+Mekel-Bobrov et al. 2005	Karitiana				SA001514L						
+Mekel-Bobrov et al. 2005	Surui				SA001515M						
+Mekel-Bobrov et al. 2005	Colombian				SA001513K						
+Mekel-Bobrov et al. 2005	Pima				SA001511I						
+Mekel-Bobrov et al. 2005	Maya				SA001512J						
+ExAC	African					AFR	African	https://www.ncbi.nlm.nih.gov/bioproject/PRJEB8661		?	
+ExAC	American					AMER	American	https://www.ncbi.nlm.nih.gov/bioproject/PRJEB8661		?	
+ExAC	Asian					ASIA	Asian	https://www.ncbi.nlm.nih.gov/bioproject/PRJEB8661		?	
+ExAC	Europe					EURO	European	https://www.ncbi.nlm.nih.gov/bioproject/PRJEB8661		?	
+ExAC	Global					WRLD	World	https://www.ncbi.nlm.nih.gov/bioproject/PRJEB8661		?	
+ExAC	Other					OTHER	Other	https://www.ncbi.nlm.nih.gov/bioproject/PRJEB8661		?	
+TopMed	Global					WRLD	World	https://www.ncbi.nlm.nih.gov/bioproject/PRJNA400167	The overall sample has approximately 50% non-European ancestry to reflect the diverse U.S. population: European: 50 percent, African: 30 percent, Hispanic/Latino: 10 percent, Asian: 8 percent, Other (including Pacific Islanders): 2 percent	?	
+GO Exome Sequencing Project	African American					PO000098R	African_Americans	https://www.ncbi.nlm.nih.gov/bioproject/PRJNA192955		?	
+GO Exome Sequencing Project	European American					PO000329O	European_Americans	https://www.ncbi.nlm.nih.gov/bioproject/PRJNA192955		?	
+GO Exome Sequencing Project	Global					WRLD	World	https://www.ncbi.nlm.nih.gov/bioproject/PRJNA192955		?	
+gnomAD - Exomes	African					AFR	African			?	
+gnomAD - Exomes	American					AMER	American			?	
+gnomAD - Exomes	Ashkenazi Jewish					PO000038L	Jews_Ashkenazi			yid, heb	
+gnomAD - Exomes	Asian					ASIA	Asian			?	
+gnomAD - Exomes	European					EURO	European			?	
+gnomAD - Exomes	Global					WRLD	World			?	
+gnomAD - Exomes	Other					OTHER	Other			?	
+gnomAD - Genomes	African					AFR	African			?	
+gnomAD - Genomes	American					AMER	American			?	
+gnomAD - Genomes	Ashkenazi Jewish					PO000038L	Jews_Ashkenazi			yid, heb	
+gnomAD - Genomes	East Asian					ASIA	Asian			?	
+gnomAD - Genomes	European					EURO	European			?	
+gnomAD - Genomes	Global					WRLD	World			?	
+gnomAD - Genomes	Other					OTHER	Other			?	
+FINRISK	Finnish					PO000018J	Finns			fin	
+Genome of the Netherlands Release 5	Dutch					PO000442K	Dutch			nld	
+KOREAN population from KRGDB	Korean					PO000030D	Koreans			kor	
+Qatari	Qatar					PO000510G	Qatari			afb, arb	
+The Danish reference pan genome	Danish					PO000007H	Danes			dan	

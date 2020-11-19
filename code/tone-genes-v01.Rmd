@@ -1,0 +1,2771 @@
+---
+title: "Tone and genes"
+author: "Dan Dediu"
+date: '`r date()`'
+output:
+  html_document: 
+    df_print: default
+    fig_caption: yes
+    highlight: textmate
+    theme: readable
+    toc: yes
+    toc_depth: 6
+    toc_float: yes
+  word_document: default
+editor_options: 
+  chunk_output_type: console
+bibliography: bibliography.bib
+csl: apa-6th-edition.csl
+---
+
+# TODO
+
+- include the genetic and linguistic processing
+- remove Sheelece's data from here
+- keep only tone (and not syllable structure)
+
+
+# Set-up
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE);
+```
+
+```{r libraries and setup stuff}
+library(knitr);
+#library(car);
+library(pander);
+library(ggplot2);
+#library(forcats);
+library(gridExtra);
+library(parallel);
+library(performance);
+library(lmerTest);
+#library(ordinal);
+#library(emmeans);
+library(dplyr);
+library(reshape2);
+#library(stringr);
+#library(lattice);
+#library(ggeffects);
+#library(sjstats);
+#library(gtools);
+library(data.table);
+library(glmmTMB);
+#library(effects);
+#library(sjPlot);
+library(ggnewscale);
+library(sjPlot);
+library(pbapply);
+library(DiagrammeR);
+library(mediation);
+library(rsample);
+library(partykit);
+library(caret);
+library(randomForest);
+library(lavaan);
+library(lavaanPlot);
+
+
+
+# For (g)lmer, use more iterations with bobyqa:
+glmer_ctrl = glmerControl(optimizer="bobyqa", optCtrl=list(maxfun=1e8));
+lmer_ctrl  = lmerControl( optimizer="bobyqa", optCtrl=list(maxfun=1e8));
+
+# For parallel processing:
+mclapply_ncores = max(detectCores(all.tests=TRUE, logical=FALSE), 1, na.rm=TRUE);
+
+# Relative path to the sister project on tone & syllable structure were the data pre-processing was done:
+.path_to_tone_syllstr <- "../../Syllable complexity + tone/";
+
+# Cache the intermediary results:
+if( !dir.exists("./cache-results") ) dir.create("./cache-results", showWarnings=FALSE);
+
+## Auxiliary functions: 
+
+# Figure and Table caption adapted from https://stackoverflow.com/questions/37116632/rmarkdown-html-number-figures: 
+outputFormat = opts_knit$get("rmarkdown.pandoc.to"); # determine the output format of the document
+if( is.null(outputFormat) ) outputFormat = ""; # probably not run within knittr
+capTabNo = 1; capFigNo = 1; # figure and table caption numbering, for HTML do it manually
+#Function to add the Table Number
+capTab = function(x){
+  if(outputFormat == 'html'){
+    x = paste0("***Table ",capTabNo,".*** _",x,"_")
+    capTabNo <<- capTabNo + 1
+  }; x
+}
+#Function to add the Figure Number
+capFig = function(x){
+  if(outputFormat == 'html'){
+    x = paste0("***Figure ",capFigNo,".*** _",x,"_")
+    capFigNo <<- capFigNo + 1
+  }; x
+}
+
+# The world maps (for plotting):
+mapWorld <- map_data("world");
+```
+
+
+# Introduction
+
+Blah-blah
+
+
+# Data 
+
+```{r load data, results='hide'}
+# Load the pre-processed and pre-scaled language data:
+load(paste0(.path_to_tone_syllstr,"code/cache-results/language_data_scaled.RData"));
+
+# Add human-readable family name:
+glottolog_data <- read.table("../../Syllable complexity + tone/data/language/input/originals/glottolog4.1/languoid.csv", header=TRUE, sep=",", quote='"', stringsAsFactors=FALSE);
+language_data_scaled <- merge(language_data_scaled, glottolog_data[,c("id", "name")], by.x="family", by.y="id", all.x=TRUE, all.y=FALSE, suffixes=c("","_family"));
+names(language_data_scaled)[ncol(language_data_scaled)] <- "family_name";
+
+# Load and add the genetic data:
+genetic_data <- read.table("../data/genetics/output/gene_freqs.tsv", header=TRUE, sep="\t", quote="", stringsAsFactors=FALSE);
+data_all <- merge(language_data_scaled, genetic_data, by.x=c("iso"), by.y=c("ISO_639_3"), suffixes=c("_L", "_G"), all=FALSE);
+data_all <- unique(data_all);
+
+# z-score the (weigthed average) allele frequencies:
+data_all$aspm  <- scale(data_all$ASPM_freq_wavg,  center=TRUE, scale=TRUE);
+data_all$mcph1 <- scale(data_all$MCPH1_freq_wavg, center=TRUE, scale=TRUE);
+
+# Order row and columns:
+data_all <- data_all[ order(data_all$macroarea, data_all$Metapopulation_name, data_all$name, data_all$iso, data_all$Pop_UID) ,
+                      c("Metapopulation_name", "Metapopulation_ID", "Pop_UID", # metapopulation population, and sample info
+                         "iso", "glottocode", "name", "level", "family", "family_name", # language info
+                         "macroarea", "latitude", "longitude", "longitude_shifted", "country", # geographical info
+                         "tone_binary", "tone_3way", "n_tones", # agreement tone data
+                         "aspm", "mcph1", # ASPM and MCPH1 z-scored frequency (weigthed averages)
+                         "ph_n_tones_original", "wa_tone", "la_tone", "la_n_tones_original", "la_tone_comments", "se_tone", "dl_tone", "wp_tone_original", # original tone data
+                         "ASPM_n_alleles", "ASPM_freq_avg", "ASPM_freq_wavg", "ASPM_n_databases", "MCPH1_n_alleles", "MCPH1_freq_avg", "MCPH1_freq_wavg", "MCPH1_n_databases" # original gene data
+                        )];
+names(data_all) <- c("metapop", "metapop_ID", "pop_ID", # metapopulation population, and sample info
+                     "ISO", "glottocode", "language", "level", "family", "family_name", # language info
+                     "macroarea", "latitude", "longitude", "longitude_shifted", "country", # geographical info
+                     "tone_binary", "tone_3way", "n_tones", # agreement tone data
+                     "ASPM", "MCPH1", # ASPM and MCPH1 z-scored frequency (weigthed averages)
+                     "ph_n_tones_original", "wa_tone", "la_tone", "la_n_tones_original", "la_tone_comments", "se_tone", "dl_tone", "wp_tone_original", # original tone data
+                     "ASPM_n_alleles", "ASPM_freq_avg", "ASPM_freq_wavg", "ASPM_n_databases", "MCPH1_n_alleles", "MCPH1_freq_avg", "MCPH1_freq_wavg", "MCPH1_n_databases" # original gene data
+);
+
+# Keep only the unique entries:
+data_all <- unique(data_all);
+
+# There are very few samples from the Americas, so let's collapse them:
+data_all$macroarea <- factor(data_all$macroarea);
+levels(data_all$macroarea) <- c("Africa"="Africa", "Eurasia"="Eurasia", "North America"="America", "Papunesia"="Papunesia", "South America"="America");
+
+# Use sum contrasts for macroarea:
+contrasts(data_all$macroarea) <- contr.sum(length(levels(data_all$macroarea))); 
+
+# Prepare for beta regression: 0 -> 1e-7 and 1 -> 1-1e-7:
+data_all$ASPM_freq_wavg_4beta  <- ifelse(data_all$ASPM_freq_wavg  == 0.0, 1e-7, ifelse(data_all$ASPM_freq_wavg  == 1.0, 1.0-1e-7, data_all$ASPM_freq_wavg));
+data_all$MCPH1_freq_wavg_4beta <- ifelse(data_all$MCPH1_freq_wavg == 0.0, 1e-7, ifelse(data_all$MCPH1_freq_wavg == 1.0, 1.0-1e-7, data_all$MCPH1_freq_wavg));
+```
+
+
+## Tone
+
+We use here the agreement between multiple individual databases (WALS, LAPSyD, Shelece Easterday's, Dediu & Ladd (2007), PHOIBLE, and World Phonotactis Database) encoded in three variables:
+
+- `tone_binary`: *binary* coding (presence/absence),
+- `tone_3way`: *three-way ordered* coding (None < Simple < Complex),
+- `n_tones`: actual *count* of tones/tone symbols.
+
+The distribution of these variables is:
+
+```{r fig.cap=capFig("Distribution of binary tone.")}
+d <- unique(data_all[ !is.na(data_all$tone_binary), ]);
+
+pander(table(d$tone_binary));
+
+ggplot(d[ !is.na(d$tone_binary), ], aes(x=tone_binary, fill=tone_binary)) + geom_bar() + theme(axis.text.x=element_text(angle=45, hjust=1));
+```
+
+```{r fig.cap=capFig("Distribution of binary tone across the world.")}
+ggplot() +
+  geom_polygon(data=mapWorld, aes(x=long, y=lat, group=group), fill="grey") +
+  geom_point(data=d, shape=21, size=1.5, aes(x=longitude, y=latitude, fill=tone_binary)) +
+  theme(legend.position = c(0.25, 0.32), 
+      legend.justification = c(1, 1), 
+      legend.title = element_text(size = 9), 
+      legend.text = element_text(size = 10)) + 
+  scale_fill_viridis_d("binary tone");
+```
+
+```{r fig.cap=capFig("Distribution of 3-way tone.")}
+d <- unique(data_all[ !is.na(data_all$tone_3way), ]);
+
+pander(table(d$tone_3way));
+
+ggplot(d[ !is.na(d$tone_3way), ], aes(x=tone_3way, fill=tone_3way)) + geom_bar() + theme(axis.text.x=element_text(angle=45, hjust=1));
+```
+
+```{r fig.cap=capFig("Distribution of 3-way tone across the world.")}
+ggplot() +
+  geom_polygon(data=mapWorld, aes(x=long, y=lat, group=group), fill="grey") +
+  geom_point(data=d, shape=21, size=1.5, aes(x=longitude, y=latitude, fill=tone_3way)) +
+  theme(legend.position = c(0.25, 0.32), 
+      legend.justification = c(1, 1), 
+      legend.title = element_text(size = 9), 
+      legend.text = element_text(size = 10)) + 
+  scale_fill_viridis_d("3-way tone");
+```
+
+```{r fig.cap=capFig("Distribution of tone counts.")}
+d <- unique(data_all[ !is.na(data_all$n_tones), ]);
+
+pander(table(d$n_tones));
+
+ggplot(d[ !is.na(d$n_tones), ], aes(x=n_tones)) + geom_bar() + theme(axis.text.x=element_text(angle=45, hjust=1));
+```
+
+```{r fig.cap=capFig("Distribution of tone counts across the world.")}
+ggplot() +
+  geom_polygon(data=mapWorld, aes(x=long, y=lat, group=group), fill="grey") +
+  geom_point(data=d, shape=21, size=1.5, aes(x=longitude, y=latitude, fill=n_tones)) +
+  theme(legend.position = c(0.25, 0.32), 
+      legend.justification = c(1, 1), 
+      legend.title = element_text(size = 9), 
+      legend.text = element_text(size = 10)) + 
+  scale_fill_viridis_c("# tones");
+```
+
+
+## ASPM and MCPH1 population frequencyes 
+
+More precisely, we are interested in the population frequencies of the "derived" alleles of *ASPM* and *MCHP1* (*Microcephalin*).
+
+### ASPM
+
+For *ASPM* this was originally defined [@mekel_bobrov_ongoing_2005] in relation to "haplotype 63" and two of its ploymorphic nonsynonymous sites in exon 18 in an open reading frame (ORF), A44871G and C45126A with the ancestral alleles, respectively, A and C, and the derived ones, G and A [@mekel_bobrov_ongoing_2005, p.1720].
+Later relevant publications [@wong_derived_2012; @wong_aspm_lexical_2020] however, use SNP [rs41310927](https://www.ncbi.nlm.nih.gov/snp/rs41310927) with ancestral allele T and derived allele C.
+While most databases do contain info about this SNP, others do not, such that we also collected info about SNPs in very tight LD with it: rs41308365, rs3762271, rs41304071, rs147068597 and rs61819087 (the linkage info was obtained from [LDlink's "LDproxy Tool"](https://ldlink.nci.nih.gov/?tab=ldproxy) for all populations).
+Thus, we obtained the following info:
+
+| Locus/SNP      | "derived" allele | Datatbases                      | Position and LD to target          |
+|---------------:|-----------------:|--------------------------------:|-----------------------------------:|
+| "haplotype 63" | "haplogroup D"   | MB2005                          | the target                         |
+| rs41310927     | C                | WONG2020, LDLink, gnomAD, dbSNP | the target                         |
+| rs41308365     | A                | LDLink, gnomAD, dbSNP           | chr1:197070707; D'=1.00, R^2^=1.00 |
+| rs3762271      | T                | LDLink, gnomAD, dbSNP, ALFRED   | chr1:197070442; D'=1.00, R^2^=1.00 |
+| rs41304071     | T                | LDLink, dbSNP                   | chr1:197063352; D'=1.00, R^2^=1.00 |
+| rs147068597    | A                | LDLink                          | chr1:197058136; D'=1.00, R^2^=1.00 |
+| rs61819087     | G                | LDLink, dbSNP                   | chr1:197084857; D'=1.00, R^2^=1.00 |
+
+where the databases are identified as:
+
+| Database                   | URL                                                   | Info                                | ID     |
+|---------------------------:|------------------------------------------------------:|------------------------------------:|-------:|
+| @mekel_bobrov_ongoing_2005 | https://science.sciencemag.org/content/309/5741/1720  | The original source; 59 populations | MB2005 |
+| @wong_aspm_lexical_2020    | https://advances.sciencemag.org/content/6/22/eaba5090 | Massive experimental study in Cantonese speakers; 1 population | WONG2020 |
+| LDLink                     | https://ldlink.nci.nih.gov/?tab=home                  | "[...] a suite of web-based applications designed to easily and efficiently interrogate linkage disequilibrium in population groups"; 1000 genomes data in 32 individual and grouped populations | LDLink |
+| gnomAD                     | https://gnomad.broadinstitute.org/                    | Genome Aggregation Database v2.1.1; very broad populations | gnomAD |
+| dbSNP                      | https://www.ncbi.nlm.nih.gov/snp/                     | aggregation of info form multiple databases, mostly using very broad populations | dbSNP |
+| 1000 genomes               | https://www.internationalgenome.org/                  | this info is included in other databases (gnomAD) so is not specifically used here | 1KG |
+| ALFRED                     | https://alfred.med.yale.edu/alfred/index.asp          | The ALlele FREquency Database; lots of info in many populations; unfortunately, for ASPM only one SNP in strong LD with the target rs41310927 (rs3762271) is available | ALFRED |
+
+We ended up with frequency data about these loci in `r length(unique(genetic_data$Pop_UID[ !is.na(genetic_data$ASPM_freq_wavg) ]))` unique samples coming from `r length(unique(genetic_data$Metapopulation_ID[ !is.na(genetic_data$ASPM_freq_wavg) ]))` unique *meta-populations* (such as "Han Chinese", "Italians" or "Finnish").
+After making sure the frequencies of these SNPs are very highly correlated (in those samples where they do co-occur), we computed their average frequency (weighed by the number of sampled individuals); for the statistical analyses, this weighted average frequency was further z-scored.
+
+```{r fig.cap=capFig("Distribution of the frequency of the \"derived\" allele of *ASPM* (possibly the weigthed average across multiple SNPs in some samples).")}
+d <- unique(data_all[ !is.na(data_all$ASPM), ]);
+
+pander(summary(d$ASPM_freq_wavg));
+
+ggplot(d, aes(x=ASPM_freq_wavg)) + geom_histogram() + theme(axis.text.x=element_text(angle=45, hjust=1));
+```
+
+```{r fig.cap=capFig("Distribution of the frequency of the \"derived\" allele of *ASPM* across the world.")}
+ggplot() +
+  geom_polygon(data=mapWorld, aes(x=long, y=lat, group=group), fill="grey") +
+  geom_point(data=d, shape=21, size=1.5, aes(x=longitude, y=latitude, fill=ASPM_freq_wavg)) +
+  theme(legend.position = c(0.25, 0.32), 
+      legend.justification = c(1, 1), 
+      legend.title = element_text(size = 9), 
+      legend.text = element_text(size = 10)) + 
+  scale_fill_viridis_c("ASPM 'D'");
+```
+
+
+### MCPH1
+
+For *MCPH1* this was originally defined [@evans_microcephalin_2005] in relation to G37995C in exon 8 in an open reading frame (ORF) with the ancestral allele G, and the derived one C [@evans_microcephalin_2005, p.1717].
+Later relevant publications [@wong_aspm_lexical_2020] however, use SNP [rs930557](https://www.ncbi.nlm.nih.gov/snp/rs930557) with ancestral allele G and derived allele C.
+While most databases do contain info about this SNP, others do not, such that we also collected info about the SNP rs1129706 which is in very tight LD with it (the linkage info was obtained from [LDlink's "LDproxy Tool"](https://ldlink.nci.nih.gov/?tab=ldproxy) for all populations).
+Thus, we obtained the following info:
+
+| Locus/SNP      | "derived" allele | Datatbases                      | Position and LD to target          |
+|---------------:|-----------------:|--------------------------------:|-----------------------------------:|
+| G37995C        | C                | MB2005                          | the target                         |
+| rs930557       | C                | WONG2020, LDLink, dbSNP         | the target                         |
+| rs1129706      | G                | ALFRED                          | chr8:6304814; D'=0.995, R^2^=0.936 |
+
+We ended up with frequency data about these loci in `r length(unique(genetic_data$Pop_UID[ !is.na(genetic_data$MCPH1_freq_wavg) ]))` unique samples coming from `r length(unique(genetic_data$Metapopulation_ID[ !is.na(genetic_data$MCPH1_freq_wavg) ]))` unique meta-populations.
+After making sure the frequencies of these SNPs are very highly correlated (in those samples where they do co-occur), we computed their average frequency (weighed by the number of sampled individuals); for the statistical analyses, this weighted average frequency was further z-scored.
+
+```{r fig.cap=capFig("Distribution of the frequency of the \"derived\" allele of *MCPH1* (possibly the weigthed average across multiple SNPs in some samples).")}
+d <- unique(data_all[ !is.na(data_all$MCPH1), ]);
+
+pander(summary(d$MCPH1_freq_wavg));
+
+ggplot(d, aes(x=MCPH1_freq_wavg)) + geom_histogram() + theme(axis.text.x=element_text(angle=45, hjust=1));
+```
+
+```{r fig.cap=capFig("Distribution of the frequency of the \"derived\" allele of *MCPH1* across the world.")}
+ggplot() +
+  geom_polygon(data=mapWorld, aes(x=long, y=lat, group=group), fill="grey") +
+  geom_point(data=d, shape=21, size=1.5, aes(x=longitude, y=latitude, fill=MCPH1_freq_wavg)) +
+  theme(legend.position = c(0.25, 0.32), 
+      legend.justification = c(1, 1), 
+      legend.title = element_text(size = 9), 
+      legend.text = element_text(size = 10)) +  
+  scale_fill_viridis_c("MCPH1 'D'");
+```
+
+
+
+# Notes on methods
+
+We use (RE)ML (as implemented by (`g`)`lmer`) due to the large computational (and time) costs of Bayesian models relative to (RE)ML and the fact that preliminary checks show that the two agree well on this dataset.
+Convergence issues were dealt with as suggested in https://rstudio-pubs-static.s3.amazonaws.com/33653_57fc7b8e5d484c909b615d8633c01d51.html.
+
+
+# Stats
+
+## How to model families, metapopulations and macroareas
+
+*Metapopulations* are fully included within the language families (and there are just a few with more than one sample), so we ignore them here as we have too little data to model them meaningfully.
+
+However, the *families* need to be modeled (even if most have only one or a few languages), as it is important to deal with genealogical non-independence between languages: we thus model them as random effects (in the now standard approach).
+
+*Macroareas*, on the other hand, might need a special treatment for several reasons:
+
+- there is a very skewed geographical sampling (e.g, nothing from Australia and very few from the Americas), the dataset being dominated by Eurasia and Africa;
+- the macroareas (as defined in the Glottolog) have a very unclear status, being more justified geographically ("continents") but with very little substance from the linguistic, anthropological and historical points of view (e.g, "Africa" and "Eurasia" are treated as wholes, but even more so, PNG, Australia and Oceania are placed together in "Papunesia"!)
+- the distribution of the two genes of interest (*ASPM* and *MCPH1*) is highly skewed geographically being almost completely absent from Africa: thus, controlling for "Africa" vs the other regions, automatically swamps the signal in the genes' distributions.
+
+Moreover, North and South America each have very few data points, so we will collapse them both here into "America".
+
+Thus, we will treat "macroareas" as a *fixed effect*.
+
+Moreover, as we will see, probably the major split is between "Africa" and the rest of the world which, coupled with the fact that some methods cannot gracefully handle multi-valued factors, made us dichotomise (for some analyses) the *macroarea* in into "Africa" vs "non-Africa".
+
+
+
+## Tone vs no tone ("tone1")
+
+We keep only the entries of with non-missing data for the binary coding of tone and the two genes of interest, and if there is more than one possible language or gene frequencies for a given sample, we only keep those entries that have diverging tone or gene information.
+
+```{r}
+# Keep only the observation with non-missing data for the relevant variables:
+d_tb <- unique(data_all[complete.cases(data_all[, c("tone_binary", 
+                                                    "ASPM_freq_wavg", "MCPH1_freq_wavg", "ASPM_freq_wavg_4beta", "MCPH1_freq_wavg_4beta",
+                                                    "family_name", "macroarea", "metapop_ID")]), 
+                        c("metapop", "metapop_ID", "pop_ID", "glottocode", "family_name", "macroarea", "latitude", "longitude", 
+                          "tone_binary", "ASPM_freq_wavg" , "MCPH1_freq_wavg", "ASPM_freq_wavg_4beta", "MCPH1_freq_wavg_4beta")]);
+# and only the observations of the same pop_ID that have different tone and gene frequency data:
+lgs_to_keep <- d_tb %>% group_by(metapop, pop_ID, tone_binary, ASPM_freq_wavg, MCPH1_freq_wavg) %>%
+  summarise("keep_glottocode"=glottocode[1]);
+d_tb <- d_tb[ d_tb$glottocode %in% lgs_to_keep$keep_glottocode, ];
+
+# Dichotomise macroarea:
+d_tb$Africa <- factor(ifelse(d_tb$macroarea == "Africa", "Yes", "No"), levels=c("No", "Yes"));
+
+# Recode tone and Africa as numeric and ordered:
+d_tb$Africa_num   <- as.numeric(d_tb$Africa == "Yes");
+d_tb$Africa_ord   <- ordered(d_tb$Africa, levels=c("No", "Yes"));
+d_tb$tone_bin_num <- as.numeric(d_tb$tone_binary == "Yes");
+d_tb$tone_bin_ord <- ordered(d_tb$tone_binary, levels=c("No", "Yes"));
+```
+
+The resulting dataset has `r nrow(d_tb)` observations, distributed among `r length(unique(d_tb$glottocode))` unique Glottolg codes in `r length(unique(d_tb$family))` families (ranging from a minimum of 1 language per family to a maximum of `r max(tmp <- as.numeric(table(d_tb$family)))`, with a mean `r round(mean(tmp),1)` and median `r round(median(tmp),1)` of languages per family) and `r length(unique(d_tb$macroarea))` macroareas:
+
+```{r}
+pander(table(d_tb$macroarea));
+```
+
+
+The distribution of **tone** is:
+
+```{r fig.cap=capFig("Distribution of binary tone.")}
+ggplot(d_tb, aes(x=tone_binary, fill=tone_binary)) + geom_bar() + scale_fill_viridis_d();
+```
+
+```{r fig.cap=capFig("Distribution of binary tone across macroareas.")}
+ggplot(d_tb, aes(x=macroarea, fill=tone_binary)) + geom_bar() + scale_fill_viridis_d() + theme(axis.text.x=element_text(angle=45, hjust=1));
+```
+
+```{r fig.cap=capFig("Distribution of binary tone across the world.")}
+ggplot() +
+  geom_polygon(data=mapWorld, aes(x=long, y=lat, group=group), fill="grey") +
+  geom_point(data=d_tb, shape=21, size=1.5, aes(x=longitude, y=latitude, fill=tone_binary)) +
+  theme(legend.position = c(0.25, 0.32), 
+      legend.justification = c(1, 1), 
+      legend.title = element_text(size = 9), 
+      legend.text = element_text(size = 10)) + 
+  scale_fill_viridis_d("tone");
+```
+
+```{r fig.cap=capFig("Relationship between binary tone and ASPM frequency.")}
+ggplot(d_tb, aes(x=tone_binary, y=ASPM_freq_wavg, color=tone_binary)) + geom_boxplot() + scale_fill_viridis_d() + ylab("ASPM frequency");
+```
+
+```{r fig.cap=capFig("Relationship between binary tone and MCPH1 frequency.")}
+ggplot(d_tb, aes(x=tone_binary, y=MCPH1_freq_wavg, color=tone_binary)) + geom_boxplot() + scale_fill_viridis_d() + ylab("MCPH1 frequency");
+```
+
+
+### Regressions
+
+We use first mixed-effects models to understand the relationship between the two genes and tone.
+For tone we use logistic regression (as implemented by `glmer()`) and for the gene frequencies we use beta regression (as implemented by `glmmTMB()` and replacing all $0.0$ values by $10^{-7}$ and all $1.0$ by $1.0-10^{-7}$, respectively).
+
+```{r include=FALSE}
+# The null model:
+m_tb_0 <- glmer(tone_binary ~ 1 + # intercept
+                  (1 | family_name), # random effects structure
+                family=binomial(), data=d_tb, control=glmer_ctrl);
+summary(m_tb_0);
+performance::icc(m_tb_0); performance::r2(m_tb_0);
+
+# Full model:
+m_tb_full <- glmer(tone_binary ~ 1 + # intercept
+                     ASPM_freq_wavg + MCPH1_freq_wavg + # the two genes (and their interaction)
+                     macroarea + # macroarea
+                     ASPM_freq_wavg:macroarea + MCPH1_freq_wavg:macroarea + # interactions between genes and macroareas
+                     ASPM_freq_wavg:MCPH1_freq_wavg + # interaction between genes
+                     (1 | family_name), # random effects structure
+                   family=binomial(), data=d_tb, control=glmer_ctrl);
+summary(m_tb_full); # Model is nearly unidentifiable: large eigenvalue ratio -> try to remove interactions:
+m_tb_1 <- update(m_tb_full, . ~ . - ASPM_freq_wavg:MCPH1_freq_wavg); # Model failed to converge: degenerate  Hessian with 1 negative eigenvalues
+summary(m_tb_1); anova(m_tb_full, m_tb_1); # p=0.8412
+m_tb_2 <- update(m_tb_1, . ~ . - ASPM_freq_wavg:macroarea - MCPH1_freq_wavg:macroarea);
+summary(m_tb_2); anova(m_tb_full, m_tb_2); # p=0.2457
+# -> ok, so this seems to be the base model... try again the gene-gene interaction:
+m_tb_3 <- update(m_tb_2, . ~ . + ASPM_freq_wavg:MCPH1_freq_wavg);
+summary(m_tb_3); anova(m_tb_2, m_tb_3); # p=0.2827 -> no interactions!
+m_tb_full <- m_tb_2;
+lattice::dotplot(ranef(m_tb_full, which="family_name", condVar=TRUE));
+performance::icc(m_tb_full); performance::r2(m_tb_full);
+
+# Does macroarea matter?
+m_tb_nom <- update(m_tb_full, . ~ . - macroarea);
+summary(m_tb_nom);
+performance::icc(m_tb_nom); performance::r2(m_tb_nom);
+anova(m_tb_full, m_tb_nom); # p=0.04378 * -> yes
+anova(m_tb_0, m_tb_nom); # p=0.01098 * -> but the genes add info!
+
+# Do the genes matter?
+m_tb_nog <- update(m_tb_full, . ~ . - ASPM_freq_wavg - MCPH1_freq_wavg);
+summary(m_tb_nog);
+performance::icc(m_tb_nog); performance::r2(m_tb_nog);
+anova(m_tb_full, m_tb_nog); # p=0.9107 -> no
+anova(m_tb_0, m_tb_nog); # p=0.0007249 *** -> and macroarea adds info!
+# ASPM:
+m_tb_aspm_m <- update(m_tb_nog, . ~ . + ASPM_freq_wavg);
+summary(m_tb_aspm_m); anova(m_tb_nog, m_tb_aspm_m); # p=0.6731
+m_tb_aspm <- update(m_tb_aspm_m, . ~ . - macroarea);
+summary(m_tb_aspm); 
+performance::icc(m_tb_aspm); performance::r2(m_tb_aspm);
+anova(m_tb_aspm_m, m_tb_aspm); # p=0.02011 * -> macroarea adds to ASPM
+anova(m_tb_0, m_tb_aspm); # p=0.006899 ** -> ASPM predicts tone by itself
+# MCPH1:
+m_tb_mcph1_m <- update(m_tb_nog, . ~ . + MCPH1_freq_wavg);
+summary(m_tb_mcph1_m); anova(m_tb_nog, m_tb_mcph1_m); # p=0.923
+m_tb_mcph1 <- update(m_tb_mcph1_m, . ~ . - macroarea);
+summary(m_tb_mcph1); 
+performance::icc(m_tb_mcph1); performance::r2(m_tb_mcph1);
+anova(m_tb_mcph1_m, m_tb_mcph1); # p=0.01228 * -> macroarea adds to MCPH1
+anova(m_tb_0, m_tb_mcph1); # p=0.01385 * -> MCPH1 predicts tone by itself
+
+# -> the affect of ASPM and MCPH1 seems fully accounted for by macroarea, but are predictive for tone!
+```
+
+We built a mixed-effects logistic model where tone binary is predicted by macroarea and the two genes (with their interactions) when considering language family as random effect, and we found that:
+
+- for the null model, `r sprintf("ICC = %.1f%%", 100*performance::icc(m_tb_0)$ICC_adjusted)`[^ICC_interpretation], which shows that tone is strongly clustered within families;
+- the interactions drop out (i.e., there does not seem to be an interaction between the two genes, not between the genes and macroarea);
+- the macroarea by itself predicts tone (`r sprintf("*p* = %.2g", anova(m_tb_0, m_tb_nog)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_tb_nog)$R2_marginal)`[^R2_interpretation]);
+- the two genes together predict tone (`r sprintf("*p* = %.2g", anova(m_tb_0, m_tb_nom)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_tb_nom)$R2_marginal)`): 
+  + *ASPM* by itself has a negative significant effect (`r sprintf("*β* = %.2g ± %.2g, *p* = %.2g", summary(m_tb_aspm)$coefficients["ASPM_freq_wavg", "Estimate"], summary(m_tb_aspm)$coefficients["ASPM_freq_wavg", "Std. Error"], anova(m_tb_0, m_tb_aspm)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_tb_aspm)$R2_marginal)`), 
+  + as does *MCPH1* by itself (`r sprintf("*β* = %.2g ± %.2g, *p* = %.2g", summary(m_tb_mcph1)$coefficients["MCPH1_freq_wavg", "Estimate"], summary(m_tb_mcph1)$coefficients["MCPH1_freq_wavg", "Std. Error"], anova(m_tb_0, m_tb_mcph1)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_tb_mcph1)$R2_marginal)`);
+- however, macroarea and the two genes seem to carry pretty much the same information about tone (i.e., their effects when controlling for the others are not different from 0)...
+
+[^ICC_interpretation]: ICC represents the proportion of the variance explained by the grouping due to the random effects, and varies between 0% (the grouping contains no info) to 100% (basically all individual observations in a given group are identical); the *adjusted* ICC only considers the random effect, while the *conditional* ICC also considers the fixed effects as well; they are equal when there are no fixed effects (i.e., for the null models). Here, we show only the adjusted ICC, as we are interested in the random effects. See `?perfformance::icc` for more details.
+
+[^R2_interpretation]: For mixed-effects models, this is Nakagawa's R^2^ estimate, where the *marginal* estimate considers only the fixed effects, while the *conditional* also considers the random effects as well. Here, we show only the marginal ICC, as we are interested in the fixed effects. See `?perfformance::r2` for more details.
+
+```{r include=FALSE}
+# Regress the genes on macroarea:
+
+# ASPM:
+try(m_aspm_0 <- glmmTMB(ASPM_freq_wavg_4beta ~ 1 + (1 | family_name), family=beta_family(), data=d_tb), silent=FALSE);
+summary(m_aspm_0);
+
+# Add macroarea:
+try(m_aspm_macroarea <- update(m_aspm_0, . ~ . + macroarea), silent=FALSE);
+summary(m_aspm_macroarea);
+anova(m_aspm_0, m_aspm_macroarea); # p=4.609e-16 ***
+
+# Just Africa vs the rest:
+try(m_aspm_africa <- update(m_aspm_0, . ~ . + Africa), silent=FALSE);
+summary(m_aspm_africa);
+anova(m_aspm_0, m_aspm_africa); # p=3.112e-14 ***
+
+
+# MCPH1:
+try(m_mcph1_0 <- glmmTMB(MCPH1_freq_wavg_4beta ~ 1 + (1 | family_name), family=beta_family(), data=d_tb), silent=FALSE);
+summary(m_mcph1_0);
+
+# Add macroarea:
+try(m_mcph1_macroarea <- update(m_mcph1_0, . ~ . + macroarea), silent=FALSE);
+summary(m_mcph1_macroarea);
+anova(m_mcph1_0, m_mcph1_macroarea); # p=3.14e-12 ***
+
+# Just Africa vs the rest:
+try(m_mcph1_africa <- update(m_mcph1_0, . ~ . + Africa), silent=FALSE);
+summary(m_mcph1_africa);
+anova(m_mcph1_0, m_mcph1_africa); # p=3.288e-09 ***
+
+# -> indeed, Africa vs non-Africa seems like the important driver...
+```
+
+To better understand this, we regressed the two genes on the macroarea (using mixed-effects beta regression with language family as random effect): for both genes separately:
+
+- the distribution of the genes is very strongly clustered within families: for *ASPM*: `r sprintf("ICC = %.1f%%", 100*performance::icc(m_aspm_macroarea)$ICC_adjusted)`, for *MCPH1*: `r sprintf("ICC = %.1f%%", 100*performance::icc(m_mcph1_macroarea)$ICC_adjusted)`;
+- macroarea predicts their distribution very strongly (*ASPM*: `r sprintf("*p* = %.2g", anova(m_aspm_0, m_aspm_macroarea)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_aspm_macroarea)$R2_marginal)`; *MCPH1*: `r sprintf("*p* = %.2g", anova(m_mcph1_0, m_mcph1_macroarea)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_mcph1_macroarea)$R2_marginal)`), 
+- and, in fact, separating Africa vs the result of the world seems to drive most of this effect (*ASPM*: `r sprintf("*p* = %.2g", anova(m_aspm_0, m_aspm_africa)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_aspm_africa)$R2_marginal)`; *MCPH1*: `r sprintf("*p* = %.2g", anova(m_mcph1_0, m_mcph1_africa)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_mcph1_africa)$R2_marginal)`), with lower frequencies in Africa.
+
+Taken together, these suggest that the allele frequency of these two genes are strongly confounded by macroareas (mostly Africa vs non-Africa), which rises the question of trying to separate their effect from that of the macroarea.
+
+```{r fig.cap=capFig("Relationship between tone binary (colors) and the two genes (frequency) by macroarea."), fig.width=2*4, fig.height=2*3}
+grid.arrange(ggplot(d_tb, aes(x=ASPM_freq_wavg, y=MCPH1_freq_wavg)) + xlim(0,1) + ylim(0,1) + xlab("ASPM") + ylab("MCPH1") +
+               geom_point(aes(shape=tone_binary, color=tone_binary)) + geom_smooth(method="lm", color="black", alpha=0.25, size=0.5) + facet_grid(. ~ macroarea) +
+               scale_color_manual(values=c("Yes"="blue", "No"="red")),
+             ggplot(d_tb, aes(x=ASPM_freq_wavg, fill=tone_binary)) + xlim(0,1) +
+               geom_density(alpha=0.5, color="black") + facet_grid(. ~ macroarea) + xlab("ASPM") +
+               scale_fill_manual(values=c("Yes"="blue", "No"="red")),
+             ggplot(d_tb, aes(x=MCPH1_freq_wavg, fill=tone_binary)) + xlim(0,1) +
+               geom_density(alpha=0.5, color="black") + facet_grid(. ~ macroarea) + xlab("MCPH1") +
+               scale_fill_manual(values=c("Yes"="blue", "No"="red")),
+             nrow=3);
+```
+
+It can be seen that the two genes seem positively correlated in all macroareas except Eurasia, and that in Africa and especially in Eurasia tone seems linked to lower frequencies of *ASPM*.
+However, conducting separate analyses in Africa and Eurasia finds no fixed effect for the two genes (except for Eurasia when we do not control for family).
+
+```{r include=FALSE}
+# Just Africa vs non-Africa:
+m_tb_africa_rest <- glmer(tone_binary ~ 1 + # intercept
+                            ASPM_freq_wavg + MCPH1_freq_wavg + Africa + 
+                            ASPM_freq_wavg:MCPH1_freq_wavg + 
+                            ASPM_freq_wavg:Africa + MCPH1_freq_wavg:Africa + # the two genes and the Africa-rest (and their interaction)
+                            (1 | family_name), # random effects structure
+                          family=binomial(), data=d_tb, control=glmer_ctrl);
+summary(m_tb_africa_rest);
+# check predictors:
+m_tb_africa_rest_1 <- update(m_tb_africa_rest, . ~ . - ASPM_freq_wavg:MCPH1_freq_wavg); summary(m_tb_africa_rest_1); anova(m_tb_africa_rest, m_tb_africa_rest_1); # p=0.4464
+m_tb_africa_rest_2 <- update(m_tb_africa_rest_1, . ~ . - MCPH1_freq_wavg:Africa); summary(m_tb_africa_rest_2); anova(m_tb_africa_rest_1, m_tb_africa_rest_2); # p=0.5888
+m_tb_africa_rest_3 <- update(m_tb_africa_rest_2, . ~ . - MCPH1_freq_wavg); summary(m_tb_africa_rest_3); anova(m_tb_africa_rest_2, m_tb_africa_rest_3); # p=0.2097
+anova(m_tb_africa_rest, m_tb_africa_rest_3); # p=0.4852 -> no effect of MCPH1
+# check ASPM specifically:
+m_tb_africa_rest_4 <- update(m_tb_africa_rest_3, . ~ . - ASPM_freq_wavg - ASPM_freq_wavg:Africa); summary(m_tb_africa_rest_4); anova(m_tb_africa_rest_3, m_tb_africa_rest_4); # p=0.3474
+# check Africa specifically:
+m_tb_africa_rest_5 <- update(m_tb_africa_rest_3, . ~ . - Africa - ASPM_freq_wavg:Africa); summary(m_tb_africa_rest_5); anova(m_tb_africa_rest_3, m_tb_africa_rest_5); # p=0.01123 *
+# -> Africa vs the rest does explain a lot, but ASPM also explains some in the absence of Africa
+
+
+
+# Within Africa and Eurasia separately:
+
+# Within Africa:
+m_tb_africa_full <- glmer(tone_binary ~ 1 + # intercept
+                            ASPM_freq_wavg * MCPH1_freq_wavg + # the two genes (and their interaction)
+                            (1 | family_name), # random effects structure
+                          family=binomial(), data=d_tb[ d_tb$macroarea == "Africa", ], control=glmer_ctrl);
+summary(m_tb_africa_full); # boundary (singular) fit -> there is no variation between the families
+table(d_tb[ d_tb$macroarea == "Africa", c("family_name", "tone_binary") ]);
+# -> drop the random effects structure at all:
+m_tb_africa_full <- glm(tone_binary ~ 1 + # intercept
+                            ASPM_freq_wavg * MCPH1_freq_wavg +  # the two genes (and their interaction)
+                          family_name, # family as fixed effect
+                          family=binomial(), data=d_tb[ d_tb$macroarea == "Africa", ]);
+summary(m_tb_africa_full);
+# family:
+m_tb_africa_nofam <- update(m_tb_africa_full, . ~ . - family_name);
+summary(m_tb_africa_nofam); anova(m_tb_africa_full, m_tb_africa_nofam, test="Chisq"); # p=0.4107 -> family indeed does not matter
+# interaction:
+m_tb_africa_noint <- update(m_tb_africa_full, . ~ . - ASPM_freq_wavg:MCPH1_freq_wavg);
+m_tb_africa_0     <- update(m_tb_africa_noint, . ~ . - ASPM_freq_wavg - MCPH1_freq_wavg);
+summary(m_tb_africa_noint); 
+anova(m_tb_africa_full, m_tb_africa_noint, test="Chisq"); # p=0.08549 . -> no gene x gene interaction
+anova(m_tb_africa_0, m_tb_africa_noint, test="Chisq"); # p=0.557 -> no effect of the genes
+# ASPM:
+m_tb_africa_aspm <- update(m_tb_africa_0, . ~ . + ASPM_freq_wavg);
+summary(m_tb_africa_aspm); anova(m_tb_africa_0, m_tb_africa_aspm, test="Chisq"); # p=0.2933 -> nope
+# MCPH1:
+m_tb_africa_mcph1 <- update(m_tb_africa_0, . ~ . + MCPH1_freq_wavg);
+summary(m_tb_africa_mcph1); anova(m_tb_africa_0, m_tb_africa_mcph1, test="Chisq"); # p=0.3444 -> nope
+# -> no effect within Africa
+
+# Within Eurasia:
+m_tb_eurasia_full <- glmer(tone_binary ~ 1 + # intercept
+                            ASPM_freq_wavg * MCPH1_freq_wavg + # the two genes (and their interaction)
+                            (1 | family_name), # random effects structure
+                          family=binomial(), data=d_tb[ d_tb$macroarea == "Eurasia", ], control=glmer_ctrl);
+summary(m_tb_eurasia_full);
+# interaction:
+m_tb_eurasia_noint <- update(m_tb_eurasia_full, . ~ . - ASPM_freq_wavg:MCPH1_freq_wavg);
+m_tb_eurasia_0     <- update(m_tb_eurasia_noint, . ~ . - ASPM_freq_wavg - MCPH1_freq_wavg);
+summary(m_tb_eurasia_noint); performance::r2(m_tb_eurasia_noint); lattice::dotplot(ranef(m_tb_eurasia_noint, which="family_name", condVar=TRUE));
+anova(m_tb_eurasia_full, m_tb_eurasia_noint); # p=0.6239 -> no gene x gene interaction
+anova(m_tb_eurasia_0, m_tb_eurasia_noint); # p=0.6151 -> no effect of the genes
+# ASPM:
+m_tb_eurasia_aspm <- update(m_tb_eurasia_0, . ~ . + ASPM_freq_wavg);
+summary(m_tb_eurasia_aspm); anova(m_tb_eurasia_0, m_tb_eurasia_aspm); # p=0.3312 -> nope
+# MCPH1:
+m_tb_eurasia_mcph1 <- update(m_tb_eurasia_0, . ~ . + MCPH1_freq_wavg);
+summary(m_tb_eurasia_mcph1); anova(m_tb_eurasia_0, m_tb_eurasia_mcph1); # p=0.7393 -> nope
+# -> no effect within Eurasia
+
+# Within Eurasia (no random effects):
+m_tb_eurasia_full <- glm(tone_binary ~ 1 + # intercept
+                            ASPM_freq_wavg * MCPH1_freq_wavg, # the two genes (and their interaction)
+                          family=binomial(), data=d_tb[ d_tb$macroarea == "Eurasia", ]);
+summary(m_tb_eurasia_full);
+# interaction:
+m_tb_eurasia_noint <- update(m_tb_eurasia_full, . ~ . - ASPM_freq_wavg:MCPH1_freq_wavg);
+m_tb_eurasia_0     <- update(m_tb_eurasia_noint, . ~ . - ASPM_freq_wavg - MCPH1_freq_wavg);
+summary(m_tb_eurasia_noint); 
+anova(m_tb_eurasia_full, m_tb_eurasia_noint, test="Chisq"); # p=0.8401 -> no gene x gene interaction
+anova(m_tb_eurasia_0, m_tb_eurasia_noint, test="Chisq"); # p=0.0005596 *** -> clear effect of the genes
+# ASPM:
+m_tb_eurasia_aspm <- update(m_tb_eurasia_0, . ~ . + ASPM_freq_wavg);
+summary(m_tb_eurasia_aspm); anova(m_tb_eurasia_0, m_tb_eurasia_aspm, test="Chisq"); # 0.0001173 *** -> yes
+# MCPH1:
+m_tb_eurasia_mcph1 <- update(m_tb_eurasia_0, . ~ . + MCPH1_freq_wavg);
+summary(m_tb_eurasia_mcph1); anova(m_tb_eurasia_0, m_tb_eurasia_mcph1, test="Chisq"); # p=0.7096 -> nope
+# -> there is effect within Eurasia *if* we don't control for language family!
+```
+
+
+### Randomization approach
+
+However, the effect of *ASPM* is **very weak** (actually, barely detectable!) when controlling for the macroareas, which is due to the very small and skewed sample and the fact that there is a very strong difference between Africa and the other macroareas in the sample.
+
+Thus, I also conducted a permutations analysis, where there are several important parameters:
+
+| Parameter   | Meaning                               | Values                                                                                                                            |
+|:------------|:--------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------|
+| `permute`   | what to permute?                      | `nothing` = the original data                                                                                                     |
+|             |                                       | `tone` = permute the tone variable                                                                                                |
+|             |                                       | `genes-together` = permute the two genes together                                                                                 |
+|             |                                       | `genes-independent` = permute the two genes separately, i.e., each is independently permuted                                      |
+| `within`    | how are the permutations constrained? | `unrestricted` = all the observations are freely permuted (i.e., there are no constraints, no structure in the data is preserved) |
+|             |                                       | `families` = only observations within the same language family are permuted (i.e., the structure of the families is preserved)    |
+|             |                                       | `macroareas` = only observations within the same macroarea are permuted (i.e., the structure of the macroareas is preserved)      |
+| `macroarea` | how do we control for macroareas?     | `none` = no control for macroareas at all                                                                                         |
+|             |                                       | `fixef` = as fixed effects                                                                                                        |
+
+```{r include=FALSE}
+# Permutations:
+
+# Fit a (possibly permuted) model and return the main results:
+.fit_permuted <- function(d, 
+                          tone_dv="tone_binary", aspm_iv="ASPM_freq_wavg", mcph1_iv="MCPH1_freq_wavg",
+                          macroarea=c("none", "fixef", "ranef")[1], 
+                          permute=c("nothing", "tone", "genes-together", "genes-independent")[1], 
+                          within=c("unrestricted", "families", "macroareas")[1],
+                          family_as_ranef=TRUE,
+                          regression_type=c("logistic", "ordered", "poisson")[1])
+{
+  # Make sure d is a data.frame to avoid errors:
+  d <- as.data.frame(d);
+
+  # Do the permutations (if any):
+  .permute_with_restrictions <- function(i, restrictions=NULL)
+  {
+    if( is.null(restrictions) )
+    {
+      # Unrestricted permuting:
+      return (sample(i));
+    } else
+    {
+      # Permute within the levels of restrictions:
+      for(r in unique(restrictions))
+      {
+        i_r <- which(r == restrictions);
+        i[i_r] <- sample(i[i_r]);
+      }
+      return (i);
+    }
+  }
+
+  if( within == "unrestricted" )
+  {
+    permute_restrictions <- NULL;
+  } else if( within == "families" )
+  {
+    permute_restrictions <- d$family_name;
+  } else if( within == "macroareas" )
+  {
+    permute_restrictions <- d$macroarea;
+  }
+
+  if( permute == "nothing" )
+  {
+    # Leave the data as such...
+  } else if( permute == "tone" )
+  {
+    i <- .permute_with_restrictions(1:nrow(d), permute_restrictions);
+    d[, tone_dv] <- d[i, tone_dv];
+  } else if( permute == "genes-together" )
+  {
+    i <- .permute_with_restrictions(1:nrow(d), permute_restrictions);
+    d[, c(aspm_iv, mcph1_iv)] <- d[i, c(aspm_iv, mcph1_iv)];
+  } else if( permute == "genes-independent" )
+  {
+    i_aspm  <- .permute_with_restrictions(1:nrow(d), permute_restrictions); 
+    i_mcph1 <- .permute_with_restrictions(1:nrow(d), permute_restrictions);
+    d[, aspm_iv]  <- d[i_aspm,  aspm_iv];
+    d[, mcph1_iv] <- d[i_mcph1, mcph1_iv];
+  }
+
+  f_ivs <- paste0(tone_dv, " ~ 1",
+                  " + ", aspm_iv, " + ", mcph1_iv,
+                  ifelse(family_as_ranef, " + (1 | family_name)", ""),
+                  switch(macroarea, "none"="", "fixef"=" + macroarea", "ranef"=" + (1 | macroarea)")); # the formula
+  
+  m_ivs <- NULL;
+  try(m_ivs <- glmer(formula(f_ivs), 
+                     family=switch(regression_type, 
+                                   "logistic"=binomial("logit"),
+                                   "poisson"=poisson()), 
+                     data=d, control=glmer_ctrl), silent=TRUE); # the model
+  if( is.null(m_ivs) )
+  {
+    return (NULL);
+  } else
+  {
+    m_0 <- m_a <- m_m <- NULL;
+    try(m_0 <- update(m_ivs, formula(paste0(". ~ . - ",aspm_iv," - ",mcph1_iv))), silent=TRUE);
+    try(m_a <- update(m_ivs, formula(paste0(". ~ . - ",aspm_iv))), silent=TRUE);
+    try(m_m <- update(m_ivs, formula(paste0(". ~ . - ",mcph1_iv))), silent=TRUE);
+    if( is.null(m_0) || is.null(m_a) || is.null(m_m) )
+    {
+      return (NULL);
+    } else
+    {
+      return  (data.frame("tone"          =tone_dv,
+                          "macroarea"     =macroarea,
+                          "family_ranef"  =family_as_ranef,
+                          "permute"       =permute,
+                          "permute_within"=within,
+                          "p_anova"       =anova(m_ivs, m_0)[2,"Pr(>Chisq)"],
+                          "AIC"           =(m_s <- summary(m_ivs))$AIC["AIC"],
+                          "ASPM_b"        =m_s$coefficients["ASPM_freq_wavg", "Estimate"],
+                          "ASPM_stderr"   =m_s$coefficients["ASPM_freq_wavg", "Std. Error"],
+                          "ASPM_p"        =m_s$coefficients["ASPM_freq_wavg", "Pr(>|z|)"],
+                          "ASPM_p_anova"  =anova(m_ivs, m_a)[2,"Pr(>Chisq)"],
+                          "MCPH1_b"       =m_s$coefficients["MCPH1_freq_wavg", "Estimate"],
+                          "MCPH1_stderr"  =m_s$coefficients["MCPH1_freq_wavg", "Std. Error"],
+                          "MCPH1_p"       =m_s$coefficients["MCPH1_freq_wavg", "Pr(>|z|)"],
+                          "MCPH1_p_anova" =anova(m_ivs, m_m)[2,"Pr(>Chisq)"],
+                          "messages"      =if(!is.null(m_s$optinfo$conv$lme4$messages)){ paste0(m_s$optinfo$conv$lme4$messages,collapse="; ") } else { NA }
+      ));
+    }
+  }
+}
+
+# Summarize the permutation results:
+.summarize_permuted <- function(d, original, macroarea=NA, permute=NA, permute_within=NA)
+{
+  if( !is.na(macroarea) && !is.na(permute) && !is.na(permute_within) ) d <- d[ d$macroarea %in% macroarea & d$permute %in% permute & d$permute_within %in% permute_within, ];
+  
+  s <- data.frame("macroarea"=macroarea, "permute"=permute, "permute_within"=permute_within, "n"=nrow(d),
+                  "better_AIC"        =sum(d$AIC <= original$AIC) / nrow(d),
+                  "signif_vs_null"    =sum(d$p_anova < 0.05) / nrow(d),
+                  "signif_ASPM"       =sum(d$ASPM_p_anova < 0.05) / nrow(d),
+                  "smaller_beta_ASPM" =sum(d$ASPM_b <= original$ASPM_b) / nrow(d),
+                  "signif_MCPH1"      =sum(d$MCPH1_p_anova < 0.05) / nrow(d),
+                  "smaller_beta_MCPH1"=sum(d$MCPH1_b <= original$MCPH1_b) / nrow(d));
+  
+  return (s);
+}
+
+all_conditions <- expand.grid("permute"=c("tone", "genes-together", "genes-independent"),
+                              "macroarea"=c("none", "fixef"),
+                              "within"=c("unrestricted", "macroareas", "families"), 
+                              stringsAsFactors=FALSE);
+n_permutations <- 1000;
+if( file.exists("./cache-results/perm_res_tb_glmer.RData") )
+{
+  load("./cache-results/perm_res_tb_glmer.RData");
+} else
+{
+  perm_res_tb_glmer <- rbind(
+    # Original values:
+    do.call(rbind, pblapply(unique(all_conditions$macroarea), function(macroarea)
+    {
+      r <- NULL;
+      capture.output(try(r <- .fit_permuted(d_tb, tone_dv="tone_binary", aspm_iv="ASPM_freq_wavg", mcph1_iv="MCPH1_freq_wavg",
+                                            macroarea=macroarea, permute="nothing", within="unrestricted", regression_type="logistic"),
+                         silent=TRUE), type="message");
+      if( is.null(r) ) { return (NULL) } else { return (cbind(data.frame("replication"=0), r)) }
+    }, cl=mclapply_ncores)) %>% mutate_if(is.factor, as.character),
+    # Permute values:
+    do.call(rbind, pblapply(1:n_permutations, function(i)
+    {
+      do.call(rbind, lapply(1:nrow(all_conditions), function(j)
+      {
+        r <- NULL;
+        capture.output(try(r <- .fit_permuted(d_tb, tone_dv="tone_binary", aspm_iv="ASPM_freq_wavg", mcph1_iv="MCPH1_freq_wavg",
+                                              macroarea=all_conditions$macroarea[j], permute=all_conditions$permute[j], within=all_conditions$within[j], regression_type="logistic"),
+                           silent=TRUE), type="message");
+        if( is.null(r) ) { return (NULL) } else { return (cbind(data.frame("replication"=i), r)) }
+      }));
+    }, cl=mclapply_ncores)) %>% mutate_if(is.factor, as.character));
+  # Save these results to file:
+  save(perm_res_tb_glmer, file="./cache-results/perm_res_tb_glmer.RData", compress="xz", compression_level=9);
+}
+```
+
+We performed `r n_permutations` independent replications of each of these, and we show below the results in terms of the distribution of the original values and the permuted ones.
+
+```{r}
+# Summarize and plot these randomization results:
+perm_res_tb_glmer_summary <- do.call(rbind, lapply(1:nrow(all_conditions), function(i) 
+  {
+    original_results <- perm_res_tb_glmer[ perm_res_tb_glmer$macroarea == all_conditions$macroarea[i] & perm_res_tb_glmer$permute == "nothing", ];
+    .summarize_permuted(perm_res_tb_glmer, 
+                        original=original_results, macroarea=all_conditions$macroarea[i], permute=all_conditions$permute[i], permute_within=all_conditions$within[i]);
+}));
+# Column order:
+perm_res_tb_glmer_summary <- perm_res_tb_glmer_summary[, c("permute_within", "macroarea", "permute", 
+                                                           "better_AIC", "signif_vs_null", "signif_ASPM", "smaller_beta_ASPM", "signif_MCPH1", "smaller_beta_MCPH1")];
+# To percent:
+perm_res_tb_glmer_summary$better_AIC         <- sprintf("%.0f%%",100*perm_res_tb_glmer_summary$better_AIC);
+perm_res_tb_glmer_summary$signif_vs_null     <- sprintf("%.0f%%",100*perm_res_tb_glmer_summary$signif_vs_null);
+perm_res_tb_glmer_summary$signif_ASPM        <- sprintf("%.0f%%",100*perm_res_tb_glmer_summary$signif_ASPM);
+perm_res_tb_glmer_summary$smaller_beta_ASPM  <- sprintf("%.0f%%",100*perm_res_tb_glmer_summary$smaller_beta_ASPM);
+perm_res_tb_glmer_summary$signif_MCPH1       <- sprintf("%.0f%%",100*perm_res_tb_glmer_summary$signif_MCPH1);
+perm_res_tb_glmer_summary$smaller_beta_MCPH1 <- sprintf("%.0f%%",100*perm_res_tb_glmer_summary$smaller_beta_MCPH1);
+# SHow it:
+knitr::kable(perm_res_tb_glmer_summary,
+             col.names=c("Permute within", "Macroarea", "Permute", "AIC", "Signif.", "p~ASPM~", "*&beta;*~ASPM~", "p~MCPH1~", "*&beta;*~MCPH1~"), 
+             align="r",
+             caption="Permutation tests using `glmer`. The first 3 columns show the permutation constraint (if any), how the macroareas are considered (if at all), and what is permuted. The next columns show the percent of the permutations that, in order, have a better AIC compared to the original model, are significantly better than the null model (thus testing the effect of both genes simultaneously), have a significant effect of ASPM, have a smaller effect (*&beta;*) of ASPM than the original model, and the same for MCPH1.");
+```
+
+```{r fig.cap="Visual representation of the permutation tests of the two genes on tone using `glmer`. Each plot shows the original result (vertical dashed black line) and the distribution of the permutation for the three possible things to be permuted (colored curves) for each combination of permutation constraints (horizontal panels) and control for macroareas (vertical panels) in terms of the effect size *&beta;*; ASPM is on top and MCHP1 at the bottom. The vertical dotted black thin line is at 0.0.", fig.height=12, fig.width=8}
+perm_res_tb_glmer$macroarea      <- factor(as.character(perm_res_tb_glmer$macroarea), levels=c("none", "fixef"));
+perm_res_tb_glmer$permute        <- factor(as.character(perm_res_tb_glmer$permute), levels=c("nothing", "tone", "genes-together", "genes-independent"));
+perm_res_tb_glmer$permute_within <- factor(as.character(perm_res_tb_glmer$permute_within), levels=c("unrestricted", "macroareas", "families"));
+grid.arrange(
+  # ASPM:
+  ggplot(perm_res_tb_glmer[ perm_res_tb_glmer$permute != "nothing", ], aes(x=ASPM_b)) + xlab("ASPM") + xlim(-10,10) + 
+    geom_density(aes(color=permute, fill=permute), alpha=0.5) + 
+    geom_vline(data=perm_res_tb_glmer[ perm_res_tb_glmer$permute == "nothing", c("macroarea", "ASPM_b", "MCPH1_b")], aes(xintercept=ASPM_b), color="black", linetype="dashed") + 
+    geom_vline(xintercept=0.0, color="black", linetype="dotted") + 
+    facet_grid(macroarea ~ permute_within),
+  # MCPH1:
+  ggplot(perm_res_tb_glmer[ perm_res_tb_glmer$permute != "nothing", ], aes(x=MCPH1_b)) + xlab("MCPH1") + xlim(-10,10) + 
+    geom_density(aes(color=permute, fill=permute), alpha=0.5) + 
+    geom_vline(data=perm_res_tb_glmer[ perm_res_tb_glmer$permute == "nothing", c("macroarea", "ASPM_b", "MCPH1_b")], aes(xintercept=MCPH1_b), color="black", linetype="dashed") + 
+    geom_vline(xintercept=0.0, color="black", linetype="dotted") + 
+    facet_grid(macroarea ~ permute_within),
+  ncol=1); 
+```
+
+So, for:
+
+- *ASPM*:
+  + not controlling for macroareas finds a negative effect on tone, especially strong for unrestricted permutations, but when restricted to macroareas and families, but
+  + when having macroareas as a fixed effect, this negative effect on tone is much reduced but still present for unrestricted and within macroareas, but not within families.
+
+- *MCPH1*, the negative effect is present only for the unrestricted permutations when not controlling for macroarea.
+
+
+### Restricted sampling
+
+It seems thus that both tone and the gene frequencies are very stable within families, which suggests that sampling a single language/population per family might help deal with this issue.
+
+```{r include=FALSE}
+.pick_one_sample_per_family <- function(d, also_per_macroarea=FALSE)
+{
+  if( !also_per_macroarea )
+  {
+    # Pick one sample per family:
+    i <- vapply(unique(d$family_name), function(f){ s <- which(d$family_name == f); ifelse(length(s)==1, s, sample(s, size=1)); }, numeric(1));
+  } else
+  {
+    # Pick one sample per family and macroarea:
+    unique_cases <- unique(d[,c("family_name","macroarea")]);
+    i <- vapply(1:nrow(unique_cases), function(k){ s <- which(d$family_name == unique_cases$family_name[k] & d$macroarea == unique_cases$macroarea[k]); ifelse(length(s)==1, s, sample(s, size=1)); }, numeric(1));
+  }
+  d[i,];
+}
+
+# Repeatedly sample and do the regressions:
+n_samples <- 1000;
+reg_samples_per_fam <- do.call(rbind, lapply(1:n_samples, function(i)
+{
+  # Sample:
+  d <- .pick_one_sample_per_family(d_tb);
+  
+  # Null:
+  m_0 <- glm(tone_binary ~ 1, family=binomial(), data=d);
+  # ASPM:
+  m_aspm <- glm(tone_binary ~ 1 + ASPM_freq_wavg, family=binomial(), data=d); a_aspm <- anova(m_0, m_aspm, test="Chisq");
+  # MCPH1:
+  m_mcph1 <- glm(tone_binary ~ 1 + MCPH1_freq_wavg, family=binomial(), data=d); a_mcph1 <- anova(m_0, m_mcph1, test="Chisq");
+  # Both genes:
+  m_genes <- glm(tone_binary ~ 1 + ASPM_freq_wavg + MCPH1_freq_wavg, family=binomial(), data=d); a_genes <- anova(m_0, m_genes, test="Chisq");
+  # macroarea:
+  m_macroarea <- glm(tone_binary ~ 1 + macroarea, family=binomial(), data=d); a_macroarea <- anova(m_0, m_macroarea, test="Chisq");
+  # ASPM + m_macroarea:
+  m_aspm_macroarea <- glm(tone_binary ~ 1 + ASPM_freq_wavg + macroarea, family=binomial(), data=d);
+  # MCPH1 + m_macroarea:
+  m_mcph1_macroarea <- glm(tone_binary ~ 1 + MCPH1_freq_wavg + macroarea, family=binomial(), data=d);
+  # all:
+  m_full <- glm(tone_binary ~ 1 + ASPM_freq_wavg + MCPH1_freq_wavg + macroarea, family=binomial(), data=d); a_full <- anova(m_0, m_full, test="Chisq");
+  
+  # Return value:
+  data.frame("b_aspm"=m_aspm$coefficients[2],   "p_aspm"=summary(m_aspm)$coefficients["ASPM_freq_wavg","Pr(>|z|)"],
+             "b_aspm_macroarea"=m_aspm_macroarea$coefficients["ASPM_freq_wavg"], "p_aspm_macroarea"=summary(m_aspm_macroarea)$coefficients["ASPM_freq_wavg","Pr(>|z|)"],
+             "b_mcph1"=m_mcph1$coefficients[2], "p_mcph1"=summary(m_mcph1)$coefficients["MCPH1_freq_wavg","Pr(>|z|)"], 
+             "b_mcph1_macroarea"=m_mcph1_macroarea$coefficients["MCPH1_freq_wavg"], "p_mcph1_macroarea"=summary(m_mcph1_macroarea)$coefficients["MCPH1_freq_wavg","Pr(>|z|)"],
+             "p_genes"=a_genes[2,"Pr(>Chi)"], 
+             "p_macroarea"=a_macroarea[2,"Pr(>Chi)"], 
+             "b_aspm_all"=m_full$coefficients["ASPM_freq_wavg"], "b_mcph1_all"=m_full$coefficients["MCPH1_freq_wavg"], "p_all"=a_full[2,"Pr(>Chi)"]);
+}));
+```
+
+After `r n_samples` such samples:
+
+```{r fig.cap=capFig(paste0("Results of one sample per family for *ASPM*: ", round(100*sum(reg_samples_per_fam$b_aspm<0)/nrow(reg_samples_per_fam),1), "% of &beta;s are negative when regressing tone on *ASPM* alone, ", round(100*sum(reg_samples_per_fam$b_aspm_macroarea<0)/nrow(reg_samples_per_fam),1), "% when controlling for the macroarea, and ", round(100*sum(reg_samples_per_fam$b_aspm_all<0)/nrow(reg_samples_per_fam),1), "% when controlling for both macroarea and *MCHP1*."))}
+ggplot(reshape2::melt(reg_samples_per_fam[,c("b_aspm", "b_aspm_macroarea", "b_aspm_all")], measure.vars=c("b_aspm", "b_aspm_macroarea", "b_aspm_all"), variable.name="model", value.name="beta"), 
+       aes(x=beta, fill=model)) + 
+  geom_density(alpha=0.25) + geom_vline(xintercept=0.0, color="black", linetype="dotted") + 
+  theme(legend.position="bottom") + scale_fill_discrete(name="Model", labels=c("by itself", "ctrl macroarea", "ctrl macroarea & MCPH1")) + 
+  ggtitle("Restricted sampling for ASPM");
+```
+
+```{r fig.cap=capFig(paste0("Results of one sample per family for *MCHP1*: ", round(100*sum(reg_samples_per_fam$b_mcph1<0)/nrow(reg_samples_per_fam),1), "% of &beta;s are negative when regressing tone on *MCHP1* alone, ", round(100*sum(reg_samples_per_fam$b_mcph1_macroarea<0)/nrow(reg_samples_per_fam),1), "% when controlling for the macroarea, and ", round(100*sum(reg_samples_per_fam$b_mcph1_all<0)/nrow(reg_samples_per_fam),1), "% when controlling for both macroarea and *ASPM*."))}
+ggplot(reshape2::melt(reg_samples_per_fam[,c("b_mcph1", "b_mcph1_macroarea", "b_mcph1_all")], measure.vars=c("b_mcph1", "b_mcph1_macroarea", "b_mcph1_all"), variable.name="model", value.name="beta"), 
+       aes(x=beta, fill=model)) + 
+  geom_density(alpha=0.25) + geom_vline(xintercept=0.0, color="black", linetype="dotted") + 
+  theme(legend.position="bottom") + scale_fill_discrete(name="Model", labels=c("by itself", "ctrl macroarea", "ctrl macroarea & ASPM")) + 
+  ggtitle("Restricted sampling for MCPH1");
+```
+
+
+### Mediation and path analysis
+
+Here, we try to disentangle the fact that macroarea is a very good predictor of tone, but also of the frequency of the two genes, from any effect that the genes might have on tone.
+For this, we conduct mediation analysis and path analysis where we model the effect of macroarea on tone as partially mediated by the two genes.
+Please note that there are several technical issues with these approaches:
+
+- for mediation analysis, the method used (as implemented by function `mediate` in package `mediation`):
+  + cannot deal with a factor with several levels &rarr; we focused on the contrast between Africa and the rest of the world;
+  + cannot deal with language family as random effect &rarr; we use "flat" regressions.
+  
+- for path analysis, the method used (as implemented by function `sem` with robust estimators in package `lavaan`):
+  + cannot deal with binary variables unless they are either converted to numeric (0 vs 1) or ordered (i.e., assume that there is an intrinsic ordering between the two values), affecting both the binary contrast between Africa and the rest of the world (coded as Africa=1 or ordered as rest of the world < Africa) and tone (coded as Yes=1 or No < Yes); we implemented both codings separately;
+  + cannot deal with language family as random effect.
+  
+Thus, these analyses must be seen only in the context of all the other analyses we performed here.
+
+
+#### Mediation analysis
+
+We tested the following mediation models:
+
+```{r fig.cap=capFig("Graphical representation of the mediation model for the two genes considered separately. Blue = *direct effect* of macroarea on tone; red = *indirect effect* mediatated by the genes.")}
+DiagrammeR::grViz('
+  digraph mediation_model {
+
+  # the graph:
+  graph [overlap = true]
+  rankdir="LR";
+
+  # the nodes:
+  node [shape = box, style = "filled", fillcolor = "gray90"];
+  macroarea [label = "macroarea (Africa vs. non-Africa)"]; 
+  gene      [label = "gene (ASPM or MCPH1)"]; 
+  tone      [label = "tone (binary)"]; 
+
+  # the edges:
+  edge       [style = "solid", color = "black"];
+  macroarea -> tone [color = "blue"] ;
+  macroarea -> gene [color = "red"] ;
+  gene      -> tone [color = "red"] ;
+}
+');
+```
+
+```{r include=FALSE}
+# ASPM:
+med_aspm_f1 <- lm(ASPM_freq_wavg ~ Africa, data=d_tb); (med_aspm_f1_summary <- summary(med_aspm_f1));
+med_aspm_f2 <- glm(tone_binary ~ ASPM_freq_wavg + Africa, family=binomial(), data=d_tb); (med_aspm_f2_summary <- summary(med_aspm_f2));
+med_aspm <- mediation::mediate(med_aspm_f1, med_aspm_f2, treat='Africa', mediator='ASPM_freq_wavg', boot=FALSE); (med_aspm_summary <- summary(med_aspm));
+
+# MCPH1:
+med_mcph1_f1 <- lm(MCPH1_freq_wavg ~ Africa, data=d_tb); (med_mcph1_f1_summary <- summary(med_mcph1_f1));
+med_mcph1_f2 <- glm(tone_binary ~ MCPH1_freq_wavg + Africa, family=binomial(), data=d_tb); (med_mcph1_f2_summary <- summary(med_mcph1_f2));
+med_mcph1 <- mediation::mediate(med_mcph1_f1, med_mcph1_f2, treat='Africa', mediator='MCPH1_freq_wavg', boot=FALSE); (med_mcph1_summary <- summary(med_mcph1));
+```
+
+For *ASPM*, there are:
+
+- a significant *positive* **total effect** of being in Africa on tone, `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_aspm_summary$tau.coef, med_aspm_summary$tau.ci[1], med_aspm_summary$tau.ci[2], med_aspm_summary$tau.p)`, decomposed into:
+- a significant *positive* **average direct effect** (ADE), `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_aspm_summary$z.avg, med_aspm_summary$z.avg.ci[1], med_aspm_summary$z.avg.ci[2], med_aspm_summary$z.avg.p)`, and
+- a significant *positive* **average indirect effect** (ACME) mediated by *ASPM*, `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_aspm_summary$d.avg, med_aspm_summary$d.avg.ci[1], med_aspm_summary$d.avg.ci[2], med_aspm_summary$d.avg.p)`, mediating `r sprintf("%.1f%% (%.1f%%, %.1f%%), *p*=%.2g", 100*med_aspm_summary$n.avg, 100*med_aspm_summary$n.avg.ci[1], 100*med_aspm_summary$n.avg.ci[2], med_aspm_summary$n.avg.p)` of the effect, resulting from:
+
+  + a significant *negative* effect of being in Africa on *ASPM*, `r sprintf("%.2f ±%.2f, *p*=%.2g", med_aspm_f1_summary$coefficients["AfricaYes", "Estimate"], med_aspm_f1_summary$coefficients["AfricaYes", "Std. Error"], med_aspm_f1_summary$coefficients["AfricaYes", "Pr(>|t|)"])`, and
+  + a significant *negative* effect of *ASPM* on tone, `r sprintf("%.2f ±%.2f, *p*=%.2g", med_aspm_f2_summary$coefficients["ASPM_freq_wavg", "Estimate"], med_aspm_f2_summary$coefficients["ASPM_freq_wavg", "Std. Error"], med_aspm_f2_summary$coefficients["ASPM_freq_wavg", "Pr(>|z|)"])`.
+
+For *MCPH1*, there are:
+
+- a significant *positive* **total effect** of being in Africa on tone, `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_mcph1_summary$tau.coef, med_mcph1_summary$tau.ci[1], med_mcph1_summary$tau.ci[2], med_mcph1_summary$tau.p)`, decomposed into:
+- a significant *positive* **average direct effect** (ADE), `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_mcph1_summary$z.avg, med_mcph1_summary$z.avg.ci[1], med_mcph1_summary$z.avg.ci[2], med_mcph1_summary$z.avg.p)`, and
+- a *non-significant* **average indirect effect** (ACME) mediated by *MCPH1*, `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_mcph1_summary$d.avg, med_mcph1_summary$d.avg.ci[1], med_mcph1_summary$d.avg.ci[2], med_mcph1_summary$d.avg.p)`, mediating `r sprintf("%.1f%% (%.1f%%, %.1f%%), *p*=%.2g", 100*med_mcph1_summary$n.avg, 100*med_mcph1_summary$n.avg.ci[1], 100*med_mcph1_summary$n.avg.ci[2], med_mcph1_summary$n.avg.p)` of the effect, resulting from:
+
+  + a significant *negative* effect of being in Africa on *MCPH1*, `r sprintf("%.2f ±%.2f, *p*=%.2g", med_mcph1_f1_summary$coefficients["AfricaYes", "Estimate"], med_mcph1_f1_summary$coefficients["AfricaYes", "Std. Error"], med_mcph1_f1_summary$coefficients["AfricaYes", "Pr(>|t|)"])`, and
+  + a *non-significant* effect of *MCPH1* on tone, `r sprintf("%.2f ±%.2f, *p*=%.2g", med_mcph1_f2_summary$coefficients["MCPH1_freq_wavg", "Estimate"], med_mcph1_f2_summary$coefficients["MCPH1_freq_wavg", "Std. Error"], med_mcph1_f2_summary$coefficients["MCPH1_freq_wavg", "Pr(>|z|)"])`.
+
+Thus, this mediation analysis conforms that, while being in Africa has a major effect on tone, this is partly mediated though *ASPM* but not through *MCHP1*.
+
+
+#### Path analysis
+
+```{r include=FALSE}
+## Path analysis:
+# The model (numeric):
+sem_tone_num <- '
+    # tone:
+    tone_bin_num ~ Africa_num + ASPM_freq_wavg + MCPH1_freq_wavg
+
+    # the genes:
+    ASPM_freq_wavg  ~ Africa_num
+    MCPH1_freq_wavg ~ Africa_num
+  ';
+semfit_tone_num <- sem(sem_tone_num, data=d_tb, se="robust.sem");
+summary(semfit_tone_num, fit.measures=TRUE, standardize=TRUE, rsquare=TRUE, estimates=TRUE, ci=TRUE);
+lavaanPlot(model=semfit_tone_num, coefs=TRUE, sig=1.00, stand=FALSE, covs=TRUE, stars=c("regress", "latent", "covs"), edge_options=list(color="gray"));
+(semfit_tone_num_measures <- fitMeasures(semfit_tone_num, c("chisq", "df", "pvalue", "cfi", "tli", "nnfi", "rfi")));
+mi_tone_num <- modindices(semfit_tone_num);
+
+# The model (ordered):
+sem_tone_ord <- '
+    # tone:
+    tone_bin_ord ~ Africa_ord + ASPM_freq_wavg + MCPH1_freq_wavg
+
+    # the genes:
+    ASPM_freq_wavg  ~ Africa_ord
+    MCPH1_freq_wavg ~ Africa_ord
+  ';
+semfit_tone_ord <- sem(sem_tone_ord, data=d_tb, se="robust.sem");
+summary(semfit_tone_ord, fit.measures=TRUE, standardize=TRUE, rsquare=TRUE, estimates=TRUE, ci=TRUE);
+lavaanPlot(model=semfit_tone_ord, coefs=TRUE, sig=1.00, stand=FALSE, covs=TRUE, stars=c("regress", "latent", "covs"), edge_options=list(color="gray"));
+(semfit_tone_ord_measures <- fitMeasures(semfit_tone_ord, c("chisq", "df", "pvalue", "cfi", "tli", "nnfi", "rfi")));
+mi_tone_ord <- modindices(semfit_tone_ord);
+```
+
+Coding Africa and tone numerically, we obtain a model that fits the data very well[^SEM_INTERPRETATION] (`r sprintf("*χ*^2^(%d)=%.2f, *p*=%.2g; CFI=%.2f, TLI=%.2f, NNFI=%.2f and RFI=%.2f", semfit_tone_num_measures["df"], semfit_tone_num_measures["chisq"], semfit_tone_num_measures["pvalue"], semfit_tone_num_measures["cfi"], semfit_tone_num_measures["tli"], semfit_tone_num_measures["nnfi"], semfit_tone_num_measures["rfi"])`):
+
+```{r fig.cap=capFig("Path analysis model with standardised coefficients and significance stars. Here, we coded tone and macroarea (Africa vs non-Africa) as numeric binary (`tone_bin_num` with Yes=1 and `Africa_num` with in Africa=1).")}
+lavaanPlot(model=semfit_tone_num, coefs=TRUE, sig=1.00, stand=TRUE, covs=TRUE, stars=c("regress", "latent", "covs"), edge_options=list(color="gray"));
+```
+
+[^SEM_INTERPRETATION]: Please note that for path analyses/SEM models, we want the goodness-of-fit *χ*^2^ test to be *non-significant*, meaning that there is no reason to reject the hypothesis that the model fits the data. On the other hand, there is a plethora of goodness of fit indices (we show a few) where the idea is that the closer they are to 1.00 the better the model fits to the data.
+
+Likewise, Africa and tone as ordered binary factors, we also obtain a model that fits the data very well (`r sprintf("*χ*^2^(%d)=%.2f, *p*=%.2g; CFI=%.2f, TLI=%.2f, NNFI=%.2f and RFI=%.2f", semfit_tone_ord_measures["df"], semfit_tone_ord_measures["chisq"], semfit_tone_ord_measures["pvalue"], semfit_tone_ord_measures["cfi"], semfit_tone_ord_measures["tli"], semfit_tone_ord_measures["nnfi"], semfit_tone_ord_measures["rfi"])`):
+
+```{r fig.cap=capFig("Path analysis model with standardised coefficients and significance stars. Here, we coded tone and macroarea (Africa vs non-Africa) as ordered binary factors (`tone_bin_ord` with No < Yes, and `Africa_ord` with outside Africa < in Africa).")}
+lavaanPlot(model=semfit_tone_ord, coefs=TRUE, sig=1.00, stand=TRUE, covs=TRUE, stars=c("regress", "latent", "covs"), edge_options=list(color="gray"));
+```
+
+It can be seen that the two ways of coding the data result in very similar models that suggest that being in Africa:
+- has a significant and strong positive direct effect on tone,
+- has a significant and strong negative effect on *ASPM*, which, in turn, has a negative effect on tone,
+- has a significant and extremely strong negative effect on *MCHP1*, which, however, has no effect on tone.
+
+
+
+### Machine Learning techniques
+
+Here we apply various "machine learning" techniques to explore how well the macroarea and the two genes predict binary tone. 
+For these techniques, in general we:
+
+a) fit the model to the *full* data and estimate how well these modes fit, but also
+b) repeatedly split the data into a *training* set the complementary *test* set; the first usually contains a random subset of 80% of the data and is used to fit the model, while the second, containing the remaining 20% of the data, is used to check how well the model generalizes to new data.
+
+Thus, these techniques can:
+
+- quantify the *amount of information* about tone contained by macroarea and the genes,
+- but also give an estimate of the *relative importance* of these variables in predicting tone.
+
+```{r include=FALSE}
+# The predictors:
+list_predictors <- c("ASPM_freq_wavg", "MCPH1_freq_wavg", "macroarea");
+f_tone          <- formula(paste0("tone_binary ~ ", paste0(list_predictors,collapse=" + ")));
+list_predictors_nomacroarea <- list_predictors[ list_predictors != "macroarea" ];
+f_tone_nomacroarea          <- formula(paste0("tone_binary ~ ", paste0(list_predictors_nomacroarea,collapse=" + ")));
+
+# Generate the training/testing splits into a training (80%) and a testing (20%) set stratified by macroarea:
+set.seed(13); # reproducibility
+n_train <- 100; # the number of training/testing splits
+# Make sure all macroareas in the test data are also in the training data:
+k <- 0; success_splitting <- FALSE;
+while(k < 100)
+{
+  success_splitting <- TRUE;
+  train_test_splits <- lapply(1:n_train, function(i) rsample::initial_split(d_tb, prop=0.80, strata="macroarea"));
+  for( i in 1:n_train )
+  {
+    data_train <- training(train_test_splits[[i]]);
+    data_test  <- testing(train_test_splits[[i]]);
+    if( !all(unique(data_test$macroarea) %in% unique(data_train$macroarea)) )
+    {
+      # Try again: 
+      success_splitting <- FALSE; break;
+    }
+  }
+  if( success_splitting ) break; 
+  
+  # Try again:
+  k <- k + 1;
+}
+if( !success_splitting && k == 100 ) stop("Error: cannot split the data into traning and testing sets by macroareas!\n");
+```
+
+
+#### Decision trees
+
+##### Including macroarea
+
+```{r include=FALSE}
+### With macroareas:
+## On the full dataset:
+ctree_tb_m_all <- ctree(f_tone, data=d_tb, control=ctree_control(testtype=c("MonteCarlo")));
+(cm_ctree_tb_m_all <- confusionMatrix(d_tb$tone_binary, predict(ctree_tb_m_all), positive="Yes"));
+success_ctree_tb_m_all <- data.frame("accuracy"     =cm_ctree_tb_m_all$overall["Accuracy"],
+                                     "sensitivity"  =cm_ctree_tb_m_all$byClass["Sensitivity"], 
+                                     "specificity"  =cm_ctree_tb_m_all$byClass["Specificity"],
+                                     "precision"    =cm_ctree_tb_m_all$byClass["Precision"],
+                                     "recall"       =cm_ctree_tb_m_all$byClass["Recall"],
+                                     row.names=NULL);
+
+## On the training/testing sets:
+ctree_tb_m_traintest <- pblapply(1:n_train, function(i) # very computationally expensive
+{
+  # split the data:
+  data_train <- training(train_test_splits[[i]]);
+  data_test  <- testing(train_test_splits[[i]]);
+  
+  # fit the models:
+  ctree_model <- ctree(f_tone, data=data_train, control=ctree_control(testtype=c("MonteCarlo")));
+
+  # confusion matrices:
+  cm_ctree <- confusionMatrix(data_test$tone_binary, predict(ctree_model,  newdata=data_test, allow_new_levels=TRUE), positive="Yes");
+
+  # return the results:
+  success_ctree <- data.frame("replication"  =i, # replication
+                              "accuracy"     =cm_ctree$overall["Accuracy"],
+                              "sensitivity"  =cm_ctree$byClass["Sensitivity"], 
+                              "specificity"  =cm_ctree$byClass["Specificity"],
+                              "precision"    =cm_ctree$byClass["Precision"],
+                              "recall"       =cm_ctree$byClass["Recall"],
+                              row.names=NULL);
+  
+  return (list("replication"       =i,
+               "data_train_indices"=train_test_splits[[i]]$in_id, 
+               "data_test_indices" =setdiff(1:nrow(train_test_splits[[i]]$data), train_test_splits[[i]]$in_id),
+               "success"=success_ctree));
+}, cl=mclapply_ncores); # try to use multiple cores, if present
+```
+
+When using the frequency of the two genes and the macroarea as predictors, we obtain the following decision tree on the full data:
+
+```{r fig.cap=capFig("Decision tree on the full data using the two genes and macroarea.")}
+plot(ctree_tb_m_all, gp=gpar(fontsize = 11));
+```
+
+that fits the data pretty well: `r sprintf("accuracy = %.1f%%, sensitivity = %.1f%%, specificity = %.1f%%, precision = %.1f%%, and recall = %.1f%%", 100*success_ctree_tb_m_all["accuracy"], 100*success_ctree_tb_m_all["sensitivity"], 100*success_ctree_tb_m_all["specificity"], 100*success_ctree_tb_m_all["precision"], 100*success_ctree_tb_m_all["recall"])`.
+
+On the `r n_train` training/testing sets, we see that these models generalize pretty well, comparable to the success on the full data: `r success_ctree_tb_m_traintest <- do.call(rbind, lapply(ctree_tb_m_traintest, function(x) x$success)); paste0(names(success_ctree_tb_m_traintest)[-1], " = ", vapply(success_ctree_tb_m_traintest[,-1], function(x) sprintf("%.1f%% ±%.1f%%", mean(x,na.rm=TRUE)*100, sd(x,na.rm=TRUE)*100), character(1)), collapse=", ")`.
+
+```{r fig.cap=capFig("The success of generalising to the testing sets from the training sets (yellow boxplots) compared to the success on the full data (red segments).")}
+ggplot(success_ctree_tb_m_traintest %>% 
+         reshape2::melt(id.vars=c("replication"), variable.name="measure", value.name="value") %>% 
+         mutate("measure"=factor(measure, levels=c("accuracy", "sensitivity", "specificity", "precision", "recall")), "value"=value*100), 
+       aes(x=measure, y=value, fill=measure)) + 
+  ylim(c(0,100)) + xlab("Measures of success") + ylab("Value (%)") +
+  theme_bw() +
+  geom_boxplot(show.legend=FALSE) + 
+  # draw alternating vertical bands:
+  new_scale_fill() + 
+  geom_rect(aes(xmin=as.numeric(measure)-0.5, xmax=as.numeric(measure)+0.5, ymin=0, ymax=100, fill=as.factor(as.numeric(measure) %% 2 == 0)), show.legend=FALSE) + 
+  scale_fill_manual("", values=c("white", "gray95")) +
+  # draw the actual boxplots:
+  new_scale_fill() + 
+  geom_boxplot(aes(x=measure, y=value), color="gray20", fill="lightyellow") + 
+  # measures on the full dataset:
+  geom_rect(data=success_ctree_tb_m_all %>% 
+              reshape2::melt(measure.vars=c("accuracy", "sensitivity", "specificity", "precision", "recall"), variable.name="measure", value.name="value") %>%
+              mutate("measure"=factor(measure, levels=c("accuracy", "sensitivity", "specificity", "precision", "recall")), "value"=value*100), 
+            aes(xmin=as.numeric(measure)-0.5, xmax=as.numeric(measure)+0.5, ymin=value-0.10, ymax=value+0.10), color="red", fill="red") +
+  theme(legend.position="right");
+```
+
+##### Excluding macroarea
+
+```{r include=FALSE}
+### On the full dataset:
+ctree_tb_nom_all <- ctree(f_tone_nomacroarea, data=d_tb, control=ctree_control(testtype=c("MonteCarlo")));
+(cm_ctree_tb_nom_all <- confusionMatrix(d_tb$tone_binary, predict(ctree_tb_nom_all), positive="Yes"));
+success_ctree_tb_nom_all <- data.frame("accuracy"     =cm_ctree_tb_nom_all$overall["Accuracy"],
+                                       "sensitivity"  =cm_ctree_tb_nom_all$byClass["Sensitivity"], 
+                                       "specificity"  =cm_ctree_tb_nom_all$byClass["Specificity"],
+                                       "precision"    =cm_ctree_tb_nom_all$byClass["Precision"],
+                                       "recall"       =cm_ctree_tb_nom_all$byClass["Recall"],
+                                       row.names=NULL);
+
+## On the training/testing sets:
+ctree_tb_nom_traintest <- pblapply(1:n_train, function(i) # very computationally expensive
+{
+  # split the data:
+  data_train <- training(train_test_splits[[i]]);
+  data_test  <- testing(train_test_splits[[i]]);
+  
+  # fit the models:
+  ctree_model <- ctree(f_tone_nomacroarea, data=data_train, control=ctree_control(testtype=c("MonteCarlo")));
+  
+  # confusion matrices:
+  cm_ctree <- confusionMatrix(data_test$tone_binary, predict(ctree_model,  newdata=data_test, allow_new_levels=TRUE), positive="Yes");
+  
+  # return the results:
+  success_ctree <- data.frame("replication"  =i, # replication
+                              "accuracy"     =cm_ctree$overall["Accuracy"],
+                              "sensitivity"  =cm_ctree$byClass["Sensitivity"], 
+                              "specificity"  =cm_ctree$byClass["Specificity"],
+                              "precision"    =cm_ctree$byClass["Precision"],
+                              "recall"       =cm_ctree$byClass["Recall"],
+                              row.names=NULL);
+  
+  return (list("replication"       =i,
+               "data_train_indices"=train_test_splits[[i]]$in_id, 
+               "data_test_indices" =setdiff(1:nrow(train_test_splits[[i]]$data), train_test_splits[[i]]$in_id),
+               "success"=success_ctree));
+}, cl=mclapply_ncores); # try to use multiple cores, if present
+```
+
+When using the frequency of the two genes only as predictors, we obtain the following decision tree on the full data:
+
+```{r fig.cap=capFig("Decision tree on the full data using the two genes only.")}
+plot(ctree_tb_nom_all, gp=gpar(fontsize = 11));
+```
+
+that fits the data pretty well: `r sprintf("accuracy = %.1f%%, sensitivity = %.1f%%, specificity = %.1f%%, precision = %.1f%%, and recall = %.1f%%", 100*success_ctree_tb_nom_all["accuracy"], 100*success_ctree_tb_nom_all["sensitivity"], 100*success_ctree_tb_nom_all["specificity"], 100*success_ctree_tb_nom_all["precision"], 100*success_ctree_tb_nom_all["recall"])`.
+
+On the `r n_train` training/testing sets, we see that these models generalize pretty well, comparable to the success on the full data: `r success_ctree_tb_nom_traintest <- do.call(rbind, lapply(ctree_tb_nom_traintest, function(x) x$success)); paste0(names(success_ctree_tb_nom_traintest)[-1], " = ", vapply(success_ctree_tb_nom_traintest[,-1], function(x) sprintf("%.1f%% ±%.1f%%", mean(x,na.rm=TRUE)*100, sd(x,na.rm=TRUE)*100), character(1)), collapse=", ")`.
+
+```{r fig.cap=capFig("The success of generalising to the testing sets from the training sets (yellow boxplots) compared to the success on the full data (red segments).")}
+ggplot(success_ctree_tb_nom_traintest %>% 
+         reshape2::melt(id.vars=c("replication"), variable.name="measure", value.name="value") %>% 
+         mutate("measure"=factor(measure, levels=c("accuracy", "sensitivity", "specificity", "precision", "recall")), "value"=value*100), 
+       aes(x=measure, y=value, fill=measure)) + 
+  ylim(c(0,100)) + xlab("Measures of success") + ylab("Value (%)") +
+  theme_bw() +
+  geom_boxplot(show.legend=FALSE) + 
+  # draw alternating vertical bands:
+  new_scale_fill() + 
+  geom_rect(aes(xmin=as.numeric(measure)-0.5, xmax=as.numeric(measure)+0.5, ymin=0, ymax=100, fill=as.factor(as.numeric(measure) %% 2 == 0)), show.legend=FALSE) + 
+  scale_fill_manual("", values=c("white", "gray95")) +
+  # draw the actual boxplots:
+  new_scale_fill() + 
+  geom_boxplot(aes(x=measure, y=value), color="gray20", fill="lightyellow") + 
+  # measures on the full dataset:
+  geom_rect(data=success_ctree_tb_nom_all %>% 
+              reshape2::melt(measure.vars=c("accuracy", "sensitivity", "specificity", "precision", "recall"), variable.name="measure", value.name="value") %>%
+              mutate("measure"=factor(measure, levels=c("accuracy", "sensitivity", "specificity", "precision", "recall")), "value"=value*100), 
+            aes(xmin=as.numeric(measure)-0.5, xmax=as.numeric(measure)+0.5, ymin=value-0.10, ymax=value+0.10), color="red", fill="red") +
+  theme(legend.position="right");
+```
+
+So:
+
+- with or without macroarea, the decision trees fir the full data and generalize comparably well,
+- with macroarea, the distinction between Africa and Americas vs Eurasia and Papunesia is the most important, followed, for the later, by the frequency of *ASPM*.
+- without macroarea, the frequency of *ASPM* is the most important predictor of tone, followed by the frequency of *MCHP1* when the frequency of ASPM is low (in fact, this seems to set aside Africa).
+
+
+#### Random forests
+
+Here we use random forests the same way we used decision trees; however, please note that random forests do internal bootstrapping, so there is no need for the traning/testing set repeated refitting.
+We use two methods: random forests as implemented by `randomForest()` in package `randomForest`, and conditional random forests as implemented by `cforest()` in package `partykit`.
+
+```{r}
+# Collect the success measures and the predictor importance based on the gini index (randomForest) and the accuracy indices (randomForest and cForest):
+n_replications <- 100; # the number of replications
+cf_ntree       <- 500; # the number of trees for cforest
+cf_nperm       <- 10;  # number of permutations for cforest:varimp
+```
+
+##### Including macroarea
+
+```{r include=FALSE}
+## With macroareas:
+if( !file.exists("./cache-results/forest_tb_m_all.RData") )
+{
+  forest_tb_m_all <- pblapply(1:n_replications, function(i) # computationally expensive
+  {
+    # fit the random forests:
+    rf_tone <- cf_tone <- NULL;
+    try(rf_tone <- randomForest(f_tone, data=d_tb, importance=TRUE), silent=TRUE);
+    try(cf_tone <- cforest(f_tone, data=d_tb, ntree=cf_ntree), silent=TRUE);
+    if( is.null(rf_tone) || is.null(cf_tone) ) return (NULL); # some error
+    
+    # confusion matrices:
+    cm_rf_tone <- confusionMatrix(d_tb$tone_binary, rf_tone$predicted, positive="Yes");
+    cm_cf_tone <- confusionMatrix(d_tb$tone_binary, predict(cf_tone),  positive="Yes");
+    
+    # predictor importance:
+    pia_rf_tone <- pig_rf_tone <- piu_cf_tone <- NULL
+    try(pia_rf_tone <- importance(rf_tone, type=1), silent=TRUE); # accuracy-based
+    try(pig_rf_tone <- importance(rf_tone, type=2), silent=TRUE); # gini-based
+    try(piu_cf_tone <- varimp(cf_tone, conditional=FALSE, nperm=cf_nperm), silent=TRUE); # unconditional
+    if( is.null(pia_rf_tone) || is.null(pig_rf_tone) || is.null(piu_cf_tone) ) return (NULL); # some error
+    
+    # return the results:
+    success <- data.frame("replication"     =i,                              # replication
+                          "rf_accuracy"     =cm_rf_tone$overall["Accuracy"], # randomForest
+                          "rf_sensitivity"  =cm_rf_tone$byClass["Sensitivity"], 
+                          "rf_specificity"  =cm_rf_tone$byClass["Specificity"],
+                          "rf_precision"    =cm_rf_tone$byClass["Precision"],
+                          "rf_recall"       =cm_rf_tone$byClass["Recall"],
+                          "cf_accuracy"     =cm_cf_tone$overall["Accuracy"], # cforest
+                          "cf_sensitivity"  =cm_cf_tone$byClass["Sensitivity"], 
+                          "cf_specificity"  =cm_cf_tone$byClass["Specificity"],
+                          "cf_precision"    =cm_cf_tone$byClass["Precision"],
+                          "cf_recall"       =cm_cf_tone$byClass["Recall"], 
+                          row.names=NULL);
+    pi_df  <- data.frame("replication"      =i,               # replication
+                         "predictor"        =list_predictors, # predictors
+                         "rf_accuracy_based"=pia_rf_tone,     # randomForest accuracy-based
+                         "rf_gini_based"    =pig_rf_tone,     # randomForest gini-based
+                         "cf_unconditional" =piu_cf_tone,     # cforest unconditional
+                         row.names=NULL);
+    
+    return (list("replication"    =i,
+                 "success"        =success,   
+                 "pred_importance"=pi_df));
+  }, cl=mclapply_ncores); # try to use multiple cores, if present
+  
+  # Assemble the various results and save them:
+  forest_tb_m_all <- list("replications"   =n_replications,
+                          "success"        =do.call(rbind, lapply(forest_tb_m_all, function(x) if(is.null(x)){ NULL; } else { x$success; })),
+                          "pred_importance"=do.call(rbind, lapply(forest_tb_m_all, function(x) if(is.null(x)){ NULL; } else { x$pred_importance; })));
+  save(forest_tb_m_all, file="./cache-results/forest_tb_m_all.RData", compress="xz", compression_level=9);
+} else
+{
+  load("./cache-results/forest_tb_m_all.RData");
+}
+```
+
+When using the frequency of the two genes and the macroarea as predictors, the models fit the full data pretty well: 
+
+- random forests: `r s <- grep("rf_", names(forest_tb_m_all$success), fixed=TRUE); paste0(substring(names(forest_tb_m_all$success)[s],4), " = ", vapply(forest_tb_m_all$success[,s], function(x) sprintf("%.1f%% ±%.1f%%", mean(x,na.rm=TRUE)*100, sd(x,na.rm=TRUE)*100), character(1)), collapse=", ")`,
+- conditional random forests: `r s <- grep("cf_", names(forest_tb_m_all$success), fixed=TRUE); paste0(substring(names(forest_tb_m_all$success)[s],4), " = ", vapply(forest_tb_m_all$success[,s], function(x) sprintf("%.1f%% ±%.1f%%", mean(x,na.rm=TRUE)*100, sd(x,na.rm=TRUE)*100), character(1)), collapse=", ")`.
+
+```{r fig.cap=capFig("The success of the two random forest methods on the full data."), fig.width=8, fig.height=4}
+ggplot(forest_tb_m_all$success %>% 
+         reshape2::melt(id.vars=c("replication"), variable.name="measure", value.name="value") %>% 
+         mutate("method"=factor(if_else(substring(measure,1,2) == "rf", "random forest", "conditional random forest"), levels=c("random forest", "conditional random forest")), 
+                "measure"=factor(substring(measure,4), levels=c("accuracy", "sensitivity", "specificity", "precision", "recall")), 
+                "value"=value*100), 
+       aes(x=measure, y=value, fill=measure)) + 
+  ylim(c(0,100)) + xlab("Measures of success") + ylab("Value (%)") +
+  theme_bw() +
+  geom_boxplot(show.legend=FALSE) + 
+  # draw alternating vertical bands:
+  new_scale_fill() + 
+  geom_rect(aes(xmin=as.numeric(measure)-0.5, xmax=as.numeric(measure)+0.5, ymin=0, ymax=100, fill=as.factor(as.numeric(measure) %% 2 == 0)), show.legend=FALSE) + 
+  scale_fill_manual("", values=c("white", "gray95")) +
+  # draw the actual boxplots:
+  new_scale_fill() + 
+  geom_boxplot(aes(x=measure, y=value), color="gray20", fill="lightyellow") + 
+  theme(legend.position="right") + 
+  facet_grid(. ~ method);
+```
+
+```{r fig.cap=capFig("Variable importance using three methods: mean decrease in accuracy, mean decrease of the Gini coeficient, and unconditional importance."), fig.width=12, fig.height=4}
+grid.arrange(ggplot(forest_tb_m_all$pred_importance, 
+                    aes(x=reorder(predictor, MeanDecreaseAccuracy, median), y=MeanDecreaseAccuracy, fill=predictor)) +
+               theme_bw() +
+               geom_boxplot(color="black") +
+               labs(x="Predictors (decr. importance)", y="Mean decrease accuracy") +
+               theme(axis.text.y = element_text(angle=30, hjust=1, size=10), 
+                     axis.text.x = element_text(hjust=1, size=10),
+                     axis.title=element_text(size=16),
+                     legend.position="bottom") +
+               coord_flip() +
+               NULL,
+             ggplot(forest_tb_m_all$pred_importance, 
+                    aes(x=reorder(predictor, MeanDecreaseGini, median), y=MeanDecreaseGini, fill=predictor)) +
+               theme_bw() +
+               geom_boxplot(color="black") +
+               labs(x="Predictors (decr. importance)", y="Mean decrease Gini index") +
+               theme(axis.text.y = element_text(angle=30, hjust=1, size=10), 
+                     axis.text.x = element_text(hjust=1, size=10),
+                     axis.title=element_text(size=16),
+                     legend.position="bottom") +
+               coord_flip() +
+               NULL,
+             ggplot(forest_tb_m_all$pred_importance, 
+                    aes(x=reorder(predictor, cf_unconditional, median), y=cf_unconditional, fill=predictor)) +
+               theme_bw() +
+               geom_boxplot(color="black") +
+               labs(x="Predictors (decr. importance)", y="Unconditional importance") +
+               theme(axis.text.y = element_text(angle=30, hjust=1, size=10), 
+                     axis.text.x = element_text(hjust=1, size=10),
+                     axis.title=element_text(size=16),
+                     legend.position="bottom") +
+               coord_flip() +
+               NULL,
+             ncol=3);
+```
+
+##### Excluding macroarea
+
+```{r include=FALSE}
+## Without macroareas:
+if( !file.exists("./cache-results/forest_tb_nom_all.RData") )
+{
+  forest_tb_nom_all <- pblapply(1:n_replications, function(i) # computationally expensive
+  {
+    # fit the random forests:
+    rf_tone <- cf_tone <- NULL;
+    try(rf_tone <- randomForest(f_tone_nomacroarea, data=d_tb, importance=TRUE), silent=TRUE);
+    try(cf_tone <- cforest(f_tone_nomacroarea, data=d_tb, ntree=cf_ntree), silent=TRUE);
+    if( is.null(rf_tone) || is.null(cf_tone) ) return (NULL); # some error
+    
+    # confusion matrices:
+    cm_rf_tone <- confusionMatrix(d_tb$tone_binary, rf_tone$predicted, positive="Yes");
+    cm_cf_tone <- confusionMatrix(d_tb$tone_binary, predict(cf_tone),  positive="Yes");
+    
+    # predictor importance:
+    pia_rf_tone <- pig_rf_tone <- piu_cf_tone <- NULL
+    try(pia_rf_tone <- importance(rf_tone, type=1), silent=TRUE); # accuracy-based
+    try(pig_rf_tone <- importance(rf_tone, type=2), silent=TRUE); # gini-based
+    try(piu_cf_tone <- varimp(cf_tone, conditional=FALSE, nperm=cf_nperm), silent=TRUE); # unconditional
+    if( is.null(pia_rf_tone) || is.null(pig_rf_tone) || is.null(piu_cf_tone) ) return (NULL); # some error
+    
+    # return the results:
+    success <- data.frame("replication"     =i,                              # replication
+                          "rf_accuracy"     =cm_rf_tone$overall["Accuracy"], # randomForest
+                          "rf_sensitivity"  =cm_rf_tone$byClass["Sensitivity"], 
+                          "rf_specificity"  =cm_rf_tone$byClass["Specificity"],
+                          "rf_precision"    =cm_rf_tone$byClass["Precision"],
+                          "rf_recall"       =cm_rf_tone$byClass["Recall"],
+                          "cf_accuracy"     =cm_cf_tone$overall["Accuracy"], # cforest
+                          "cf_sensitivity"  =cm_cf_tone$byClass["Sensitivity"], 
+                          "cf_specificity"  =cm_cf_tone$byClass["Specificity"],
+                          "cf_precision"    =cm_cf_tone$byClass["Precision"],
+                          "cf_recall"       =cm_cf_tone$byClass["Recall"], 
+                          row.names=NULL);
+    pi_df  <- data.frame("replication"      =i,               # replication
+                         "predictor"        =list_predictors_nomacroarea, # predictors
+                         "rf_accuracy_based"=pia_rf_tone,     # randomForest accuracy-based
+                         "rf_gini_based"    =pig_rf_tone,     # randomForest gini-based
+                         "cf_unconditional" =piu_cf_tone,     # cforest unconditional
+                         row.names=NULL);
+    
+    return (list("replication"    =i,
+                 "success"        =success,   
+                 "pred_importance"=pi_df));
+  }, cl=mclapply_ncores); # try to use multiple cores, if present
+  
+  # Assemble the various results and save them:
+  forest_tb_nom_all <- list("replications"   =n_replications,
+                          "success"        =do.call(rbind, lapply(forest_tb_nom_all, function(x) if(is.null(x)){ NULL; } else { x$success; })),
+                          "pred_importance"=do.call(rbind, lapply(forest_tb_nom_all, function(x) if(is.null(x)){ NULL; } else { x$pred_importance; })));
+  save(forest_tb_nom_all, file="./cache-results/forest_tb_nom_all.RData", compress="xz", compression_level=9);
+} else
+{
+  load("./cache-results/forest_tb_nom_all.RData");
+}
+```
+
+When using the frequency of the two genes only, the models fit the full data pretty well: 
+
+- random forests: `r s <- grep("rf_", names(forest_tb_nom_all$success), fixed=TRUE); paste0(substring(names(forest_tb_nom_all$success)[s],4), " = ", vapply(forest_tb_nom_all$success[,s], function(x) sprintf("%.1f%% ±%.1f%%", mean(x,na.rm=TRUE)*100, sd(x,na.rm=TRUE)*100), character(1)), collapse=", ")`,
+- conditional random forests: `r s <- grep("cf_", names(forest_tb_nom_all$success), fixed=TRUE); paste0(substring(names(forest_tb_nom_all$success)[s],4), " = ", vapply(forest_tb_nom_all$success[,s], function(x) sprintf("%.1f%% ±%.1f%%", mean(x,na.rm=TRUE)*100, sd(x,na.rm=TRUE)*100), character(1)), collapse=", ")`.
+
+```{r fig.cap=capFig("The success of the two random forest methods on the full data."), fig.width=8, fig.height=4}
+ggplot(forest_tb_nom_all$success %>% 
+         reshape2::melt(id.vars=c("replication"), variable.name="measure", value.name="value") %>% 
+         mutate("method"=factor(if_else(substring(measure,1,2) == "rf", "random forest", "conditional random forest"), levels=c("random forest", "conditional random forest")), 
+                "measure"=factor(substring(measure,4), levels=c("accuracy", "sensitivity", "specificity", "precision", "recall")), 
+                "value"=value*100), 
+       aes(x=measure, y=value, fill=measure)) + 
+  ylim(c(0,100)) + xlab("Measures of success") + ylab("Value (%)") +
+  theme_bw() +
+  geom_boxplot(show.legend=FALSE) + 
+  # draw alternating vertical bands:
+  new_scale_fill() + 
+  geom_rect(aes(xmin=as.numeric(measure)-0.5, xmax=as.numeric(measure)+0.5, ymin=0, ymax=100, fill=as.factor(as.numeric(measure) %% 2 == 0)), show.legend=FALSE) + 
+  scale_fill_manual("", values=c("white", "gray95")) +
+  # draw the actual boxplots:
+  new_scale_fill() + 
+  geom_boxplot(aes(x=measure, y=value), color="gray20", fill="lightyellow") + 
+  theme(legend.position="right") + 
+  facet_grid(. ~ method);
+```
+
+```{r fig.cap=capFig("Variable importance using three methods: mean decrease in accuracy, mean decrease of the Gini coeficient, and unconditional importance."), fig.width=12, fig.height=4}
+grid.arrange(ggplot(forest_tb_nom_all$pred_importance, 
+                    aes(x=reorder(predictor, MeanDecreaseAccuracy, median), y=MeanDecreaseAccuracy, fill=predictor)) +
+               theme_bw() +
+               geom_boxplot(color="black") +
+               labs(x="Predictors (decr. importance)", y="Mean decrease accuracy") +
+               theme(axis.text.y = element_text(angle=30, hjust=1, size=10), 
+                     axis.text.x = element_text(hjust=1, size=10),
+                     axis.title=element_text(size=16),
+                     legend.position="bottom") +
+               coord_flip() +
+               NULL,
+             ggplot(forest_tb_nom_all$pred_importance, 
+                    aes(x=reorder(predictor, MeanDecreaseGini, median), y=MeanDecreaseGini, fill=predictor)) +
+               theme_bw() +
+               geom_boxplot(color="black") +
+               labs(x="Predictors (decr. importance)", y="Mean decrease Gini index") +
+               theme(axis.text.y = element_text(angle=30, hjust=1, size=10), 
+                     axis.text.x = element_text(hjust=1, size=10),
+                     axis.title=element_text(size=16),
+                     legend.position="bottom") +
+               coord_flip() +
+               NULL,
+             ggplot(forest_tb_nom_all$pred_importance, 
+                    aes(x=reorder(predictor, cf_unconditional, median), y=cf_unconditional, fill=predictor)) +
+               theme_bw() +
+               geom_boxplot(color="black") +
+               labs(x="Predictors (decr. importance)", y="Unconditional importance") +
+               theme(axis.text.y = element_text(angle=30, hjust=1, size=10), 
+                     axis.text.x = element_text(hjust=1, size=10),
+                     axis.title=element_text(size=16),
+                     legend.position="bottom") +
+               coord_flip() +
+               NULL,
+             ncol=3);
+```
+
+So:
+
+- with or without macroarea, the random forests fit the data comparably well,
+- in decreasing order of their importance:
+  + when including macroarea: we have macroarea as the most important once, and ASPM as the most important twice,
+  + when excluding macroarea, ASPM is the most important all three times.
+
+
+
+### Conclusions for tone1
+
+It seems that macroarea (especially Africa vs non-Africa) is a major explanatory factor simultaneously for the distribution of binary tone, and the allele frequencies of *ASPM*-D and *MCPH1*-D.
+This makes it very hard to disentangle the *direct effect* of macroarea on tone (due to historical contingencies and sampling) from any indirect effects *mediated* by the two genes (which would be causal in the sense of amplified weak biases à la @dediu_ladd_2007).
+An extra complication concerns the *timescales* on which such a biasing effect would work: it cannot change a language too quickly (i.e., it is too weak to act in just a few generations), and the allele frequencies themselves do not change fast either (as far as we know, they are not under selection and their dynamics is thus due to genetic drift and demographic processes) -- taken together these suggest that the bias might work on the same scale as the *time depth of language families*.
+This, in turn creates the extra problem that controlling for families might remove the effect and reduce our statistical power.
+
+With these caveats in mind, we did find that:
+
+a) the two genes by themselves have a negative effect on tone even when controlling for language families (stronger for *ASPM* than *MCPH1*), but this overlaps with the effect of macroarea (especially Africa vs non-Africa),
+b) the two genes have no effect within Africa (not surprising given the distribution of tone and the two genes), nor within Eurasia (except when we do not control for language family, which is expected given the discussion above about time depth and small effective sample size),
+c) a randomization approach shows that there is a negative effect of *ASPM* on tone even when controlling for macroarea (but not for *MCPH1*),
+d) restricted sampling (extracting only one language per family) shows again that *ASPM* has a negative effect on tone even after controlling for macroarea (but not for *MCPH1*),
+e) mediation and path analysis show that besides a direct positive effect of macroarea on tone, there is also an indirect effect mediated through a negative influence of *ASPM* (but not for *MCHP1*),
+f) both decision trees and random forests show that the effect of macroarea and the two genes largely overlap, but that *ASPM* is a very important predictor for tone even when macroarea is included.
+
+Thus, it seems that ASPM has a weak negative influence on tone above and beyond the effects of macroarea and language family, but these effects are very tricky to disentangle; on the other hand, it is seems that the effect of MCPH1 is entirely artifactual and due to its very skewed distribution within and outside Africa.
+
+
+
+## Tone 3-way (complex vs none+simple; "tone2")
+
+When working with the 3-way classification of tone, we will focus on the binary distinction between complex tone systems, on the one hand, and no tone and simple tone systems, on the other.
+
+```{r include=FALSE}
+# Split 3-way into complex vs none+simple:
+# Keep only the observation with non-missing data for the relevant variables:
+d_t3 <- unique(data_all[complete.cases(data_all[, c("tone_3way", "tone_binary",
+                                                    "ASPM_freq_wavg", "MCPH1_freq_wavg", "ASPM_freq_wavg_4beta", "MCPH1_freq_wavg_4beta",
+                                                    "family_name", "macroarea", "metapop_ID")]), 
+                        c("metapop", "metapop_ID", "pop_ID", "glottocode", "family_name", "macroarea", "latitude", "longitude", 
+                          "tone_3way", "tone_binary", "ASPM_freq_wavg" , "MCPH1_freq_wavg", "ASPM_freq_wavg_4beta", "MCPH1_freq_wavg_4beta")]);
+# and only the observations of the same pop_ID that have different tone and gene frequency data:
+lgs_to_keep <- d_t3 %>% group_by(metapop, pop_ID, tone_3way, ASPM_freq_wavg, MCPH1_freq_wavg) %>%
+  summarise("keep_glottocode"=glottocode[1]);
+d_t3 <- d_t3[ d_t3$glottocode %in% lgs_to_keep$keep_glottocode, ];
+
+# None vs simple+complex:
+d_t3$tone_yes <- factor(ifelse(d_t3$tone_3way == "None", "No", "Yes"), levels=c("No", "Yes"));
+table(d_t3[,c("tone_yes", "tone_binary")]); # <- almost perfect match (1 mismatch out of 160 for Ket kett1243)!
+
+# Complex vs non+simple:
+d_t3$tone_complex <- factor(ifelse(d_t3$tone_3way == "Complex", "Yes", "No"), levels=c("No", "Yes"));
+
+# Dichotomise macroarea:
+d_t3$Africa <- factor(ifelse(d_t3$macroarea == "Africa", "Yes", "No"), levels=c("No", "Yes"));
+
+# Recode tone and Africa as numeric and ordered:
+d_t3$Africa_num   <- as.numeric(d_t3$Africa == "Yes");
+d_t3$Africa_ord   <- ordered(d_t3$Africa, levels=c("No", "Yes"));
+d_t3$tone_complex_num <- as.numeric(d_t3$tone_complex == "Yes");
+d_t3$tone_complex_ord <- ordered(d_t3$tone_complex, levels=c("No", "Yes"));
+```
+
+The resulting dataset has `r nrow(d_t3)` observations, distributed among `r length(unique(d_t3$glottocode))` unique Glottolg codes in `r length(unique(d_t3$family))` families (ranging from a minimum of 1 language per family to a maximum of `r max(tmp <- as.numeric(table(d_t3$family)))`, with a mean `r round(mean(tmp),1)` and median `r round(median(tmp),1)` of languages per family) and `r length(unique(d_t3$macroarea))` macroareas:
+
+```{r}
+pander(table(d_t3$macroarea));
+```
+
+
+The distribution of **tone** is:
+
+```{r fig.cap=capFig("Distribution of complex tone.")}
+ggplot(d_t3, aes(x=tone_complex, fill=tone_complex)) + geom_bar() + scale_fill_viridis_d();
+```
+
+```{r fig.cap=capFig("Distribution of complex tone across macroareas.")}
+ggplot(d_t3, aes(x=macroarea, fill=tone_complex)) + geom_bar() + scale_fill_viridis_d() + theme(axis.text.x=element_text(angle=45, hjust=1));
+```
+
+```{r fig.cap=capFig("Distribution of complex tone across the world.")}
+ggplot() +
+  geom_polygon(data=mapWorld, aes(x=long, y=lat, group=group), fill="grey") +
+  geom_point(data=d_t3, shape=21, size=1.5, aes(x=longitude, y=latitude, fill=tone_complex)) +
+  theme(legend.position = c(0.25, 0.32), 
+      legend.justification = c(1, 1), 
+      legend.title = element_text(size = 9), 
+      legend.text = element_text(size = 10)) + 
+  scale_fill_viridis_d("tone");
+```
+
+```{r fig.cap=capFig("Relationship between complex tone and ASPM frequency.")}
+ggplot(d_t3, aes(x=tone_complex, y=ASPM_freq_wavg, color=tone_complex)) + geom_boxplot() + scale_fill_viridis_d() + ylab("ASPM frequency");
+```
+
+```{r fig.cap=capFig("Relationship between complex tone and MCPH1 frequency.")}
+ggplot(d_t3, aes(x=tone_complex, y=MCPH1_freq_wavg, color=tone_complex)) + geom_boxplot() + scale_fill_viridis_d() + ylab("MCPH1 frequency");
+```
+
+
+### Regressions
+
+```{r include=FALSE}
+# The null model:
+m_t3_0 <- glmer(tone_complex ~ 1 + # intercept
+                  (1 | family_name), # random effects structure
+                family=binomial(), data=d_t3, control=glmer_ctrl);
+summary(m_t3_0);
+
+# Full model:
+m_t3_full <- glmer(tone_complex ~ 1 + # intercept
+                     ASPM_freq_wavg + MCPH1_freq_wavg + # the two genes (and their interaction)
+                     macroarea + # macroarea
+                     ASPM_freq_wavg:macroarea + MCPH1_freq_wavg:macroarea + # interactions between genes and macroareas
+                     ASPM_freq_wavg:MCPH1_freq_wavg + # interaction between genes
+                     (1 | family_name), # random effects structure
+                   family=binomial(), data=d_t3, control=glmer_ctrl);
+summary(m_t3_full); # Hessian is numerically singular: parameters are not uniquely determined -> try to remove interactions:
+m_t3_1 <- update(m_t3_full, . ~ . - ASPM_freq_wavg:MCPH1_freq_wavg); # Model failed to converge: degenerate  Hessian with 2 negative eigenvalues
+summary(m_t3_1); anova(m_t3_full, m_t3_1); # p=0.6044
+m_t3_2 <- update(m_t3_1, . ~ . - ASPM_freq_wavg:macroarea - MCPH1_freq_wavg:macroarea);
+summary(m_t3_2); anova(m_t3_full, m_t3_2); # p=0.5045
+# -> ok, so this seems to be the base model... try again the gene-gene interaction:
+m_t3_3 <- update(m_t3_2, . ~ . + ASPM_freq_wavg:MCPH1_freq_wavg); # Model is nearly unidentifiable: large eigenvalue ratio
+summary(m_t3_3); anova(m_t3_2, m_t3_3); # p=0.1198 -> no interactions!
+m_t3_full <- m_t3_2;
+lattice::dotplot(ranef(m_t3_full, which="family_name", condVar=TRUE));
+
+# Does macroarea matter?
+m_t3_nom <- update(m_t3_full, . ~ . - macroarea);
+summary(m_t3_nom);
+anova(m_t3_full, m_t3_nom); # p=0.9322 -> no
+anova(m_t3_0, m_t3_nom); # p=0.054 . -> the genes don't really add much...
+
+# Do the genes matter?
+m_t3_nog <- update(m_t3_full, . ~ . - ASPM_freq_wavg - MCPH1_freq_wavg);
+summary(m_t3_nog); anova(m_t3_full, m_t3_nog); # p=0.5291 -> no
+anova(m_t3_0, m_t3_nog); # p=0.1716 -> macroarea adds no info
+# ASPM:
+m_t3_aspm_m <- update(m_t3_nog, . ~ . + ASPM_freq_wavg);
+summary(m_t3_aspm_m); anova(m_t3_nog, m_t3_aspm_m); # p=0.2937
+m_t3_aspm <- update(m_t3_aspm_m, . ~ . - macroarea);
+summary(m_t3_aspm); 
+anova(m_t3_aspm_m, m_t3_aspm); # p=0.7388 -> macroarea does not add info
+anova(m_t3_0, m_t3_aspm); # p=0.0277 * -> ASPM predicts tone by itself
+# MCPH1:
+m_t3_mcph1_m <- update(m_t3_nog, . ~ . + MCPH1_freq_wavg);
+summary(m_t3_mcph1_m); anova(m_t3_nog, m_t3_mcph1_m); # p=0.3702
+m_t3_mcph1 <- update(m_t3_mcph1_m, . ~ . - macroarea);
+summary(m_t3_mcph1); 
+anova(m_t3_mcph1_m, m_t3_mcph1); # p=0.7796 -> macroarea doesn not add info
+anova(m_t3_0, m_t3_mcph1); # p=0.02987 * -> MCPH1 predicts tone by itself
+
+# -> the affect of ASPM and MCPH1 seems fully accounted for by macroarea, but are predictive for complex tone!
+```
+
+We built a mixed-effects logistic model where complex binary is predicted by macroarea and the two genes (with their interactions) when considering language family as random effect, and we found that:
+
+- for the null model, `r sprintf("ICC = %.1f%%", 100*performance::icc(m_t3_0)$ICC_adjusted)`, which shows that complex tone is very strongly clustered within families;
+- the interactions drop out (i.e., there does not seem to be an interaction between the two genes, not between the genes and macroarea);
+- the macroarea by itself does not predict complex tone (`r sprintf("*p* = %.2g", anova(m_t3_0, m_t3_nog)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_t3_nog)$R2_marginal)`);
+- the two genes together almost predict tone (`r sprintf("*p* = %.2g", anova(m_t3_0, m_t3_nom)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_t3_nom)$R2_marginal)`): 
+  + *ASPM* by itself has a negative significant affect (`r sprintf("*β* = %.2g ± %.2g, *p* = %.2g", summary(m_t3_aspm)$coefficients["ASPM_freq_wavg", "Estimate"], summary(m_t3_aspm)$coefficients["ASPM_freq_wavg", "Std. Error"], anova(m_t3_0, m_t3_aspm)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_t3_aspm)$R2_marginal)`), 
+  + as does *MCPH1* by itself (`r sprintf("*β* = %.2g ± %.2g, *p* = %.2g", summary(m_t3_mcph1)$coefficients["MCPH1_freq_wavg", "Estimate"], summary(m_t3_mcph1)$coefficients["MCPH1_freq_wavg", "Std. Error"], anova(m_t3_0, m_t3_mcph1)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_t3_mcph1)$R2_marginal)`);
+- however, macroarea and the two genes seem to carry pretty much the same information about tone (i.e., their effects when controlling for the others are not different from 0)...
+
+
+### Randomization approach
+
+```{r include=FALSE}
+# Permutations:
+if( file.exists("./cache-results/perm_res_t3_glmer.RData") )
+{
+  load("./cache-results/perm_res_t3_glmer.RData");
+} else
+{
+  perm_res_t3_glmer <- rbind(
+    # Original values:
+    do.call(rbind, pblapply(unique(all_conditions$macroarea), function(macroarea)
+    {
+      r <- NULL;
+      capture.output(try(r <- .fit_permuted(d_t3, tone_dv="tone_complex", aspm_iv="ASPM_freq_wavg", mcph1_iv="MCPH1_freq_wavg",
+                                            macroarea=macroarea, permute="nothing", within="unrestricted", regression_type="logistic"),
+                         silent=TRUE), type="message");
+      if( is.null(r) ) { return (NULL) } else { return (cbind(data.frame("replication"=0), r)) }
+    }, cl=mclapply_ncores)) %>% mutate_if(is.factor, as.character),
+    # Permute values:
+    do.call(rbind, pblapply(1:n_permutations, function(i)
+    {
+      do.call(rbind, lapply(1:nrow(all_conditions), function(j)
+      {
+        r <- NULL;
+        capture.output(try(r <- .fit_permuted(d_t3, tone_dv="tone_complex", aspm_iv="ASPM_freq_wavg", mcph1_iv="MCPH1_freq_wavg",
+                                              macroarea=all_conditions$macroarea[j], permute=all_conditions$permute[j], within=all_conditions$within[j], regression_type="logistic"),
+                           silent=TRUE), type="message");
+        if( is.null(r) ) { return (NULL) } else { return (cbind(data.frame("replication"=i), r)) }
+      }));
+    }, cl=mclapply_ncores)) %>% mutate_if(is.factor, as.character));
+  # Save these results to file:
+  save(perm_res_t3_glmer, file="./cache-results/perm_res_t3_glmer.RData", compress="xz", compression_level=9);
+}
+```
+
+We performed `r n_permutations` independent replications:
+
+```{r}
+# Summarize and plot these randomization results:
+perm_res_t3_glmer_summary <- do.call(rbind, lapply(1:nrow(all_conditions), function(i) 
+  {
+    original_results <- perm_res_t3_glmer[ perm_res_t3_glmer$macroarea == all_conditions$macroarea[i] & perm_res_t3_glmer$permute == "nothing", ];
+    .summarize_permuted(perm_res_t3_glmer, 
+                        original=original_results, macroarea=all_conditions$macroarea[i], permute=all_conditions$permute[i], permute_within=all_conditions$within[i]);
+}));
+# Column order:
+perm_res_t3_glmer_summary <- perm_res_t3_glmer_summary[, c("permute_within", "macroarea", "permute", 
+                                                           "better_AIC", "signif_vs_null", "signif_ASPM", "smaller_beta_ASPM", "signif_MCPH1", "smaller_beta_MCPH1")];
+# To percent:
+perm_res_t3_glmer_summary$better_AIC         <- sprintf("%.0f%%",100*perm_res_t3_glmer_summary$better_AIC);
+perm_res_t3_glmer_summary$signif_vs_null     <- sprintf("%.0f%%",100*perm_res_t3_glmer_summary$signif_vs_null);
+perm_res_t3_glmer_summary$signif_ASPM        <- sprintf("%.0f%%",100*perm_res_t3_glmer_summary$signif_ASPM);
+perm_res_t3_glmer_summary$smaller_beta_ASPM  <- sprintf("%.0f%%",100*perm_res_t3_glmer_summary$smaller_beta_ASPM);
+perm_res_t3_glmer_summary$signif_MCPH1       <- sprintf("%.0f%%",100*perm_res_t3_glmer_summary$signif_MCPH1);
+perm_res_t3_glmer_summary$smaller_beta_MCPH1 <- sprintf("%.0f%%",100*perm_res_t3_glmer_summary$smaller_beta_MCPH1);
+# SHow it:
+knitr::kable(perm_res_t3_glmer_summary,
+             col.names=c("Permute within", "Macroarea", "Permute", "AIC", "Signif.", "p~ASPM~", "*&beta;*~ASPM~", "p~MCPH1~", "*&beta;*~MCPH1~"), 
+             align="r",
+             caption="Permutation tests using `glmer`. The first 3 columns show the permutation constraint (if any), how the macroareas are considered (if at all), and what is permuted. The next columns show the percent of the permutations that, in order, have a better AIC compared to the original model, are significantly better than the null model (thus testing the effect of both genes simultaneously), have a significant effect of ASPM, have a smaller effect (*&beta;*) of ASPM than the original model, and the same for MCPH1.");
+```
+
+```{r fig.cap="Visual representation of the permutation tests of the two genes on tone using `glmer`. Each plot shows the original result (vertical dashed black line) and the distribution of the permutation for the three possible things to be permuted (colored curves) for each combination of permutation constraints (horizontal panels) and control for macroareas (vertical panels) in terms of the effect size *&beta;*; ASPM is on top and MCHP1 at the bottom. The vertical dotted black thin line is at 0.0.", fig.height=12, fig.width=8}
+perm_res_t3_glmer$macroarea      <- factor(as.character(perm_res_t3_glmer$macroarea), levels=c("none", "fixef"));
+perm_res_t3_glmer$permute        <- factor(as.character(perm_res_t3_glmer$permute), levels=c("nothing", "tone", "genes-together", "genes-independent"));
+perm_res_t3_glmer$permute_within <- factor(as.character(perm_res_t3_glmer$permute_within), levels=c("unrestricted", "macroareas", "families"));
+grid.arrange(
+  # ASPM:
+  ggplot(perm_res_t3_glmer[ perm_res_t3_glmer$permute != "nothing", ], aes(x=ASPM_b)) + xlab("ASPM") + xlim(-10,10) + 
+    geom_density(aes(color=permute, fill=permute), alpha=0.5) + 
+    geom_vline(data=perm_res_t3_glmer[ perm_res_t3_glmer$permute == "nothing", c("macroarea", "ASPM_b", "MCPH1_b")], aes(xintercept=ASPM_b), color="black", linetype="dashed") + 
+    geom_vline(xintercept=0.0, color="black", linetype="dotted") + 
+    facet_grid(macroarea ~ permute_within),
+  # MCPH1:
+  ggplot(perm_res_t3_glmer[ perm_res_t3_glmer$permute != "nothing", ], aes(x=MCPH1_b)) + xlab("MCPH1") + xlim(-10,10) + 
+    geom_density(aes(color=permute, fill=permute), alpha=0.5) + 
+    geom_vline(data=perm_res_t3_glmer[ perm_res_t3_glmer$permute == "nothing", c("macroarea", "ASPM_b", "MCPH1_b")], aes(xintercept=MCPH1_b), color="black", linetype="dashed") + 
+    geom_vline(xintercept=0.0, color="black", linetype="dotted") + 
+    facet_grid(macroarea ~ permute_within),
+  ncol=1); 
+```
+
+So, for:
+
+- *ASPM*, there seems to be a negative effect in all conditions,
+- *MCPH1*, the negative effect is present only when not controlling for macroarea.
+
+
+### Restricted sampling
+
+```{r include=FALSE}
+# Repeatedly sample and do the regressions:
+reg_samples_per_fam_complex <- do.call(rbind, lapply(1:n_samples, function(i)
+{
+  # Sample:
+  d <- .pick_one_sample_per_family(d_t3);
+  
+  # Null:
+  m_0 <- glm(tone_complex ~ 1, family=binomial(), data=d);
+  # ASPM:
+  m_aspm <- glm(tone_complex ~ 1 + ASPM_freq_wavg, family=binomial(), data=d); a_aspm <- anova(m_0, m_aspm, test="Chisq");
+  # MCPH1:
+  m_mcph1 <- glm(tone_complex ~ 1 + MCPH1_freq_wavg, family=binomial(), data=d); a_mcph1 <- anova(m_0, m_mcph1, test="Chisq");
+  # Both genes:
+  m_genes <- glm(tone_complex ~ 1 + ASPM_freq_wavg + MCPH1_freq_wavg, family=binomial(), data=d); a_genes <- anova(m_0, m_genes, test="Chisq");
+  # macroarea:
+  m_macroarea <- glm(tone_complex ~ 1 + macroarea, family=binomial(), data=d); a_macroarea <- anova(m_0, m_macroarea, test="Chisq");
+  # ASPM + m_macroarea:
+  m_aspm_macroarea <- glm(tone_complex ~ 1 + ASPM_freq_wavg + macroarea, family=binomial(), data=d);
+  # MCPH1 + m_macroarea:
+  m_mcph1_macroarea <- glm(tone_complex ~ 1 + MCPH1_freq_wavg + macroarea, family=binomial(), data=d);
+  # all:
+  m_full <- glm(tone_complex ~ 1 + ASPM_freq_wavg + MCPH1_freq_wavg + macroarea, family=binomial(), data=d); a_full <- anova(m_0, m_full, test="Chisq");
+  
+  # Return value:
+  data.frame("b_aspm"=m_aspm$coefficients[2],   "p_aspm"=summary(m_aspm)$coefficients["ASPM_freq_wavg","Pr(>|z|)"],
+             "b_aspm_macroarea"=m_aspm_macroarea$coefficients["ASPM_freq_wavg"], "p_aspm_macroarea"=summary(m_aspm_macroarea)$coefficients["ASPM_freq_wavg","Pr(>|z|)"],
+             "b_mcph1"=m_mcph1$coefficients[2], "p_mcph1"=summary(m_mcph1)$coefficients["MCPH1_freq_wavg","Pr(>|z|)"], 
+             "b_mcph1_macroarea"=m_mcph1_macroarea$coefficients["MCPH1_freq_wavg"], "p_mcph1_macroarea"=summary(m_mcph1_macroarea)$coefficients["MCPH1_freq_wavg","Pr(>|z|)"],
+             "p_genes"=a_genes[2,"Pr(>Chi)"], 
+             "p_macroarea"=a_macroarea[2,"Pr(>Chi)"], 
+             "b_aspm_all"=m_full$coefficients["ASPM_freq_wavg"], "b_mcph1_all"=m_full$coefficients["MCPH1_freq_wavg"], "p_all"=a_full[2,"Pr(>Chi)"]);
+}));
+```
+
+After `r n_samples` such samples:
+
+```{r fig.cap=capFig(paste0("Results of one sample per family for *ASPM*: ", round(100*sum(reg_samples_per_fam_complex$b_aspm<0)/nrow(reg_samples_per_fam_complex),1), "% of &beta;s are negative when regressing tone on *ASPM* alone, ", round(100*sum(reg_samples_per_fam_complex$b_aspm_macroarea<0)/nrow(reg_samples_per_fam_complex),1), "% when controlling for the macroarea, and ", round(100*sum(reg_samples_per_fam_complex$b_aspm_all<0)/nrow(reg_samples_per_fam_complex),1), "% when controlling for both macroarea and *MCHP1*."))}
+ggplot(reshape2::melt(reg_samples_per_fam_complex[,c("b_aspm", "b_aspm_macroarea", "b_aspm_all")], measure.vars=c("b_aspm", "b_aspm_macroarea", "b_aspm_all"), variable.name="model", value.name="beta"), 
+       aes(x=beta, fill=model)) + 
+  geom_density(alpha=0.25) + geom_vline(xintercept=0.0, color="black", linetype="dotted") + 
+  theme(legend.position="bottom") + scale_fill_discrete(name="Model", labels=c("by itself", "ctrl macroarea", "ctrl macroarea & MCPH1")) + 
+  ggtitle("Restricted sampling for ASPM");
+```
+
+```{r fig.cap=capFig(paste0("Results of one sample per family for *MCHP1*: ", round(100*sum(reg_samples_per_fam_complex$b_mcph1<0)/nrow(reg_samples_per_fam_complex),1), "% of &beta;s are negative when regressing tone on *MCHP1* alone, ", round(100*sum(reg_samples_per_fam_complex$b_mcph1_macroarea<0)/nrow(reg_samples_per_fam_complex),1), "% when controlling for the macroarea, and ", round(100*sum(reg_samples_per_fam_complex$b_mcph1_all<0)/nrow(reg_samples_per_fam_complex),1), "% when controlling for both macroarea and *ASPM*."))}
+ggplot(reshape2::melt(reg_samples_per_fam_complex[,c("b_mcph1", "b_mcph1_macroarea", "b_mcph1_all")], measure.vars=c("b_mcph1", "b_mcph1_macroarea", "b_mcph1_all"), variable.name="model", value.name="beta"), 
+       aes(x=beta, fill=model)) + 
+  geom_density(alpha=0.25) + geom_vline(xintercept=0.0, color="black", linetype="dotted") + 
+  theme(legend.position="bottom") + scale_fill_discrete(name="Model", labels=c("by itself", "ctrl macroarea", "ctrl macroarea & ASPM")) + 
+  ggtitle("Restricted sampling for MCPH1");
+```
+
+
+### Mediation and path analysis
+
+#### Mediation analysis
+
+```{r include=FALSE}
+# ASPM:
+med_aspm_f1 <- lm(ASPM_freq_wavg ~ Africa, data=d_t3); (med_aspm_f1_summary <- summary(med_aspm_f1));
+med_aspm_f2 <- glm(tone_complex ~ ASPM_freq_wavg + Africa, family=binomial(), data=d_t3); (med_aspm_f2_summary <- summary(med_aspm_f2));
+med_aspm <- mediation::mediate(med_aspm_f1, med_aspm_f2, treat='Africa', mediator='ASPM_freq_wavg', boot=FALSE); (med_aspm_summary <- summary(med_aspm));
+
+# MCPH1:
+med_mcph1_f1 <- lm(MCPH1_freq_wavg ~ Africa, data=d_t3); (med_mcph1_f1_summary <- summary(med_mcph1_f1));
+med_mcph1_f2 <- glm(tone_complex ~ MCPH1_freq_wavg + Africa, family=binomial(), data=d_t3); (med_mcph1_f2_summary <- summary(med_mcph1_f2));
+med_mcph1 <- mediation::mediate(med_mcph1_f1, med_mcph1_f2, treat='Africa', mediator='MCPH1_freq_wavg', boot=FALSE); (med_mcph1_summary <- summary(med_mcph1));
+```
+
+For *ASPM*, there are:
+
+- a significant *positive* **total effect** of being in Africa on tone, `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_aspm_summary$tau.coef, med_aspm_summary$tau.ci[1], med_aspm_summary$tau.ci[2], med_aspm_summary$tau.p)`, decomposed into:
+- a *non-significant* **average direct effect** (ADE), `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_aspm_summary$z.avg, med_aspm_summary$z.avg.ci[1], med_aspm_summary$z.avg.ci[2], med_aspm_summary$z.avg.p)`, and
+- a significant *positive* **average indirect effect** (ACME) mediated by *ASPM*, `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_aspm_summary$d.avg, med_aspm_summary$d.avg.ci[1], med_aspm_summary$d.avg.ci[2], med_aspm_summary$d.avg.p)`, mediating `r sprintf("%.1f%% (%.1f%%, %.1f%%), *p*=%.2g", 100*med_aspm_summary$n.avg, 100*med_aspm_summary$n.avg.ci[1], 100*med_aspm_summary$n.avg.ci[2], med_aspm_summary$n.avg.p)` of the effect, resulting from:
+
+  + a significant *negative* effect of being in Africa on *ASPM*, `r sprintf("%.2f ±%.2f, *p*=%.2g", med_aspm_f1_summary$coefficients["AfricaYes", "Estimate"], med_aspm_f1_summary$coefficients["AfricaYes", "Std. Error"], med_aspm_f1_summary$coefficients["AfricaYes", "Pr(>|t|)"])`, and
+  + a significant *negative* effect of *ASPM* on tone, `r sprintf("%.2f ±%.2f, *p*=%.2g", med_aspm_f2_summary$coefficients["ASPM_freq_wavg", "Estimate"], med_aspm_f2_summary$coefficients["ASPM_freq_wavg", "Std. Error"], med_aspm_f2_summary$coefficients["ASPM_freq_wavg", "Pr(>|z|)"])`.
+
+For *MCPH1*, there a *non-significant* **total effect** of being in Africa on tone, `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_mcph1_summary$tau.coef, med_mcph1_summary$tau.ci[1], med_mcph1_summary$tau.ci[2], med_mcph1_summary$tau.p)`.
+
+Thus, this mediation analysis conforms that, while being in Africa has a major effect on complex tone, this is partly mediated though *ASPM* but not through *MCHP1*.
+
+
+#### Path analysis
+
+```{r include=FALSE}
+## Path analysis:
+# The model (numeric):
+sem_tone_num <- '
+    # tone:
+    tone_complex_num ~ Africa_num + ASPM_freq_wavg + MCPH1_freq_wavg
+
+    # the genes:
+    ASPM_freq_wavg  ~ Africa_num
+    MCPH1_freq_wavg ~ Africa_num
+  ';
+semfit_tone_num <- sem(sem_tone_num, data=d_t3, se="robust.sem");
+summary(semfit_tone_num, fit.measures=TRUE, standardize=TRUE, rsquare=TRUE, estimates=TRUE, ci=TRUE);
+lavaanPlot(model=semfit_tone_num, coefs=TRUE, sig=1.00, stand=FALSE, covs=TRUE, stars=c("regress", "latent", "covs"), edge_options=list(color="gray"));
+(semfit_tone_num_measures <- fitMeasures(semfit_tone_num, c("chisq", "df", "pvalue", "cfi", "tli", "nnfi", "rfi")));
+mi_tone_num <- modindices(semfit_tone_num);
+
+# The model (ordered):
+sem_tone_ord <- '
+    # tone:
+    tone_complex_ord ~ Africa_ord + ASPM_freq_wavg + MCPH1_freq_wavg
+
+    # the genes:
+    ASPM_freq_wavg  ~ Africa_ord
+    MCPH1_freq_wavg ~ Africa_ord
+  ';
+semfit_tone_ord <- sem(sem_tone_ord, data=d_t3, se="robust.sem");
+summary(semfit_tone_ord, fit.measures=TRUE, standardize=TRUE, rsquare=TRUE, estimates=TRUE, ci=TRUE);
+lavaanPlot(model=semfit_tone_ord, coefs=TRUE, sig=1.00, stand=FALSE, covs=TRUE, stars=c("regress", "latent", "covs"), edge_options=list(color="gray"));
+(semfit_tone_ord_measures <- fitMeasures(semfit_tone_ord, c("chisq", "df", "pvalue", "cfi", "tli", "nnfi", "rfi")));
+mi_tone_ord <- modindices(semfit_tone_ord);
+```
+
+Coding Africa and tone numerically, we obtain a model that fits the data very well (`r sprintf("*χ*^2^(%d)=%.2f, *p*=%.2g; CFI=%.2f, TLI=%.2f, NNFI=%.2f and RFI=%.2f", semfit_tone_num_measures["df"], semfit_tone_num_measures["chisq"], semfit_tone_num_measures["pvalue"], semfit_tone_num_measures["cfi"], semfit_tone_num_measures["tli"], semfit_tone_num_measures["nnfi"], semfit_tone_num_measures["rfi"])`):
+
+```{r fig.cap=capFig("Path analysis model with standardised coefficients and significance stars. Here, we coded tone and macroarea (Africa vs non-Africa) as numeric binary (`tone_bin_num` with Yes=1 and `Africa_num` with in Africa=1).")}
+lavaanPlot(model=semfit_tone_num, coefs=TRUE, sig=1.00, stand=TRUE, covs=TRUE, stars=c("regress", "latent", "covs"), edge_options=list(color="gray"));
+```
+
+Likewise, Africa and tone as ordered binary factors, we also obtain a model that fits the data very well (`r sprintf("*χ*^2^(%d)=%.2f, *p*=%.2g; CFI=%.2f, TLI=%.2f, NNFI=%.2f and RFI=%.2f", semfit_tone_ord_measures["df"], semfit_tone_ord_measures["chisq"], semfit_tone_ord_measures["pvalue"], semfit_tone_ord_measures["cfi"], semfit_tone_ord_measures["tli"], semfit_tone_ord_measures["nnfi"], semfit_tone_ord_measures["rfi"])`):
+
+```{r fig.cap=capFig("Path analysis model with standardised coefficients and significance stars. Here, we coded tone and macroarea (Africa vs non-Africa) as ordered binary factors (`tone_complex_ord` with No < Yes, and `Africa_ord` with outside Africa < in Africa).")}
+lavaanPlot(model=semfit_tone_ord, coefs=TRUE, sig=1.00, stand=TRUE, covs=TRUE, stars=c("regress", "latent", "covs"), edge_options=list(color="gray"));
+```
+
+It can be seen that the two ways of coding the data result in very similar models that suggest that being in Africa:
+- has a non-significant direct effect on complex tone, and all its effect is mediated by
+- the significant and strong negative effect on *ASPM*, which, in turn, has a negative effect on tone.
+
+
+### Machine Learning techniques
+
+```{r include=FALSE}
+# The predictors:
+list_predictors <- c("ASPM_freq_wavg", "MCPH1_freq_wavg", "macroarea");
+f_tone          <- formula(paste0("tone_complex ~ ", paste0(list_predictors,collapse=" + ")));
+list_predictors_nomacroarea <- list_predictors[ list_predictors != "macroarea" ];
+f_tone_nomacroarea          <- formula(paste0("tone_complex ~ ", paste0(list_predictors_nomacroarea,collapse=" + ")));
+
+# Generate the training/testing splits into a training (80%) and a testing (20%) set stratified by macroarea:
+set.seed(13); # reproducibility
+n_train <- 100; # the number of training/testing splits
+# Make sure all macroareas in the test data are also in the training data:
+k <- 0; success_splitting <- FALSE;
+while(k < 100)
+{
+  success_splitting <- TRUE;
+  train_test_splits <- lapply(1:n_train, function(i) rsample::initial_split(d_t3, prop=0.80, strata="macroarea"));
+  for( i in 1:n_train )
+  {
+    data_train <- training(train_test_splits[[i]]);
+    data_test  <- testing(train_test_splits[[i]]);
+    if( !all(unique(data_test$macroarea) %in% unique(data_train$macroarea)) )
+    {
+      # Try again: 
+      success_splitting <- FALSE; break;
+    }
+  }
+  if( success_splitting ) break; 
+  
+  # Try again:
+  k <- k + 1;
+}
+if( !success_splitting && k == 100 ) stop("Error: cannot split the data into traning and testing sets by macroareas!\n");
+```
+
+
+#### Decision trees
+
+```{r include=FALSE}
+### With macroareas:
+## On the full dataset:
+ctree_tb_m_all <- ctree(f_tone, data=d_t3, control=ctree_control(testtype=c("MonteCarlo")));
+(cm_ctree_tb_m_all <- confusionMatrix(d_t3$tone_complex, predict(ctree_tb_m_all), positive="Yes"));
+success_ctree_tb_m_all <- data.frame("accuracy"     =cm_ctree_tb_m_all$overall["Accuracy"],
+                                     "sensitivity"  =cm_ctree_tb_m_all$byClass["Sensitivity"], 
+                                     "specificity"  =cm_ctree_tb_m_all$byClass["Specificity"],
+                                     "precision"    =cm_ctree_tb_m_all$byClass["Precision"],
+                                     "recall"       =cm_ctree_tb_m_all$byClass["Recall"],
+                                     row.names=NULL);
+
+## On the training/testing sets:
+ctree_tb_m_traintest <- pblapply(1:n_train, function(i) # very computationally expensive
+{
+  # split the data:
+  data_train <- training(train_test_splits[[i]]);
+  data_test  <- testing(train_test_splits[[i]]);
+  
+  # fit the models:
+  ctree_model <- ctree(f_tone, data=data_train, control=ctree_control(testtype=c("MonteCarlo")));
+
+  # confusion matrices:
+  cm_ctree <- confusionMatrix(data_test$tone_complex, predict(ctree_model,  newdata=data_test, allow_new_levels=TRUE), positive="Yes");
+
+  # return the results:
+  success_ctree <- data.frame("replication"  =i, # replication
+                              "accuracy"     =cm_ctree$overall["Accuracy"],
+                              "sensitivity"  =cm_ctree$byClass["Sensitivity"], 
+                              "specificity"  =cm_ctree$byClass["Specificity"],
+                              "precision"    =cm_ctree$byClass["Precision"],
+                              "recall"       =cm_ctree$byClass["Recall"],
+                              row.names=NULL);
+  
+  return (list("replication"       =i,
+               "data_train_indices"=train_test_splits[[i]]$in_id, 
+               "data_test_indices" =setdiff(1:nrow(train_test_splits[[i]]$data), train_test_splits[[i]]$in_id),
+               "success"=success_ctree));
+}, cl=mclapply_ncores); # try to use multiple cores, if present
+```
+
+When using the frequency of the two genes and the macroarea as predictors, the decision tree is trivial (in that it uniformly predicts just the majority value "No"):
+
+```{r fig.cap=capFig("Decision tree on the full data using the two genes and macroarea.")}
+plot(ctree_tb_m_all, gp=gpar(fontsize = 11));
+```
+
+`r sprintf("accuracy = %.1f%%, sensitivity = %.1f%%, specificity = %.1f%%, precision = %.1f%%, and recall = %.1f%%", 100*success_ctree_tb_m_all["accuracy"], 100*success_ctree_tb_m_all["sensitivity"], 100*success_ctree_tb_m_all["specificity"], 100*success_ctree_tb_m_all["precision"], 100*success_ctree_tb_m_all["recall"])`.
+
+On the `r n_train` training/testing sets: `r success_ctree_tb_m_traintest <- do.call(rbind, lapply(ctree_tb_m_traintest, function(x) x$success)); paste0(names(success_ctree_tb_m_traintest)[-1], " = ", vapply(success_ctree_tb_m_traintest[,-1], function(x) sprintf("%.1f%% ±%.1f%%", mean(x,na.rm=TRUE)*100, sd(x,na.rm=TRUE)*100), character(1)), collapse=", ")`.
+
+```{r fig.cap=capFig("The success of generalising to the testing sets from the training sets (yellow boxplots) compared to the success on the full data (red segments).")}
+ggplot(success_ctree_tb_m_traintest %>% 
+         reshape2::melt(id.vars=c("replication"), variable.name="measure", value.name="value") %>% 
+         mutate("measure"=factor(measure, levels=c("accuracy", "sensitivity", "specificity", "precision", "recall")), "value"=value*100), 
+       aes(x=measure, y=value, fill=measure)) + 
+  ylim(c(0,100)) + xlab("Measures of success") + ylab("Value (%)") +
+  theme_bw() +
+  geom_boxplot(show.legend=FALSE) + 
+  # draw alternating vertical bands:
+  new_scale_fill() + 
+  geom_rect(aes(xmin=as.numeric(measure)-0.5, xmax=as.numeric(measure)+0.5, ymin=0, ymax=100, fill=as.factor(as.numeric(measure) %% 2 == 0)), show.legend=FALSE) + 
+  scale_fill_manual("", values=c("white", "gray95")) +
+  # draw the actual boxplots:
+  new_scale_fill() + 
+  geom_boxplot(aes(x=measure, y=value), color="gray20", fill="lightyellow") + 
+  # measures on the full dataset:
+  geom_rect(data=success_ctree_tb_m_all %>% 
+              reshape2::melt(measure.vars=c("accuracy", "sensitivity", "specificity", "precision", "recall"), variable.name="measure", value.name="value") %>%
+              mutate("measure"=factor(measure, levels=c("accuracy", "sensitivity", "specificity", "precision", "recall")), "value"=value*100), 
+            aes(xmin=as.numeric(measure)-0.5, xmax=as.numeric(measure)+0.5, ymin=value-0.10, ymax=value+0.10), color="red", fill="red") +
+  theme(legend.position="right");
+```
+
+So, this is not very informative (except in that it takes the frequency of *ASPM* as the only thing that would matter).
+
+
+#### Random forests
+
+##### Including macroarea
+
+```{r include=FALSE}
+## With macroareas:
+if( !file.exists("./cache-results/forest_t3_m_all.RData") )
+{
+  forest_t3_m_all <- pblapply(1:n_replications, function(i) # computationally expensive
+  {
+    # fit the random forests:
+    rf_tone <- cf_tone <- NULL;
+    try(rf_tone <- randomForest(f_tone, data=d_t3, importance=TRUE), silent=TRUE);
+    try(cf_tone <- cforest(f_tone, data=d_t3, ntree=cf_ntree), silent=TRUE);
+    if( is.null(rf_tone) || is.null(cf_tone) ) return (NULL); # some error
+    
+    # confusion matrices:
+    cm_rf_tone <- confusionMatrix(d_t3$tone_complex, rf_tone$predicted, positive="Yes");
+    cm_cf_tone <- confusionMatrix(d_t3$tone_complex, predict(cf_tone),  positive="Yes");
+    
+    # predictor importance:
+    pia_rf_tone <- pig_rf_tone <- piu_cf_tone <- NULL
+    try(pia_rf_tone <- importance(rf_tone, type=1), silent=TRUE); # accuracy-based
+    try(pig_rf_tone <- importance(rf_tone, type=2), silent=TRUE); # gini-based
+    try(piu_cf_tone <- varimp(cf_tone, conditional=FALSE, nperm=cf_nperm), silent=TRUE); # unconditional
+    if( is.null(pia_rf_tone) || is.null(pig_rf_tone) || is.null(piu_cf_tone) ) return (NULL); # some error
+    
+    # return the results:
+    success <- data.frame("replication"     =i,                              # replication
+                          "rf_accuracy"     =cm_rf_tone$overall["Accuracy"], # randomForest
+                          "rf_sensitivity"  =cm_rf_tone$byClass["Sensitivity"], 
+                          "rf_specificity"  =cm_rf_tone$byClass["Specificity"],
+                          "rf_precision"    =cm_rf_tone$byClass["Precision"],
+                          "rf_recall"       =cm_rf_tone$byClass["Recall"],
+                          "cf_accuracy"     =cm_cf_tone$overall["Accuracy"], # cforest
+                          "cf_sensitivity"  =cm_cf_tone$byClass["Sensitivity"], 
+                          "cf_specificity"  =cm_cf_tone$byClass["Specificity"],
+                          "cf_precision"    =cm_cf_tone$byClass["Precision"],
+                          "cf_recall"       =cm_cf_tone$byClass["Recall"], 
+                          row.names=NULL);
+    pi_df  <- data.frame("replication"      =i,               # replication
+                         "predictor"        =list_predictors, # predictors
+                         "rf_accuracy_based"=pia_rf_tone,     # randomForest accuracy-based
+                         "rf_gini_based"    =pig_rf_tone,     # randomForest gini-based
+                         "cf_unconditional" =piu_cf_tone,     # cforest unconditional
+                         row.names=NULL);
+    
+    return (list("replication"    =i,
+                 "success"        =success,   
+                 "pred_importance"=pi_df));
+  }, cl=mclapply_ncores); # try to use multiple cores, if present
+  
+  # Assemble the various results and save them:
+  forest_t3_m_all <- list("replications"   =n_replications,
+                          "success"        =do.call(rbind, lapply(forest_t3_m_all, function(x) if(is.null(x)){ NULL; } else { x$success; })),
+                          "pred_importance"=do.call(rbind, lapply(forest_t3_m_all, function(x) if(is.null(x)){ NULL; } else { x$pred_importance; })));
+  save(forest_t3_m_all, file="./cache-results/forest_t3_m_all.RData", compress="xz", compression_level=9);
+} else
+{
+  load("./cache-results/forest_t3_m_all.RData");
+}
+```
+
+When using the frequency of the two genes and the macroarea as predictors, the models fit the full data pretty well: 
+
+- random forests: `r s <- grep("rf_", names(forest_t3_m_all$success), fixed=TRUE); paste0(substring(names(forest_t3_m_all$success)[s],4), " = ", vapply(forest_t3_m_all$success[,s], function(x) sprintf("%.1f%% ±%.1f%%", mean(x,na.rm=TRUE)*100, sd(x,na.rm=TRUE)*100), character(1)), collapse=", ")`,
+- conditional random forests: `r s <- grep("cf_", names(forest_t3_m_all$success), fixed=TRUE); paste0(substring(names(forest_t3_m_all$success)[s],4), " = ", vapply(forest_t3_m_all$success[,s], function(x) sprintf("%.1f%% ±%.1f%%", mean(x,na.rm=TRUE)*100, sd(x,na.rm=TRUE)*100), character(1)), collapse=", ")`.
+
+```{r fig.cap=capFig("The success of the two random forest methods on the full data."), fig.width=8, fig.height=4}
+ggplot(forest_t3_m_all$success %>% 
+         reshape2::melt(id.vars=c("replication"), variable.name="measure", value.name="value") %>% 
+         mutate("method"=factor(if_else(substring(measure,1,2) == "rf", "random forest", "conditional random forest"), levels=c("random forest", "conditional random forest")), 
+                "measure"=factor(substring(measure,4), levels=c("accuracy", "sensitivity", "specificity", "precision", "recall")), 
+                "value"=value*100), 
+       aes(x=measure, y=value, fill=measure)) + 
+  ylim(c(0,100)) + xlab("Measures of success") + ylab("Value (%)") +
+  theme_bw() +
+  geom_boxplot(show.legend=FALSE) + 
+  # draw alternating vertical bands:
+  new_scale_fill() + 
+  geom_rect(aes(xmin=as.numeric(measure)-0.5, xmax=as.numeric(measure)+0.5, ymin=0, ymax=100, fill=as.factor(as.numeric(measure) %% 2 == 0)), show.legend=FALSE) + 
+  scale_fill_manual("", values=c("white", "gray95")) +
+  # draw the actual boxplots:
+  new_scale_fill() + 
+  geom_boxplot(aes(x=measure, y=value), color="gray20", fill="lightyellow") + 
+  theme(legend.position="right") + 
+  facet_grid(. ~ method);
+```
+
+```{r fig.cap=capFig("Variable importance using three methods: mean decrease in accuracy, mean decrease of the Gini coeficient, and unconditional importance."), fig.width=12, fig.height=4}
+grid.arrange(ggplot(forest_t3_m_all$pred_importance, 
+                    aes(x=reorder(predictor, MeanDecreaseAccuracy, median), y=MeanDecreaseAccuracy, fill=predictor)) +
+               theme_bw() +
+               geom_boxplot(color="black") +
+               labs(x="Predictors (decr. importance)", y="Mean decrease accuracy") +
+               theme(axis.text.y = element_text(angle=30, hjust=1, size=10), 
+                     axis.text.x = element_text(hjust=1, size=10),
+                     axis.title=element_text(size=16),
+                     legend.position="bottom") +
+               coord_flip() +
+               NULL,
+             ggplot(forest_t3_m_all$pred_importance, 
+                    aes(x=reorder(predictor, MeanDecreaseGini, median), y=MeanDecreaseGini, fill=predictor)) +
+               theme_bw() +
+               geom_boxplot(color="black") +
+               labs(x="Predictors (decr. importance)", y="Mean decrease Gini index") +
+               theme(axis.text.y = element_text(angle=30, hjust=1, size=10), 
+                     axis.text.x = element_text(hjust=1, size=10),
+                     axis.title=element_text(size=16),
+                     legend.position="bottom") +
+               coord_flip() +
+               NULL,
+             ggplot(forest_t3_m_all$pred_importance, 
+                    aes(x=reorder(predictor, cf_unconditional, median), y=cf_unconditional, fill=predictor)) +
+               theme_bw() +
+               geom_boxplot(color="black") +
+               labs(x="Predictors (decr. importance)", y="Unconditional importance") +
+               theme(axis.text.y = element_text(angle=30, hjust=1, size=10), 
+                     axis.text.x = element_text(hjust=1, size=10),
+                     axis.title=element_text(size=16),
+                     legend.position="bottom") +
+               coord_flip() +
+               NULL,
+             ncol=3);
+```
+
+##### Excluding macroarea
+
+```{r include=FALSE}
+## Without macroareas:
+if( !file.exists("./cache-results/forest_t3_nom_all.RData") )
+{
+  forest_t3_nom_all <- pblapply(1:n_replications, function(i) # computationally expensive
+  {
+    # fit the random forests:
+    rf_tone <- cf_tone <- NULL;
+    try(rf_tone <- randomForest(f_tone_nomacroarea, data=d_t3, importance=TRUE), silent=TRUE);
+    try(cf_tone <- cforest(f_tone_nomacroarea, data=d_t3, ntree=cf_ntree), silent=TRUE);
+    if( is.null(rf_tone) || is.null(cf_tone) ) return (NULL); # some error
+    
+    # confusion matrices:
+    cm_rf_tone <- confusionMatrix(d_t3$tone_complex, rf_tone$predicted, positive="Yes");
+    cm_cf_tone <- confusionMatrix(d_t3$tone_complex, predict(cf_tone),  positive="Yes");
+    
+    # predictor importance:
+    pia_rf_tone <- pig_rf_tone <- piu_cf_tone <- NULL
+    try(pia_rf_tone <- importance(rf_tone, type=1), silent=TRUE); # accuracy-based
+    try(pig_rf_tone <- importance(rf_tone, type=2), silent=TRUE); # gini-based
+    try(piu_cf_tone <- varimp(cf_tone, conditional=FALSE, nperm=cf_nperm), silent=TRUE); # unconditional
+    if( is.null(pia_rf_tone) || is.null(pig_rf_tone) || is.null(piu_cf_tone) ) return (NULL); # some error
+    
+    # return the results:
+    success <- data.frame("replication"     =i,                              # replication
+                          "rf_accuracy"     =cm_rf_tone$overall["Accuracy"], # randomForest
+                          "rf_sensitivity"  =cm_rf_tone$byClass["Sensitivity"], 
+                          "rf_specificity"  =cm_rf_tone$byClass["Specificity"],
+                          "rf_precision"    =cm_rf_tone$byClass["Precision"],
+                          "rf_recall"       =cm_rf_tone$byClass["Recall"],
+                          "cf_accuracy"     =cm_cf_tone$overall["Accuracy"], # cforest
+                          "cf_sensitivity"  =cm_cf_tone$byClass["Sensitivity"], 
+                          "cf_specificity"  =cm_cf_tone$byClass["Specificity"],
+                          "cf_precision"    =cm_cf_tone$byClass["Precision"],
+                          "cf_recall"       =cm_cf_tone$byClass["Recall"], 
+                          row.names=NULL);
+    pi_df  <- data.frame("replication"      =i,               # replication
+                         "predictor"        =list_predictors_nomacroarea, # predictors
+                         "rf_accuracy_based"=pia_rf_tone,     # randomForest accuracy-based
+                         "rf_gini_based"    =pig_rf_tone,     # randomForest gini-based
+                         "cf_unconditional" =piu_cf_tone,     # cforest unconditional
+                         row.names=NULL);
+    
+    return (list("replication"    =i,
+                 "success"        =success,   
+                 "pred_importance"=pi_df));
+  }, cl=mclapply_ncores); # try to use multiple cores, if present
+  
+  # Assemble the various results and save them:
+  forest_t3_nom_all <- list("replications"   =n_replications,
+                          "success"        =do.call(rbind, lapply(forest_t3_nom_all, function(x) if(is.null(x)){ NULL; } else { x$success; })),
+                          "pred_importance"=do.call(rbind, lapply(forest_t3_nom_all, function(x) if(is.null(x)){ NULL; } else { x$pred_importance; })));
+  save(forest_t3_nom_all, file="./cache-results/forest_t3_nom_all.RData", compress="xz", compression_level=9);
+} else
+{
+  load("./cache-results/forest_t3_nom_all.RData");
+}
+```
+
+When using the frequency of the two genes only, the models fit the full data pretty well: 
+
+- random forests: `r s <- grep("rf_", names(forest_t3_nom_all$success), fixed=TRUE); paste0(substring(names(forest_t3_nom_all$success)[s],4), " = ", vapply(forest_t3_nom_all$success[,s], function(x) sprintf("%.1f%% ±%.1f%%", mean(x,na.rm=TRUE)*100, sd(x,na.rm=TRUE)*100), character(1)), collapse=", ")`,
+- conditional random forests: `r s <- grep("cf_", names(forest_t3_nom_all$success), fixed=TRUE); paste0(substring(names(forest_t3_nom_all$success)[s],4), " = ", vapply(forest_t3_nom_all$success[,s], function(x) sprintf("%.1f%% ±%.1f%%", mean(x,na.rm=TRUE)*100, sd(x,na.rm=TRUE)*100), character(1)), collapse=", ")`.
+
+```{r fig.cap=capFig("The success of the two random forest methods on the full data."), fig.width=8, fig.height=4}
+ggplot(forest_t3_nom_all$success %>% 
+         reshape2::melt(id.vars=c("replication"), variable.name="measure", value.name="value") %>% 
+         mutate("method"=factor(if_else(substring(measure,1,2) == "rf", "random forest", "conditional random forest"), levels=c("random forest", "conditional random forest")), 
+                "measure"=factor(substring(measure,4), levels=c("accuracy", "sensitivity", "specificity", "precision", "recall")), 
+                "value"=value*100), 
+       aes(x=measure, y=value, fill=measure)) + 
+  ylim(c(0,100)) + xlab("Measures of success") + ylab("Value (%)") +
+  theme_bw() +
+  geom_boxplot(show.legend=FALSE) + 
+  # draw alternating vertical bands:
+  new_scale_fill() + 
+  geom_rect(aes(xmin=as.numeric(measure)-0.5, xmax=as.numeric(measure)+0.5, ymin=0, ymax=100, fill=as.factor(as.numeric(measure) %% 2 == 0)), show.legend=FALSE) + 
+  scale_fill_manual("", values=c("white", "gray95")) +
+  # draw the actual boxplots:
+  new_scale_fill() + 
+  geom_boxplot(aes(x=measure, y=value), color="gray20", fill="lightyellow") + 
+  theme(legend.position="right") + 
+  facet_grid(. ~ method);
+```
+
+```{r fig.cap=capFig("Variable importance using three methods: mean decrease in accuracy, mean decrease of the Gini coeficient, and unconditional importance."), fig.width=12, fig.height=4}
+grid.arrange(ggplot(forest_t3_nom_all$pred_importance, 
+                    aes(x=reorder(predictor, MeanDecreaseAccuracy, median), y=MeanDecreaseAccuracy, fill=predictor)) +
+               theme_bw() +
+               geom_boxplot(color="black") +
+               labs(x="Predictors (decr. importance)", y="Mean decrease accuracy") +
+               theme(axis.text.y = element_text(angle=30, hjust=1, size=10), 
+                     axis.text.x = element_text(hjust=1, size=10),
+                     axis.title=element_text(size=16),
+                     legend.position="bottom") +
+               coord_flip() +
+               NULL,
+             ggplot(forest_t3_nom_all$pred_importance, 
+                    aes(x=reorder(predictor, MeanDecreaseGini, median), y=MeanDecreaseGini, fill=predictor)) +
+               theme_bw() +
+               geom_boxplot(color="black") +
+               labs(x="Predictors (decr. importance)", y="Mean decrease Gini index") +
+               theme(axis.text.y = element_text(angle=30, hjust=1, size=10), 
+                     axis.text.x = element_text(hjust=1, size=10),
+                     axis.title=element_text(size=16),
+                     legend.position="bottom") +
+               coord_flip() +
+               NULL,
+             ggplot(forest_t3_nom_all$pred_importance, 
+                    aes(x=reorder(predictor, cf_unconditional, median), y=cf_unconditional, fill=predictor)) +
+               theme_bw() +
+               geom_boxplot(color="black") +
+               labs(x="Predictors (decr. importance)", y="Unconditional importance") +
+               theme(axis.text.y = element_text(angle=30, hjust=1, size=10), 
+                     axis.text.x = element_text(hjust=1, size=10),
+                     axis.title=element_text(size=16),
+                     legend.position="bottom") +
+               coord_flip() +
+               NULL,
+             ncol=3);
+```
+
+So, the random forests fit the data comparably well with or without macroarea, and *ASPM* is always the most important predictor, followed by *MCHP1* and macroarea.
+
+
+
+### Conclusions tone2
+
+Complex tone is much more rare than no tone + simple tone, but:
+
+- *ASPM* and *MCPH1* have, by themselves, negative effects on complex tone, but these effects are confounded, to a much lesser degree, by macroarea;
+- the negative effect of *ASPM* (but not of *MCHP1*) is present when permuting the data and when doing restricted sampling (one language per family) even after controlling for macroarea;
+- both mediation and math analysis show that the effect of macroarea is fully mediated by the negative effect by *ASPM* (but not by *MCPH1*);
+- the decision trees and random forests find that *ASPM* is the most important predictor of complex tone.
+
+Thus, when it comes to complex tone, *ASPM* has a negative effect that goes beyond the influences of macroarea and language family.
+
+
+
+## Tone counts
+
+We also have counts of the number of tones/tone symbols.
+
+```{r include=FALSE}
+# Keep only the observation with non-missing data for the relevant variables:
+d_tc <- unique(data_all[complete.cases(data_all[, c("n_tones",
+                                                    "ASPM_freq_wavg", "MCPH1_freq_wavg", "ASPM_freq_wavg_4beta", "MCPH1_freq_wavg_4beta",
+                                                    "family_name", "macroarea", "metapop_ID")]), 
+                        c("metapop", "metapop_ID", "pop_ID", "glottocode", "family_name", "macroarea", "latitude", "longitude", 
+                          "n_tones", "ASPM_freq_wavg" , "MCPH1_freq_wavg", "ASPM_freq_wavg_4beta", "MCPH1_freq_wavg_4beta")]);
+# and only the observations of the same pop_ID that have different tone and gene frequency data:
+lgs_to_keep <- d_tc %>% group_by(metapop, pop_ID, n_tones, ASPM_freq_wavg, MCPH1_freq_wavg) %>%
+  summarise("keep_glottocode"=glottocode[1]);
+d_tc <- d_tc[ d_tc$glottocode %in% lgs_to_keep$keep_glottocode, ];
+
+# Dichotomise macroarea:
+d_tc$Africa <- factor(ifelse(d_tc$macroarea == "Africa", "Yes", "No"), levels=c("No", "Yes"));
+
+# Recode Africa as numeric and ordered:
+d_tc$Africa_num   <- as.numeric(d_tc$Africa == "Yes");
+d_tc$Africa_ord   <- ordered(d_tc$Africa, levels=c("No", "Yes"));
+```
+
+The resulting dataset has `r nrow(d_tc)` observations, distributed among `r length(unique(d_tc$glottocode))` unique Glottolg codes in `r length(unique(d_tc$family))` families (ranging from a minimum of 1 language per family to a maximum of `r max(tmp <- as.numeric(table(d_tc$family)))`, with a mean `r round(mean(tmp),1)` and median `r round(median(tmp),1)` of languages per family) and `r length(unique(d_tc$macroarea))` macroareas:
+
+```{r}
+pander(table(d_tc$macroarea));
+```
+
+
+The distribution of **tone** is:
+
+```{r fig.cap=capFig("Distribution of tone counts.")}
+ggplot(d_tc, aes(x=n_tones)) + geom_bar() + scale_fill_viridis_d();
+```
+
+```{r fig.cap=capFig("Distribution of tone counts across macroareas.")}
+ggplot(d_tc, aes(x=n_tones)) + geom_bar() + scale_fill_viridis_d() + theme(axis.text.x=element_text(angle=45, hjust=1)) + facet_grid(. ~ macroarea);
+```
+
+```{r fig.cap=capFig("Distribution of tone counts across the world.")}
+ggplot() +
+  geom_polygon(data=mapWorld, aes(x=long, y=lat, group=group), fill="grey") +
+  geom_point(data=d_tc, shape=21, size=1.5, aes(x=longitude, y=latitude, fill=n_tones)) +
+  theme(legend.position = c(0.25, 0.32), 
+      legend.justification = c(1, 1), 
+      legend.title = element_text(size = 9), 
+      legend.text = element_text(size = 10)) + 
+  scale_fill_viridis_c("tone");
+```
+
+```{r fig.cap=capFig("Relationship between tone counts and ASPM frequency.")}
+ggplot(d_tc, aes(y=n_tones, x=ASPM_freq_wavg, group=n_tones)) + geom_boxplot() + scale_fill_viridis_d() + xlab("ASPM frequency");
+```
+
+```{r fig.cap=capFig("Relationship between binary tone and MCPH1 frequency.")}
+ggplot(d_tc, aes(y=n_tones, x=MCPH1_freq_wavg, group=n_tones)) + geom_boxplot() + scale_fill_viridis_d() + xlab("MCPH1 frequency");
+```
+
+
+### Regressions
+
+For tone counts we use Poisson regression (as implemented by `glmer()`).
+
+```{r include=FALSE}
+# Check for overdispersion (as per https://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#overdispersion):
+overdisp_fun <- function(model)
+{
+  rdf <- df.residual(model)
+  rp <- residuals(model,type="pearson")
+  Pearson.chisq <- sum(rp^2)
+  prat <- Pearson.chisq/rdf
+  pval <- pchisq(Pearson.chisq, df=rdf, lower.tail=FALSE)
+  c(chisq=Pearson.chisq,ratio=prat,rdf=rdf,p=pval)
+}
+
+
+# The null model:
+m_tc_0 <- glmer(n_tones ~ 1 + # intercept
+                  (1 | family_name), # random effects structure
+                family=poisson(), data=d_tc, control=glmer_ctrl);
+summary(m_tc_0);
+overdisp_fun(m_tc_0); # no overdispersion
+
+# Full model:
+m_tc_full <- glmer(n_tones ~ 1 + # intercept
+                     ASPM_freq_wavg + I(ASPM_freq_wavg^2) + MCPH1_freq_wavg + I(MCPH1_freq_wavg^2) + # the two genes (and their interaction)
+                     macroarea + # macroarea
+                     (1 | family_name), # random effects structure
+                   family=poisson(), data=d_tc, control=glmer_ctrl);
+summary(m_tc_full);
+overdisp_fun(m_tc_full); # no overdispersion
+lattice::dotplot(ranef(m_tc_full, which="family_name", condVar=TRUE));
+
+# Does macroarea matter?
+m_tc_nom <- update(m_tc_full, . ~ . - macroarea);
+summary(m_tc_nom);
+anova(m_tc_full, m_tc_nom); # p=0.2075 -> no
+anova(m_tc_0, m_tc_nom); # p=0.0435 * -> but the genes matter
+
+# Macroarea by itself:
+m_tc_m <- update(m_tc_0, . ~ . + macroarea);
+summary(m_tc_m);
+anova(m_tc_0, m_tc_m); # p=0.01291 * -> macroarea predicts tone
+
+# Do the genes matter?
+# ASPM:
+m_tc_aspm_12 <- update(m_tc_0, . ~ . + ASPM_freq_wavg + I(ASPM_freq_wavg^2));
+summary(m_tc_aspm_12); anova(m_tc_0, m_tc_aspm_12); # p=0.05236 .
+m_tc_aspm_1 <- update(m_tc_aspm_12, . ~ . - I(ASPM_freq_wavg^2));
+summary(m_tc_aspm_1); 
+anova(m_tc_aspm_12, m_tc_aspm_1); # p=0.1227 -> no quadratic effect for ASPM
+anova(m_tc_0, m_tc_aspm_1); # p=0.06074 . -> and no linear effect either
+# MCPH1:
+m_tc_mcph1_12 <- update(m_tc_0, . ~ . + MCPH1_freq_wavg + I(MCPH1_freq_wavg^2));
+summary(m_tc_mcph1_12); anova(m_tc_0, m_tc_mcph1_12); # p=0.05573 .
+m_tc_mcph1_1 <- update(m_tc_mcph1_12, . ~ . - I(MCPH1_freq_wavg^2));
+summary(m_tc_mcph1_1); 
+anova(m_tc_mcph1_12, m_tc_mcph1_1); # p=0.9463 -> no quadratic effect for MCPH1
+anova(m_tc_0, m_tc_mcph1_1); # p=0.0163 * -> but there is a linear negative effect!
+m_tc_mcph1_1_m <- update(m_tc_mcph1_1, . ~ . + macroarea);
+summary(m_tc_mcph1_1_m); 
+anova(m_tc_mcph1_1, m_tc_mcph1_1_m); # p=0.1547 -> macroarea does not add anything
+anova(m_tc_mcph1_1_m, m_tc_m); # p=0.6358 -> macroarea explains pretty much what MCPH1 seems to explain
+
+# -> there is a linear negative effect of MCPH1 that seems fully explained by macroarea 
+```
+
+We built a mixed-effects Poisson model where tone counts are predicted by macroarea and the two genes (linear and quadratic but no interactions) when considering language family as random effect, and we found that:
+
+- for the null model, the Poisson model is not overdispersed (`r sprintf("*χ*^2^(%d) = %.1f, *p* = %.2g", overdisp_fun(m_tc_0)["rdf"], overdisp_fun(m_tc_0)["chisq"], overdisp_fun(m_tc_0)["p"])`), and `r sprintf("ICC = %.1f%%", 100*performance::icc(m_tc_0)$ICC_adjusted)`, which shows that tone counts are clustered within families;
+- macroarea predicts tone counts (`r sprintf("*p* = %.2g", anova(m_tc_0, m_tc_m)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_tc_m)$R2_marginal)`);
+- *ASPM* has a non-significant negative effect linear on tone counts (`r sprintf("*β* = %.2g ± %.2g, *p* = %.2g", summary(m_tc_aspm_1)$coefficients["ASPM_freq_wavg", "Estimate"], summary(m_tc_aspm_1)$coefficients["ASPM_freq_wavg", "Std. Error"], anova(m_tc_0, m_tc_aspm_1)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_tc_aspm_1)$R2_marginal)`);
+- *MCPH1* has a significant negative linear effect on tone counts (`r sprintf("*β* = %.2g ± %.2g, *p* = %.2g", summary(m_tc_mcph1_1)$coefficients["MCPH1_freq_wavg", "Estimate"], summary(m_tc_mcph1_1)$coefficients["MCPH1_freq_wavg", "Std. Error"], anova(m_tc_0, m_tc_mcph1_1)[2,"Pr(>Chisq)"])`, `r sprintf("R^2^ = %.1f%%", 100*performance::r2(m_tc_mcph1_1)$R2_marginal)`), but this seems to fully overlap that of macroarea.
+
+
+
+### Randomization approach
+
+```{r include=FALSE}
+# Permutations:
+if( file.exists("./cache-results/perm_res_tc_glmer.RData") )
+{
+  load("./cache-results/perm_res_tc_glmer.RData");
+} else
+{
+  perm_res_tc_glmer <- rbind(
+    # Original values:
+    do.call(rbind, pblapply(unique(all_conditions$macroarea), function(macroarea)
+    {
+      r <- NULL;
+      capture.output(try(r <- .fit_permuted(d_tc, tone_dv="n_tones", aspm_iv="ASPM_freq_wavg", mcph1_iv="MCPH1_freq_wavg",
+                                            macroarea=macroarea, permute="nothing", within="unrestricted", regression_type="poisson"),
+                         silent=TRUE), type="message");
+      if( is.null(r) ) { return (NULL) } else { return (cbind(data.frame("replication"=0), r)) }
+    }, cl=mclapply_ncores)) %>% mutate_if(is.factor, as.character),
+    # Permute values:
+    do.call(rbind, pblapply(1:n_permutations, function(i)
+    {
+      do.call(rbind, lapply(1:nrow(all_conditions), function(j)
+      {
+        r <- NULL;
+        capture.output(try(r <- .fit_permuted(d_tc, tone_dv="n_tones", aspm_iv="ASPM_freq_wavg", mcph1_iv="MCPH1_freq_wavg",
+                                              macroarea=all_conditions$macroarea[j], permute=all_conditions$permute[j], within=all_conditions$within[j], regression_type="poisson"),
+                           silent=TRUE), type="message");
+        if( is.null(r) ) { return (NULL) } else { return (cbind(data.frame("replication"=i), r)) }
+      }));
+    }, cl=mclapply_ncores)) %>% mutate_if(is.factor, as.character));
+  # Save these results to file:
+  save(perm_res_tc_glmer, file="./cache-results/perm_res_tc_glmer.RData", compress="xz", compression_level=9);
+}
+```
+
+We performed `r n_permutations` independent replications:
+
+```{r}
+# Summarize and plot these randomization results:
+perm_res_tc_glmer_summary <- do.call(rbind, lapply(1:nrow(all_conditions), function(i) 
+  {
+    original_results <- perm_res_tc_glmer[ perm_res_tc_glmer$macroarea == all_conditions$macroarea[i] & perm_res_tc_glmer$permute == "nothing", ];
+    .summarize_permuted(perm_res_tc_glmer, 
+                        original=original_results, macroarea=all_conditions$macroarea[i], permute=all_conditions$permute[i], permute_within=all_conditions$within[i]);
+}));
+# Column order:
+perm_res_tc_glmer_summary <- perm_res_tc_glmer_summary[, c("permute_within", "macroarea", "permute", 
+                                                           "better_AIC", "signif_vs_null", "signif_ASPM", "smaller_beta_ASPM", "signif_MCPH1", "smaller_beta_MCPH1")];
+# To percent:
+perm_res_tc_glmer_summary$better_AIC         <- sprintf("%.0f%%",100*perm_res_tc_glmer_summary$better_AIC);
+perm_res_tc_glmer_summary$signif_vs_null     <- sprintf("%.0f%%",100*perm_res_tc_glmer_summary$signif_vs_null);
+perm_res_tc_glmer_summary$signif_ASPM        <- sprintf("%.0f%%",100*perm_res_tc_glmer_summary$signif_ASPM);
+perm_res_tc_glmer_summary$smaller_beta_ASPM  <- sprintf("%.0f%%",100*perm_res_tc_glmer_summary$smaller_beta_ASPM);
+perm_res_tc_glmer_summary$signif_MCPH1       <- sprintf("%.0f%%",100*perm_res_tc_glmer_summary$signif_MCPH1);
+perm_res_tc_glmer_summary$smaller_beta_MCPH1 <- sprintf("%.0f%%",100*perm_res_tc_glmer_summary$smaller_beta_MCPH1);
+# SHow it:
+knitr::kable(perm_res_tc_glmer_summary,
+             col.names=c("Permute within", "Macroarea", "Permute", "AIC", "Signif.", "p~ASPM~", "*&beta;*~ASPM~", "p~MCPH1~", "*&beta;*~MCPH1~"), 
+             align="r",
+             caption="Permutation tests using `glmer`. The first 3 columns show the permutation constraint (if any), how the macroareas are considered (if at all), and what is permuted. The next columns show the percent of the permutations that, in order, have a better AIC compared to the original model, are significantly better than the null model (thus testing the effect of both genes simultaneously), have a significant effect of ASPM, have a smaller effect (*&beta;*) of ASPM than the original model, and the same for MCPH1.");
+```
+
+```{r fig.cap="Visual representation of the permutation tests of the two genes on tone using `glmer`. Each plot shows the original result (vertical dashed black line) and the distribution of the permutation for the three possible things to be permuted (colored curves) for each combination of permutation constraints (horizontal panels) and control for macroareas (vertical panels) in terms of the effect size *&beta;*; ASPM is on top and MCHP1 at the bottom. The vertical dotted black thin line is at 0.0.", fig.height=12, fig.width=8}
+perm_res_tc_glmer$macroarea      <- factor(as.character(perm_res_tc_glmer$macroarea), levels=c("none", "fixef"));
+perm_res_tc_glmer$permute        <- factor(as.character(perm_res_tc_glmer$permute), levels=c("nothing", "tone", "genes-together", "genes-independent"));
+perm_res_tc_glmer$permute_within <- factor(as.character(perm_res_tc_glmer$permute_within), levels=c("unrestricted", "macroareas", "families"));
+grid.arrange(
+  # ASPM:
+  ggplot(perm_res_tc_glmer[ perm_res_tc_glmer$permute != "nothing", ], aes(x=ASPM_b)) + xlab("ASPM") + xlim(-5,5) + 
+    geom_density(aes(color=permute, fill=permute), alpha=0.5) + 
+    geom_vline(data=perm_res_tc_glmer[ perm_res_tc_glmer$permute == "nothing", c("macroarea", "ASPM_b", "MCPH1_b")], aes(xintercept=ASPM_b), color="black", linetype="dashed") + 
+    geom_vline(xintercept=0.0, color="black", linetype="dotted") + 
+    facet_grid(macroarea ~ permute_within),
+  # MCPH1:
+  ggplot(perm_res_tc_glmer[ perm_res_tc_glmer$permute != "nothing", ], aes(x=MCPH1_b)) + xlab("MCPH1") + xlim(-5,5) + 
+    geom_density(aes(color=permute, fill=permute), alpha=0.5) + 
+    geom_vline(data=perm_res_tc_glmer[ perm_res_tc_glmer$permute == "nothing", c("macroarea", "ASPM_b", "MCPH1_b")], aes(xintercept=MCPH1_b), color="black", linetype="dashed") + 
+    geom_vline(xintercept=0.0, color="black", linetype="dotted") + 
+    facet_grid(macroarea ~ permute_within),
+  ncol=1); 
+```
+
+So, for both genes, there seems to be a negative effect when not controlling for macroarea and family,
+
+
+### Restricted sampling
+
+```{r include=FALSE}
+# Repeatedly sample and do the regressions:
+reg_samples_per_fam_count <- do.call(rbind, lapply(1:n_samples, function(i)
+{
+  # Sample:
+  d <- .pick_one_sample_per_family(d_tc);
+  
+  # Null:
+  m_0 <- glm(n_tones ~ 1, family=poisson(), data=d);
+  # ASPM:
+  m_aspm <- glm(n_tones ~ 1 + ASPM_freq_wavg, family=poisson(), data=d); a_aspm <- anova(m_0, m_aspm, test="Chisq");
+  # MCPH1:
+  m_mcph1 <- glm(n_tones ~ 1 + MCPH1_freq_wavg, family=poisson(), data=d); a_mcph1 <- anova(m_0, m_mcph1, test="Chisq");
+  # Both genes:
+  m_genes <- glm(n_tones ~ 1 + ASPM_freq_wavg + MCPH1_freq_wavg, family=poisson(), data=d); a_genes <- anova(m_0, m_genes, test="Chisq");
+  # macroarea:
+  m_macroarea <- glm(n_tones ~ 1 + macroarea, family=poisson(), data=d); a_macroarea <- anova(m_0, m_macroarea, test="Chisq");
+  # ASPM + m_macroarea:
+  m_aspm_macroarea <- glm(n_tones ~ 1 + ASPM_freq_wavg + macroarea, family=poisson(), data=d);
+  # MCPH1 + m_macroarea:
+  m_mcph1_macroarea <- glm(n_tones ~ 1 + MCPH1_freq_wavg + macroarea, family=poisson(), data=d);
+  # all:
+  m_full <- glm(n_tones ~ 1 + ASPM_freq_wavg + MCPH1_freq_wavg + macroarea, family=poisson(), data=d); a_full <- anova(m_0, m_full, test="Chisq");
+  
+  # Return value:
+  data.frame("b_aspm"=m_aspm$coefficients[2],   "p_aspm"=summary(m_aspm)$coefficients["ASPM_freq_wavg","Pr(>|z|)"],
+             "b_aspm_macroarea"=m_aspm_macroarea$coefficients["ASPM_freq_wavg"], "p_aspm_macroarea"=summary(m_aspm_macroarea)$coefficients["ASPM_freq_wavg","Pr(>|z|)"],
+             "b_mcph1"=m_mcph1$coefficients[2], "p_mcph1"=summary(m_mcph1)$coefficients["MCPH1_freq_wavg","Pr(>|z|)"], 
+             "b_mcph1_macroarea"=m_mcph1_macroarea$coefficients["MCPH1_freq_wavg"], "p_mcph1_macroarea"=summary(m_mcph1_macroarea)$coefficients["MCPH1_freq_wavg","Pr(>|z|)"],
+             "p_genes"=a_genes[2,"Pr(>Chi)"], 
+             "p_macroarea"=a_macroarea[2,"Pr(>Chi)"], 
+             "b_aspm_all"=m_full$coefficients["ASPM_freq_wavg"], "b_mcph1_all"=m_full$coefficients["MCPH1_freq_wavg"], "p_all"=a_full[2,"Pr(>Chi)"]);
+}));
+```
+
+After `r n_samples` such samples:
+
+```{r fig.cap=capFig(paste0("Results of one sample per family for *ASPM*: ", round(100*sum(reg_samples_per_fam_count$b_aspm<0)/nrow(reg_samples_per_fam_count),1), "% of &beta;s are negative when regressing tone on *ASPM* alone, ", round(100*sum(reg_samples_per_fam_count$b_aspm_macroarea<0)/nrow(reg_samples_per_fam_count),1), "% when controlling for the macroarea, and ", round(100*sum(reg_samples_per_fam_count$b_aspm_all<0)/nrow(reg_samples_per_fam_count),1), "% when controlling for both macroarea and *MCHP1*."))}
+ggplot(reshape2::melt(reg_samples_per_fam_count[,c("b_aspm", "b_aspm_macroarea", "b_aspm_all")], measure.vars=c("b_aspm", "b_aspm_macroarea", "b_aspm_all"), variable.name="model", value.name="beta"), 
+       aes(x=beta, fill=model)) + 
+  geom_density(alpha=0.25) + geom_vline(xintercept=0.0, color="black", linetype="dotted") + 
+  theme(legend.position="bottom") + scale_fill_discrete(name="Model", labels=c("by itself", "ctrl macroarea", "ctrl macroarea & MCPH1")) + 
+  ggtitle("Restricted sampling for ASPM");
+```
+
+```{r fig.cap=capFig(paste0("Results of one sample per family for *MCHP1*: ", round(100*sum(reg_samples_per_fam_count$b_mcph1<0)/nrow(reg_samples_per_fam_count),1), "% of &beta;s are negative when regressing tone on *MCHP1* alone, ", round(100*sum(reg_samples_per_fam_count$b_mcph1_macroarea<0)/nrow(reg_samples_per_fam_count),1), "% when controlling for the macroarea, and ", round(100*sum(reg_samples_per_fam_count$b_mcph1_all<0)/nrow(reg_samples_per_fam_count),1), "% when controlling for both macroarea and *ASPM*."))}
+ggplot(reshape2::melt(reg_samples_per_fam_count[,c("b_mcph1", "b_mcph1_macroarea", "b_mcph1_all")], measure.vars=c("b_mcph1", "b_mcph1_macroarea", "b_mcph1_all"), variable.name="model", value.name="beta"), 
+       aes(x=beta, fill=model)) + 
+  geom_density(alpha=0.25) + geom_vline(xintercept=0.0, color="black", linetype="dotted") + 
+  theme(legend.position="bottom") + scale_fill_discrete(name="Model", labels=c("by itself", "ctrl macroarea", "ctrl macroarea & ASPM")) + 
+  ggtitle("Restricted sampling for MCPH1");
+```
+
+
+### Mediation and path analysis
+
+#### Mediation analysis
+
+```{r include=FALSE}
+# ASPM:
+med_aspm_f1 <- lm(ASPM_freq_wavg ~ Africa, data=d_tc); (med_aspm_f1_summary <- summary(med_aspm_f1));
+med_aspm_f2 <- glm(n_tones ~ ASPM_freq_wavg + Africa, family=poisson(), data=d_tc); (med_aspm_f2_summary <- summary(med_aspm_f2));
+med_aspm <- mediation::mediate(med_aspm_f1, med_aspm_f2, treat='Africa', mediator='ASPM_freq_wavg', boot=FALSE); (med_aspm_summary <- summary(med_aspm));
+
+# MCPH1:
+med_mcph1_f1 <- lm(MCPH1_freq_wavg ~ Africa, data=d_tc); (med_mcph1_f1_summary <- summary(med_mcph1_f1));
+med_mcph1_f2 <- glm(n_tones ~ MCPH1_freq_wavg + Africa, family=poisson(), data=d_tc); (med_mcph1_f2_summary <- summary(med_mcph1_f2));
+med_mcph1 <- mediation::mediate(med_mcph1_f1, med_mcph1_f2, treat='Africa', mediator='MCPH1_freq_wavg', boot=FALSE); (med_mcph1_summary <- summary(med_mcph1));
+```
+
+For *ASPM*, there are:
+
+- a significant *positive* **total effect** of being in Africa on tone, `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_aspm_summary$tau.coef, med_aspm_summary$tau.ci[1], med_aspm_summary$tau.ci[2], med_aspm_summary$tau.p)`, decomposed into:
+- a *non-significant* **average direct effect** (ADE), `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_aspm_summary$z.avg, med_aspm_summary$z.avg.ci[1], med_aspm_summary$z.avg.ci[2], med_aspm_summary$z.avg.p)`, and
+- a significant *positive* **average indirect effect** (ACME) mediated by *ASPM*, `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_aspm_summary$d.avg, med_aspm_summary$d.avg.ci[1], med_aspm_summary$d.avg.ci[2], med_aspm_summary$d.avg.p)`, mediating `r sprintf("%.1f%% (%.1f%%, %.1f%%), *p*=%.2g", 100*med_aspm_summary$n.avg, 100*med_aspm_summary$n.avg.ci[1], 100*med_aspm_summary$n.avg.ci[2], med_aspm_summary$n.avg.p)` of the effect, resulting from:
+
+  + a significant *negative* effect of being in Africa on *ASPM*, `r sprintf("%.2f ±%.2f, *p*=%.2g", med_aspm_f1_summary$coefficients["AfricaYes", "Estimate"], med_aspm_f1_summary$coefficients["AfricaYes", "Std. Error"], med_aspm_f1_summary$coefficients["AfricaYes", "Pr(>|t|)"])`, and
+  + a significant *negative* effect of *ASPM* on tone, `r sprintf("%.2f ±%.2f, *p*=%.2g", med_aspm_f2_summary$coefficients["ASPM_freq_wavg", "Estimate"], med_aspm_f2_summary$coefficients["ASPM_freq_wavg", "Std. Error"], med_aspm_f2_summary$coefficients["ASPM_freq_wavg", "Pr(>|z|)"])`.
+
+For *MCPH1*, there are:
+
+- a significant *positive* **total effect** of being in Africa on tone, `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_mcph1_summary$tau.coef, med_mcph1_summary$tau.ci[1], med_mcph1_summary$tau.ci[2], med_mcph1_summary$tau.p)`, decomposed into:
+- a *non-significant* **average direct effect** (ADE), `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_mcph1_summary$z.avg, med_mcph1_summary$z.avg.ci[1], med_mcph1_summary$z.avg.ci[2], med_mcph1_summary$z.avg.p)`, and
+- a *non-significant* **average indirect effect** (ACME) mediated by *ASPM*, `r sprintf("%.2f (%.2f, %.2f), *p*=%.2g", med_mcph1_summary$d.avg, med_mcph1_summary$d.avg.ci[1], med_mcph1_summary$d.avg.ci[2], med_mcph1_summary$d.avg.p)`, mediating `r sprintf("%.1f%% (%.1f%%, %.1f%%), *p*=%.2g", 100*med_mcph1_summary$n.avg, 100*med_mcph1_summary$n.avg.ci[1], 100*med_mcph1_summary$n.avg.ci[2], med_mcph1_summary$n.avg.p)` of the effect.
+
+Thus, this mediation analysis confirms that, while being in Africa has an effect on tone counts, this is partly mediated though *ASPM* but not through *MCHP1*.
+
+
+#### Path analysis
+
+Please note that path analysis uses a linear model for the tone counts (so not a Poisson model)...
+
+```{r include=FALSE}
+## Path analysis:
+# The model (numeric):
+sem_tone_num <- '
+    # tone:
+    n_tones ~ Africa_num + ASPM_freq_wavg + MCPH1_freq_wavg
+
+    # the genes:
+    ASPM_freq_wavg  ~ Africa_num
+    MCPH1_freq_wavg ~ Africa_num
+  ';
+semfit_tone_num <- sem(sem_tone_num, data=d_tc, se="robust.sem");
+summary(semfit_tone_num, fit.measures=TRUE, standardize=TRUE, rsquare=TRUE, estimates=TRUE, ci=TRUE);
+lavaanPlot(model=semfit_tone_num, coefs=TRUE, sig=1.00, stand=FALSE, covs=TRUE, stars=c("regress", "latent", "covs"), edge_options=list(color="gray"));
+(semfit_tone_num_measures <- fitMeasures(semfit_tone_num, c("chisq", "df", "pvalue", "cfi", "tli", "nnfi", "rfi")));
+mi_tone_num <- modindices(semfit_tone_num);
+```
+
+Coding Africa and tone numerically, we obtain a model that fits the data very well (`r sprintf("*χ*^2^(%d)=%.2f, *p*=%.2g; CFI=%.2f, TLI=%.2f, NNFI=%.2f and RFI=%.2f", semfit_tone_num_measures["df"], semfit_tone_num_measures["chisq"], semfit_tone_num_measures["pvalue"], semfit_tone_num_measures["cfi"], semfit_tone_num_measures["tli"], semfit_tone_num_measures["nnfi"], semfit_tone_num_measures["rfi"])`):
+
+```{r fig.cap=capFig("Path analysis model with standardised coefficients and significance stars. Here, we coded tone and macroarea (Africa vs non-Africa) as numeric binary (`tone_bin_num` with Yes=1 and `Africa_num` with in Africa=1).")}
+lavaanPlot(model=semfit_tone_num, coefs=TRUE, sig=1.00, stand=TRUE, covs=TRUE, stars=c("regress", "latent", "covs"), edge_options=list(color="gray"));
+```
+
+Pease note that in this case, the model did not converge for the ordered coding of Africa.
+
+It can be seen that being in Africa:
+- has a non-significant direct effect on tone counts, and all its effect is mediated by
+- the significant and strong negative effect on *ASPM*, which, in turn, has a negative effect on tone.
+
+
+### Machine Learning techniques
+
+We did not check these for tone counts.
+
+
+### Conclusions for tone counts
+
+For tone counts (which have a very skewed distribution):
+
+- *ASPM* does not predict tone counts, and while *MCPH1* does, its negative effect is confounded by macroarea;
+- however, the randomization and especially the restricted sampling clearly find a negative effect of *ASPM* on tone counts;
+- both mediation and math analysis find that the effect of macroarea is fully mediated by the negative effect by *ASPM* (but not by *MCPH1*).
+
+Thus, when it comes to tone counts, *ASPM* seems to have a negative effect.
+
+
+
+# Discussion and conclusions
+
+**First**, we must point out the limitations of the data used here.
+The main limiting factor, just as in 2006-2007 [@dediu_ladd_2007;@dediu_phd_2007], is the availability of *frequency data* for the "derived" alleles of *ASPM* and *MCPH1* (*Microcephalin*).
+Back in 2007 we had to use a subset of 49 populations from the 59 in the original @mekel_bobrov_ongoing_2005 and @evans_microcephalin_2005 (see @dediu_ladd_2007 for details) with a very uneven geographic spread, and linguistic, cultural and demographic/"ethnic" representativeness.
+For this study, we were able to use several new databases and publications (as detailed in the [Data section](#aspm-and-mcph1-population-frequencyes)) but we encountered these problems:
+
+1) some sources do not contain frequency data about the "derived" alleles themselves (or the corresponding SNPs), so we had to use instead other loci (SPNs) in strong linkage disequilibrium (LD); however, LD might vary between populations, which means that there could be undetected decorrelations between these proxy SPNs and the target alleles in some populations (especially in those that are under-represented in the [LDLink](https://ldlink.nci.nih.gov/?tab=home) database which was used to select these proxy SNPs), resulting in a weakening of the signal;
+2) some of these "genetic samples" are quite loosely defined, and reflect the mostly ad-hoc, opportunistic or "by-product" nature of the genetic sampling, generating the following related issues:
+  1) some of these "samples" may come from the same "(meta)population", but this is not always easy to ascertain (e.g., for "Mbuti" there are two samples, for "Adygei" three, and for "Han" five) and might not mean the same thing for different (meta)populations (e.g, "Adygei" vs "African American" vs "Han"), and
+  2) for certain samples and (meta)populations, it is far clear which ethno-linguistic group(s) precisely were sampled, resulting sometimes in multiple languages being assigned (e.g., for "San" there is a single sample bu the description does not allow a choice between several languages: East Taa [huaa1248], Hai//om-Akhoe [haio1238], Nama (Namibia) [nama1264], North-Central Ju [kung1261] and South-Eastern Ju [juho1239]), languages which may or may not differ in the linguistic feature of interest (here, tone).
+  
+Please note that some of these samples are quite small in terms of the number of individual genotyped and, for some, it is unclear if the individuals were related and to what degree, meaning that some of these allele frequencies are probably quite noisy, again weakening any signal. 
+  
+The second limiting factor is the availability and reliability of data concerning *linguistic tone*: while in 2006-2007 [@dediu_ladd_2007;@dediu_phd_2007] we performed the binary judgments (i.e., "is there a tone system in the language?", "yes" or "no") ourselves based on several secondary (such as @wals_2005 and @compendium_2000) and primary sources (including by sending questionnaires to specialists in various languages), here we reconciled data from multiple databases (see [Data section](#tone)).
+However, this reconciliation is sometimes not trivial, and involved a subjective hierarchy of "trust" that would prioritise these databases in the case of conflicts.
+Moreover, we have collected here not only the binary "no tone" vs "tone" judgments, but also a three-way ordered distinction between "no tone" < "simple tone" < "complex tone", as well as the actual count of the tones (or "tone symbols") if available.
+Thus, we think that the tone data used here should be relatively reliable.
+
+So, in fact, we have `r nrow(data_all)` datapoints in total (some with various degrees of missing data)), of which there are `r length(unique(data_all$pop_ID))` unique genetic samples (with data for 7 loci for *ASPM* and 3 for *MCHP1*) distributed in `r length(unique(data_all$metapop))` (meta)populations, matched to `r length(unique(data_all$glottocode))` unique Glottolog codes.
+Please note that while a genetic sample is uniquely included in a single (meta)population, it may be matched to more than one language (e.g., see "San" above), and any given language might be matched to more than one sample (e.g., English [stan1293] is matched to "African_Americans", "Afro_Caribbeans", "British", "European_Americans", "Irish", "Orcadian" and "Puerto_Rican").
+
+
+**Second**, there are some issues that go to the core of the use of statistical methods in such studies and what to "control" for.
+Overall, the methods we used here do suggest that the frequency of the "derived" allele of *ASPM* in a population has a negative effect on use of tone in the language(s) spoken by that population, while the evidence for an effect of *MCHP1* is much weaker (in fact, absent).
+This negative effect of *ASPM* is present for both binarisations of tone (i.e., "tone" versus "no tone", and "complex tone" versus "simple or no tone") and for tone counts (but much less clear), but it is shadowed by the effects of the macroarea and of language families.
+
+More precisely, *macroarea* (and especially the contrast between Africa and non-Africa) explains ~20% of the distribution of tone1 and tone counts (but not of tone2), and ~60% of the distribution of *ASPM* and ~70% of that of *MCPH1*.
+There is no surprise that tone has a continent-scale pattern of distribution (but it is surprising that complex tone seems not to, in our data), and that the two genes have widely unequal distributions inside and outside Africa (this is how they were selected for the original papers [@mekel_bobrov_ongoing_2005;@evans_microcephalin_2005] and why they attracted our attention in the first place [@dediu_ladd_2007;@ladd_biolinguistics_2008]), but what does this mean?
+Likewise, ~70% of tone1, ~95% of tone2, ~65% of tone counts, and 70% and 100% of the "derived" allele frequencies of *ASPM* and *MCHP1*, respectively, is due to clustering within *language families* (i.e., related languages have a very strong tendency to be similar to each other presumably due to their shared ancestry), which is not surprising give the stability of tone [@dediu_bayesian_2011;@dediu_structural_2013], on the one hand, and the mode of evolution of these two alleles (see below).
+
+A "blind" statistical approach (rather standard now) it is to "partial out" for the effects of macroarea and language family on the relationship between the two genes and tone, and to only focus on the reaming partial effects of the genes on tone.
+One popular way of implementing this is to have macroarea as a fixed effect, and family as a random effect in a regression models, as we did here, in which case there is almost no extra explanatory role of genes besides that of macroarea.
+While this can be interpreted as "there's nothing causally interesting about these genes" because macroarea and family explains everything, it is probably not the correct interpretation here.
+The problem is that macroareas (leaving aside their rather arbitrary definitions variously used in the literature -- we used here the ones in Glottolog simply because they tend to be seen as "standard") and language families by themselves do not explain anything, but are rather proxies for demographic and linguistic processes and events that concern deep timescales and large spatial areas.
+It is these processes and events that shape (in part) the observed linguistic and genetic diversities and that can create spurious correlations between them, as when, for example, a demographic expansion (say, due to agriculture) creates correlations between the languages and genes of the people that expand simply because humans tend to transmit both to their children.
+
+However, this can easily hide a *causal relationship* of the type proposed by us [@dediu_ladd_2007;@ladd_biolinguistics_2008], where genes affect the way language changes on the *glossogenetic* timescale -- i.e across several generations.
+In this case --  especially if the alleles in question evolve under genetic drift (i.e., there are no special selective pressures, as seems to be the case with the "derived" alleles of *ASPM* and *MCHP1* despite the original claims to the contrary; [@currat_comment_2006]) -- we expect precisely that their effects mostly overlap with language families and large geographic areas.
+In fact, this seems supported by the randomization, restricted sampling, mediation and path analyses that we conducted.
+But the important take home message is that each of these methods *by itself* is not enough, especially when we try to uncover weak effects that overlap with the usual confounds (large geographic areas and language family), and thorough *multiple-method-triangulation approaches* are needed. 
+
+
+**Third**, thanks to the inter-individual experimental approaches of @wong_derived_2012 and especially of @wong_aspm_lexical_2020, we can now be rather confident that the "derived" allele of *ASPM* does something to pitch perception or processing that can affect its use as a linguistic features.
+Their work was testing a hypothesis generated by our exploratory work [@dediu_ladd_2007], that found a statistical association, at the population/language level, between this "derived" allele and linguistic tone.
+However, as the analyses we conducted here show, this association is very weak and overlaps -- by its very nature -- the effects of family and macroarea, in such a way that a blind application of currently recommended staittsical techniques would have easily missed it!
+
+On the other hand, the same experimental work [@wong_derived_2012;@wong_aspm_lexical_2020] failed to find any inter-individual effect of the "derived" allele of *MCPH1* on pitch perception/processing.
+Again, the analyses we conducted here suggest -- with a good dose of hindsight -- that the cross-population/corss-linguistic statistical relationship between, on the one hand, *ASPM*-D and tone, and *MCPH1*-D and tone, on the other, are of a different quality: while the first is not fully explained by the confounds, the second seems to be almost completely driven by the contrast between Africa and non-Africa (macroarea).
+
+
+**Thus**, we see this as one of the most beautiful ilustrations of the joys and perils of exploratory analysis: rather than being "fishing expeditions" that no decent scientist should embark on, they are essential tools for the advancement of science.
+However, there are costs and benefits to everything and the relationship between the two should be an open decision, appropariate to each field and question: too high an aversion for false positives ("costs") and there goes *ASPM*; too aversion for false negatives ("benefits") and *MCPH1* is allowed in this ratehr select club.
+Luckily, in our particular fields, temporarily accepting *MCPH1* in the "causal" club together with "ASPM* did not kill any patient, blow up any multi-billion euro infrastructure or radicalise any vulnerable person, and, in fact, the additional cost of genotyping for *MCPH1*-D on top of that for *ASPM*-D in Patrick Wong's experiments were trivial.
+To be clear, we are not
+
+
+
+# References
+
+

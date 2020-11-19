@@ -1,0 +1,15 @@
+cond_PWLSDH	cond_description	binary_action	binary_decision	binary_confidence	3way_action	3way_decision	3way_confidence
+100000	PHOIBLE by itself	ifelse(.TP == 0, 'No', 'Yes')	'PHOIBLE'	0	ifelse(.TP == 0, 'None', ifelse(.TP <= 2, 'Simple', 'Complex'))	'PHOIBLE'	0
+000001	WPHON by itself	ifelse(.TH == 0, 'No', 'Yes')	'WPHON'	0	ifelse(.TH == 0, 'None', ifelse(.TH <= 3, 'Simple', 'Complex'))	'WPHON'	0
+100001	PHOIBLE and WPHON	.a2(000001)	'WPHON wins'	0	.a3(000001)	'WPHON'	0
+*1000*	WALS >> PHOIBLE and WPHON	ifelse(.TW == 'None', 'No', 'Yes')	'WALS'	0.99	.TW	'WALS'	0.99
+*0100*	LAPSyD >> PHOIBLE and WPHON	ifelse(.TL == 'None', 'No', 'Yes')	'LAPSyD'	1	ifelse(.TL == 'None', 'None', ifelse(.TL  == 'Simple', 'Simple', 'Complex'))	'LAPSyD'	1
+*0010*	S >> PHOIBLE and WPHON	.TS	'S'	1	NA	'S'	1
+*0001*	Dediu & Ladd >> PHOIBLE and WPHON	.TD	'Dediu & Ladd (2007)'	0.95	NA	'Dediu & Ladd (2007)'	0.95
+*1100*	WALS + LAPSyD >> PHOIBLE and WPHON	"ifelse(.a2(001000) == .a2(010000), .a2(001000), ifelse(.TW == ""Complex"", ""Yes"", ifelse(.TL %in% c('Moderately complex', 'Complex'), 'Yes', .a2(001000))))"	'LAPSyD + WALS, LAPSyD winns except when WALS says Complex'	0.99	ifelse(.TW == .TL, .TW, ifelse(.TL == 'Moderately complex', .TW, .TL))	'LAPSyD + WALS, LAPSyD winns except for Moderately complex'	0.99
+*101**	S > WALS > Dediu & Ladd >> PHOIBLE and WPHON	"ifelse(.TS == .a2(010000), .TS, ifelse(.TW == ""Complex"", ""Yes"", .TS))"	'WALS + S, S winns except when WALS says Complex'	1	.TW	'WALS wins'	0.99
+*1001*	WALS + Dediu & Ladd >> PHOIBLE and WPHON	"ifelse(.TD == .a2(010000), .TD, ifelse(.TW == ""Complex"", ""Yes"", .TD))"	'WALS + Dediu & Ladd, Dediu & Ladd winns except when WALS says Complex'	0.97	.TW	'WALS wins'	0.99
+*011**	LAPSyD + S > Dediu & Ladd >> PHOIBLE and WPHON	"ifelse(.TS == .a2(001000), .TS, ifelse(.TL %in% c(""Moderately complex"", ""Complex""), ""Yes"", .TS))"	'LAPSyD + S, S winns except when LAPSyD says Moderately complex or Complex'	1	.a3(001000)	'LAPSyD wins'	1
+*0101*	LAPSyD + Dediu & Ladd >> PHOIBLE and WPHON	"ifelse(.TD == .a2(001000), .TD, ifelse(.TL %in% c(""Moderately complex"", ""Complex""), ""Yes"", .TD))"	'LAPSyD + Dediu & Ladd, Dediu & Ladd winns except when LAPSyD says Moderately complex or Complex'	1	.a3(001000)	'LAPSyD wins'	1
+*0011*	S + Dediu & Ladd >> PHOIBLE and WPHON	.TS	'S + Dediu & Ladd, S wins'	1	NA	'S + Dediu & Ladd (2007)'	1
+*11**1	(Almost) all databases	.a2(001000)	'LAPSyD wins'	1	.a3(001000)	'LAPSyD wins'	1

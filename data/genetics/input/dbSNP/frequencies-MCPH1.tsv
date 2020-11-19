@@ -1,0 +1,30 @@
+SNP	Allele_major	Allele_minor	Database	Population	Group	N_alleles	MAF
+rs930557	C	G	A Vietnamese Genetic Variation Database	Global	Study-wide	612	0.281
+rs930557	C	G	TopMed	Global	Study-wide	125568	0.334456
+rs930557	C	G	ExAC	Global	Study-wide	120302	0.228641
+rs930557	C	G	ExAC	Europe	Sub	73112	0.18398
+rs930557	C	G	ExAC	Asian	Sub	25084	0.23302
+rs930557	C	G	ExAC	American	Sub	11528	0.1335
+rs930557	C	G	ExAC	African	Sub	9680	0.6722
+rs930557	C	G	ExAC	Other	Sub	898	0.183
+rs930557	C	G	FINRISK	Finnish	Study-wide	304	0.118
+rs930557	C	G	Genetic variation in the Estonian population	Estonian	Study-wide	4480	0.1348
+rs930557	C	G	Genome of the Netherlands Release 5	Dutch	Study-wide	998	0.197
+rs930557	C	G	KOREAN population from KRGDB	Korean	Study-wide	2930	0.1782
+rs930557	C	G	Northern Sweden	ACPOP	Study-wide	600	0.148
+rs930557	C	G	Qatari	Qatar	Study-wide	216	0.477
+rs930557	C	G	The Avon Longitudinal Study of Parents and Children	PARENT AND CHILD COHORT	Study-wide	3854	0.1889
+rs930557	C	G	The Danish reference pan genome	Danish	Study-wide	40	0.1
+rs930557	C	G	The PAGE Study	Global	Study-wide	78698	0.41458
+rs930557	C	G	The PAGE Study	AfricanAmerican	Sub	32512	0.6509
+rs930557	C	G	The PAGE Study	Mexican	Sub	10810	0.15467
+rs930557	C	G	The PAGE Study	Asian	Sub	8318	0.2251
+rs930557	C	G	The PAGE Study	PuertoRican	Sub	7918	0.3226
+rs930557	C	G	The PAGE Study	NativeHawaiian	Sub	4534	0.2499
+rs930557	C	G	The PAGE Study	Cuban	Sub	4230	0.2764
+rs930557	C	G	The PAGE Study	Dominican	Sub	3828	0.4342
+rs930557	C	G	The PAGE Study	CentralAmerican	Sub	2450	0.2331
+rs930557	C	G	The PAGE Study	SouthAmerican	Sub	1982	0.1726
+rs930557	C	G	The PAGE Study	NativeAmerican	Sub	1260	0.2317
+rs930557	C	G	The PAGE Study	SouthAsian	Sub	856	0.231
+rs930557	C	G	UK 10K study - Twins	TWIN COHORT	Study-wide	3708	0.1915
