@@ -19,7 +19,7 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
-\documentclass[twoside,twocolumn]{article}
+\documentclass[twoside,onecolumn]{article}
 
 \usepackage[sc]{mathpazo} % Use the Palatino font
 \usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
@@ -197,7 +197,7 @@ However, what was truly striking about these alleles was the geographic distribu
 There were three factors that prompted us to explore the relationship between these two ``derived'' alleles and linguistic tone:
 
 \begin{enumerate}[label={\alph*)}]
-	\item the striking visual resemblance between the maps of the two ``derived'' alleles and that of linguistic tone (see Figure \ref{Fig:tone_map} or \url{https://wals.info/feature/13A}),
+	\item the striking visual resemblance between the maps of the two ``derived'' alleles (Figure \ref{Fig:gene_maps}) and that of linguistic tone (Figure \ref{Fig:map_tone} and \url{https://wals.info/feature/13A}),
 	\item the probable involvement of the two genes in brain growth and development, and
 	\item the accumulating evidence of a genetic basis for language and speech.
 \end{enumerate}
@@ -275,7 +275,7 @@ However, it is important to note that, while most databases contain information 
 I used LDlink’s ``LDproxy Tool'' (\url{https://ldlink.nci.nih.gov/?tab=ldproxy}) to obtain the list of all SNPs in LD with the target ones across all the populations in the database -- see Table \ref{Tab:snps_in_ld} for the list of retained ``proxy'' SNPs.
 Please note that, while increasing the coverage of the data, this procedure is not perfect, in that LD may differ between populations and geographic regions, potentially inducing noise.
 
-\begin{table*}[h]
+\begin{table}[h]
 	\caption{Data sources used for estimating the population frequency of the ``derived'' alleles, including the number of samples/populations for which such data was available.}
 	\label{Tab:gene_data_sources}
 	\centering
@@ -293,9 +293,9 @@ Please note that, while increasing the coverage of the data, this procedure is n
 		\textit{ALFRED} &	\url{https://alfred.med.yale.edu/alfred/index.asp} & The ALlele FREquency Database; lots of info in many populations & 141 \\
 		\bottomrule
 	\end{tabularx}
-\end{table*}
+\end{table}
 
-\begin{table*}[h]
+\begin{table}[h]
 	\caption{The original loci and their ``proxy'' SNPs, with their ``derived'' allele and the data sources (with the number of unique samples/populations) from which frequency information was obtained.}
 	\label{Tab:snps_in_ld}
 	\centering
@@ -316,7 +316,7 @@ Please note that, while increasing the coverage of the data, this procedure is n
 		& \textit{rs1129706} & G & chr8:6304814; $D’=0.995$, $R^2=0.936$ & \textit{ALFRED} (141) \\
 		\bottomrule
 	\end{tabularx}
-\end{table*}
+\end{table}
 
 \paragraph{The populations/samples/meta-populations.}
 The unit (``group'') for which allele frequency information is given varies between and even within these data sources and, on one hand, cannot be considered \textit{a priori} equivalent nor unique.
@@ -338,12 +338,12 @@ The pattern of distribution remains similar to that in the original \textit{Scie
 The frequency of \textit{ASPM}-D is globally below $\approx 60\%$, is very low in sub-equatorial Africa and the Americas, higher in eastern Eurasia, and highest in western Eurasia.
 \textit{MCPH1}-D is almost absent in sub-equatorial Africa and relatively high everywhere else, reaching fixation (100\%) in some samples.
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \centering
 	\includegraphics[width=\textwidth]{../../code/figures/map_genes}
 	\caption{The distribution of the two ``derived'' alleles in the newer data, Left: \textit{ASPM}-D, right: \textit{MCPH1}-D. Each circle on the maps represents a unique sample, and its colour represents the frequency (as the percent) of the ``derived'' allele in that sample. The inset show the overall histogram of the allele frequencies across all the samples.}
 	\label{Fig:gene_maps}
-\end{figure*}
+\end{figure}
 
 
 \subsection{Tone}
@@ -367,7 +367,7 @@ Unfortunately, the data of \textit{The World Phonotactics Database} \citealp{don
 I also used the \textit{Glottolog} \citep{hammarstrom_glottolog_2018} version 4.1 (\url{https://glottolog.org}) for the genealogical classification of languages in \emph{language families} and in \textit{macroareas}.
 
 
-\begin{table*}[h]
+\begin{table}[h]
   \caption{Data sources for linguistic tone.}
   \label{Tab:tone_data_surces}
   \centering
@@ -382,14 +382,14 @@ I also used the \textit{Glottolog} \citep{hammarstrom_glottolog_2018} version 4.
     \textit{The World Phonotactics Database} (\textit{WPHON}) \citep{donohue_world_2013} & \url{https://web.archive.org/web/20190608215845/http://phonotactics.anu.edu.au/features.php} & Number of tones  & 3160 \\
     \bottomrule
   \end{tabularx}
-\end{table*}
+\end{table}
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \centering
   \includegraphics[width=10cm]{phoible_rare_tone_symbols}
   \caption{The tone symbols in \textit{PHOIBLE} that were removed because they appeared too rarely in the database (with the number of occurrences in parentheses).}
   \label{Fig:rare_phoible_tone_symbols}
-\end{figure*}
+\end{figure}
 
 
 \paragraph{Tone classifications.}
@@ -405,7 +405,7 @@ Given these sources, I decided to compile information about tone in three format
 The rules for obtaining these coding for each data source are given in Table \ref{Tab:tone_coding_rules}.
 Please note that the counts were \emph{rebased}, in the sense that those few languages reported as having 1 tone/symbol were recoded as having 2\footnote{The fact they are very few (6 for \textit{LAPSyD}, 4 for \textit{PHOIBLE}, and 3 for \textit{WPHON}), coupled with a case-by-case analysis, suggested that they can be safely collapsed with the languages with 2, all being considered as having simple tone systems.}, followed by the subtraction of 1 for all languages with at least 2 tones/symbols (i.e., the languages with 0 tones/symbols stay at 0, but all languages with $n \geq 2$ tones/symbols are recoded as having $n-1$ tones/symbols) -- this way, we have a continuum of counts from 0 up to the original maximum -1.
 
-\begin{table*}[h]
+\begin{table}[h]
   \caption{How I coded tone for each data source. The given rules are of the form \textit{original value(s)}  $\mapsto$ \textit{coded value}; $\ast$ means ``all other original value(s)'; ``as is'' means the value as given by the data source without change'; ``rebase'' applies only to the counts (see text for details); ``--'' means that the data source did not contribute to the coding (does not contain useful information).}
   \label{Tab:tone_coding_rules}
   \centering
@@ -424,7 +424,7 @@ Please note that the counts were \emph{rebased}, in the sense that those few lan
     \textit{WPHON} & \makecell[l]{0 $\mapsto$ ``No''\\ $\ast \mapsto$ ``Yes''} & \makecell[l]{0 $\mapsto$ ``None''\\ $\leq 3 \mapsto$ ``Simple''\\ $\ast \mapsto$ ``Complex''} & rebase \\
     \bottomrule
   \end{tabularx}
-\end{table*}
+\end{table}
 
 \paragraph{Reconciliation of the sources.}
 
@@ -457,12 +457,12 @@ These have the following distributions (see also Figure \ref{Fig:map_tone}):
   \item \emph{counts}: ``0'' (249), ``1'' (26), ``2'' (23), ``3'' (6), ``4'' (5), ``5'' (3), and ``6'' (2).
 \end{itemize}
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{../../code/figures/map_tone}
   \caption{The distribution of the agreement tone. Each circle on the maps represents a unique language, and its colour represents is value. The insets show the overall distributions across all the languages. Top-left: binary tone (inset horizontal axis: ``N'' = ``No'', ``Y'' = ``Yes''); top-right: 3-way classification (inset horizontal axis: ``N'' = ``None'', ``S'' = ``Simple'', ``C'' = ``Complex''); bottom-left: tone counts.}
   \label{Fig:map_tone}
-\end{figure*}
+\end{figure}
 
 For the purposes of the analyses reported here, I considered the following variables referring to tone:
 
@@ -558,7 +558,7 @@ Figure \ref{Fig:dag_tone_genes} is a representation of these relationships using
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{dag_tone_genes}
+  \includegraphics[width=0.75\textwidth]{dag_tone_genes}
   \caption{Simplified model of the causal and spurious relationships between the frequency of the ``derived'' alleles (the \textit{exposure}) and tone (the \textit{outcome}) using Directed Acyclic Graphs (DAGs). The arrows represent direct causal effect; the grey nodes are unmeasured variables.}
   \label{Fig:dag_tone_genes}
 \end{figure}
@@ -586,7 +586,7 @@ For each DV:
   \item[restricted sampling:] finally, a popular approach in typology is represented by sampling only one language from each genealogical and/or areal unit \citep{dryer_sampling_areas_1989,bakker_sampling_language_2010,everett_climate_2015}, which I implemented here by repeatedly picking only one language from each family, fitting a regression model (without any random effects structure, as each family now has exactly one member) while controlling or not for macroarea, and analysing the distribution of the model fits (this time, the comparison is done against the null hypothesis of no effect).
 \end{description}
 
-\begin{table*}[h]
+\begin{table}[h]
   \caption{The parameters of the randomisation approach, defining, on the one hand, what is permuted and within what constraints, and what to control for in the regression models, on the other.}
   \label{Tab:randomization_params}
   \centering
@@ -606,9 +606,9 @@ For each DV:
       \textit{fixef} = yes, as fixed effect} \\
     \bottomrule
   \end{tabularx}
-\end{table*}
+\end{table}
 
-\begin{table*}[h]
+\begin{table}[h]
   \caption{The 18 randomisation scenarios. Parameter names and values (columns 2--3) are defined in Table \ref{Tab:randomization_params}, Name (1\textsuperscript{st} column) is a 3-letter shorthand: 1\textsuperscript{st} letter: T=tone, L=genes-together (``linked'') and I=genes-independent (``independent''); 2\textsuperscript{nd} letter: U=unrestricted, M=macroareas, F=families; 3\textsuperscript{rd} letter: N=none, F=fixef. --''-- means as above.}
   \label{Tab:randomization_scenarios}
   \centering
@@ -643,7 +643,7 @@ For each DV:
     IFF & \textit{genes-independent} & \textit{families} & \textit{fixef} & as IFN --''-- \\
     \bottomrule
   \end{tabularx}
-\end{table*}
+\end{table}
 
 \paragraph{Mediation and path analysis.}
 
@@ -763,24 +763,24 @@ Thus, the population frequency of the ``derived'' alleles are strongly confounde
 When selecting all unique observations with non-missing data for \textit{tone1}, \textit{ASPM}-D and \textit{MCPH1}-D, there are 181 observations, distributed among 119 unique Glottolg codes (languages) in 35 families (the number of languages per family ranges from 1 to 48, with mean 5.2 and median 2).
 There are 61 (33.7\%) languages with tone (``Yes'') in the dataset ($\chi^2_{1} = 19.2$, $p = 1.2\cdot10^{-5}$), and the distribution by macroarea is 36 (27 = 75\% ``Yes'') in Africa, 126 (26 = 20.6\%) in Eurasia, 10 (6 = 60\%) in America, and 9 (2 = 22.2\%) in Papunesia (between macroareas $\chi^2_{3} = 40.7$, $p = 7.5\cdot10^{-9}$); see Figure \ref{Fig:tone1_distribution}.
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{../../code/figures/tone1_distribution}
-  \caption{Distribution (as counts) of \textit{tone1} (no tone vs any type of tone system) across the full database (left) and by macroarea (right). Please note that the vertical axes have different scales to avoid the macroareas with small sample sizes to be visually ``squashed'' by the whole database.}
+  \caption{Distribution (as number of languages) of \textit{tone1} (no tone vs any type of tone system) across the full database (left) and by macroarea (right). Please note that the vertical axes have different scales to avoid the macroareas with small sample sizes to be visually ``squashed'' by the whole database.}
   \label{Fig:tone1_distribution}
-\end{figure*}
+\end{figure}
 
 The relationship between \textit{tone1} and the population frequency of the two ``derived'' alleles is shown in Figure \ref{Fig:tone1_genes}.
 It can seen that, globally, there seems to be a difference between languages with and without tone: while tone languages (\textit{tone1} == ``Yes'') tend to be found when \textit{ASPM}-D has a low frequency, the others (\textit{tone1} == ``No'') tend to be found at high frequencies of both ``derived'' alleles.
 Zooming in on each macroarea shows different patterns: while there seems to be a difference for \textit{ASPM}-D in Eurasia (higher for ``No'') and Papunesia (lower for ``No''), there seems to be no differences in Africa and America.
 However, such plots can be very misleading because these points represent related languages and/or alternative genetic and linguistics values for the same sample -- actual statistical analyses are required.
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{../../code/figures/tone1_genes}
   \caption{Relationship between tone1 (colour \& shape) and the population frequency of \textit{ASPM}-D and \textit{MCPH1}-D in the whole database and separately by macroarea (columns). Top row: scatter plots of \textit{ASPM}-D (horizontal axis) and \textit{MCPH1}-D (vertical axis) versus \textit{tone1} (dot colour \& shape). Next two rows show the ``derived'' allele frequency (as actual jittered observations, violin plots and boxplots) versus \textit{tone1} values (color) for \textit{ASPM}-D (middle row) and \textit{MCPH1}-D (bottom row); please note that the orientation of axis of the ``derived'' allele frequency is the same as in the top row plots (i.e., x-axis for \textit{ASPM}-D, and y-axis for \textit{MCPH1}-D.}
   \label{Fig:tone1_genes}
-\end{figure*}
+\end{figure}
 
 
 \paragraph{Regressions}
@@ -800,18 +800,18 @@ Permuting\footnote{Because permutations and restricted sampling involve random s
 In contrast, for \textit{MCPH1}-D, there is a negative effect only for unrestricted permutations when not controlling for macroarea.
 Please see Figure \ref{Fig:tone1_regressions_permuted}.
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{../../code/figures/tone1_regressions_permuted}
   \caption{Distribution of the effect size $\beta$ (horizontal axis) of \textit{ASPM}-D (left) and \textit{MCPH1}-D (right) on \textit{tone1} in the permutation regressions without restrictions (``unrestricted''), only within macroareas (``macroareas''), and only within families (``families''), without controlling for macroarea (``none'') or when including macroarea as a fixed effect (``fixef''). Each individual plot shows the original $\beta$ obtained on the unpermuted data (vertical dashed black line), 0.0 (vertical dotted black thin line), and the distribution of the permuted $\beta$ for the three variables to be permuted (the coloured areas): tone by itself (red), the two ``derived'' alleles together as a unit (green), and the two ``derived'' alleles shuffled individually (blue). Please note that the y-axes vary between plots, but the x-axes are fixed between -10.0 and 10.0 for comparability. If a distribution is centred on 0.0 (e.g., ``ASPM''/``unrestricted''/``none'' in the top left) then the permuted data show no effect of the ``derived'' allele (here, \textit{ASPM}-D) on tone (i.e., the regression slope $\beta$ is 0.0). The less overlap is between the observed $\beta$ (dashed black line) and such a distribution, the more ``special'' the relationship between the ``derived'' allele and tone is relative to the structure destroyed by that specific permutation; conversely, if the observed $\beta$ is largely included in a distribution, the more such a value is expected by chance given the constraints of the permutation.}
   \label{Fig:tone1_regressions_permuted}
-\end{figure*}
+\end{figure}
 
 Repeated restricted sampling, where only one sample is randomly chosen per family, also shows a clear negative effect of \textit{ASPM}-D on \textit{tone1} even when controlling for macroarea and \textit{MCPH1}-D (82.4\% of the $\beta$'s < 0, with a mean $\overline{\beta} = -2.58$), and a weaker but still discernible one for \textit{MCPH1}-D even when controlling for macroarea and \textit{ASPM}-D (69.0\% of the $\beta$'s < 0, with a mean $\overline{\beta} = -1.52$); see Figure \ref{Fig:tone1_regressions_restricted}.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{../../code/figures/tone1_regressions_restricted}
+  \includegraphics[width=0.6\textwidth]{../../code/figures/tone1_regressions_restricted}
   \caption{Distribution of the effect size $\beta$ (horizontal axis) of \textit{ASPM}-D (left) and \textit{MCPH1}-D (right) on \textit{tone1} in the restricted sampling regressions without controlling for macroareas (``by itself'', red areas), including macroarea as a fixed effect (``ctrl macroarea'', green areas), and including both macroarea and the other ``derived'' allele as fixed effects (``ctrl macroarea \& the other allele'', blue areas). Each individual plot shows 0.0 (vertical dotted black thin line) and the distribution of the $\beta$'s for the three ``models'' (the coloured areas). Please note that the y-axes vary between plots, but the x-axes are fixed between -10.0 and 10.0 for comparability. The more to the left of 0.0 a distribution is, the clearer the negative effect is.}
   \label{Fig:tone1_regressions_restricted}
 \end{figure}
@@ -829,14 +829,14 @@ Taken together, this shows that there's a positive effect of being in Africa on 
 Restricted sampling (repeated 1,000 times) finds the same pattern (see Figure \ref{Fig:tone1_mediation_restricted} and Table \ref{Tab:tone1_mediation_restricted}), with only \textit{ASPM}-D mediating part of the influence of macroarea on tone, but not \textit{MCPH1}-D; also, macroarea has a much stronger effect the latter.
 This procedure does control for language family, but, on the other hand, drastically reduces the sample size to only $N=35$ unique families, resulting in a low power of the individual mediation analyses, with relatively few effect sizes being large enough for statistical significance, but even so, there are many more significant indirect effects for \textit{ASPM}-D (10.4\% at $\alpha$-level 0.05, and 26.6\% at $\alpha$-level 0.10) than for \textit{MCPH1}-D (0.0\% and 1.0\%, respectively).
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{../../code/figures/tone1_mediation_restricted}
   \caption{Mediation analysis for 1,000 restricted samples for \textit{tone1}. The leftmost two panels show the distribution of point estimates (coloured areas) of the \textit{Total Effect} ($TE$), the \textit{Direct Effect} ($AD$E) and the \textit{Indirect Effect} ($ACM$E) for \textit{ASPM}-D and \textit{MCHP1}-D; the middle two panels show the distribution of the \textit{p}-values (coloured areas) for the same effects, while the two rightmost panels (on white background) show the distribution of the regression slopes ($\beta$) for the two alleles (top: for the regression of the allele frequency on being within or outside Africa, and bottom: for the regression of tone on the allele while controlling for being within or outside Africa). The black vertical lines are: 0.0 (solid), 0.05 (dashed) and 0.10 (dotted). Please note that the y-axes vary between plots, but the x-axes of the four left panels (but not of the two right panels) are fixed for comparability. Mediation estimates (leftmost panels): $ACME$ (blue) should be away from 0 for a sizeable mediation through the ``derived'' allele. Mediation \textit{p}-values (mid panels): $ACME$ (blue) should be below 0.05 (or 0.10) for a statistically significant mediation through the ``derived'' allele. (Partial) regression slopes $\beta$ (rightmost panels): should be different from 0. See Table \ref{Tab:tone1_mediation_restricted} for the numeric summaries.}
   \label{Fig:tone1_mediation_restricted}
-\end{figure*}
+\end{figure}
 
-\begin{table*}[h]
+\begin{table}[h]
   \caption{Summaries of the mediation analysis for 1,000 restricted samples for \textit{tone1}. For each ``derived'' allele the table shows the three types of effects (total, direct and mediated) and the two (partial) regression coefficients. For each, it gives the mean, median and the results of the relevant comparison with 0.0 (smaller or bigger) in terms of the percent of the estimates smaller (or bigger) than 0.0 and the one-sided \textit{t}-test; the direction of the comparison is based on \textit{a priori} expectancies: positive effects but negative $\beta$s.}
   \label{Tab:tone1_mediation_restricted}
   \centering
@@ -857,7 +857,7 @@ This procedure does control for language family, but, on the other hand, drastic
       & $\beta$(allele $\rightarrow$ tone $\mid$ Africa) & 1.6 & 1.6 & < 0: 25.8\%, $t = 21.4$, $p = 1$ \\
     \bottomrule
   \end{tabular}
-\end{table*}
+\end{table}
 
 
 \paragraph{Path analysis}
@@ -906,7 +906,7 @@ As for the mediation analysis above, restricted sampling finds a similar pattern
   \label{Fig:tone1_path_restricted}
 \end{figure}
 
-\begin{table*}[h]
+\begin{table}[h]
   \caption{Summaries of the path analysis for 1,000 restricted samples for \textit{tone1}. Similar conventions as for Table \ref{Tab:tone1_mediation_restricted}.}
   \label{Tab:tone1_path_restricted}
   \centering
@@ -927,7 +927,7 @@ As for the mediation analysis above, restricted sampling finds a similar pattern
     & \textit{MCPH1}-D $\rightarrow$ tone &  0.15 (0.46) &  0.15 (0.64) & 37.9\% < 0 \\
     \bottomrule
   \end{tabular}
-\end{table*}
+\end{table}
 
 
 \paragraph{Decision trees}
@@ -935,7 +935,7 @@ As for the mediation analysis above, restricted sampling finds a similar pattern
 If, besides \textit{ASPM}-D and \textit{MCHP1}-D, macroarea is included, the decision tree fits the full dataset well (accuracy = 77.3\%, sensitivity = 71.7\%, specificity = 79.3\%, precision = 54.1\%, and recall = 71.7\%), and generalises across 100 training/testing sets (mean $\pm$ sd: accuracy = 75.3\% $\pm$6.4\%, sensitivity = 68.1\% $\pm$14.9\%, specificity = 78.1\% $\pm$6.5\%, precision = 50.4\% $\pm$11.7\%, and recall = 68.1\% $\pm$14.9\%), and suggests that within Eurasia and Papunesia, the frequency of \textit{ASPM}-D is s good predictor of tone (with $p = 0.002$).
 When macroarea is not included, then the fit for the whole dataset drops a bit (accuracy = 75.1\%, sensitivity = 75.0\%, specificity = 75.2\%, precision = 39.3\%, and recall = 75.0\%) and generalises slightly less well (accuracy = 69.7\% $\pm$6.2\%, sensitivity = 58.1\% $\pm$17.7\%, specificity = 75.4\% $\pm$7.7\%, precision = 42.4\% $\pm$21.9\%, recall = 58.1\% $\pm$17.7\%); now, \textit{ASPM}-D is predictive overall ($p < 0.001$), and \textit{MCPH1}-D is relevant ($p = 0.004$) only for low frequencies of \textit{ASPM}-D (see Figure \ref{Fig:tone1_decision_trees}).
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \centering
   \begin{subfigure}{0.75\linewidth}
     \includegraphics[width=\textwidth]{../../code/figures/tone1_decision_trees_macroarea}
@@ -943,9 +943,9 @@ When macroarea is not included, then the fit for the whole dataset drops a bit (
   \begin{subfigure}{0.75\linewidth}
     \includegraphics[width=\textwidth]{../../code/figures/tone1_decision_trees_nomacroarea}
   \end{subfigure}
-  \caption{Decision trees for \textit{tone1} including \textit{macroarea} as a predictor (top) or not (bottom). Each split is a binary decision based on the values or conditions on the branches (with the $p$-value in parentheses). The bars at the bottom of the plots show the distribution of ``No'' (light gray') and ``Yes'' (dark gray) values and the number of observations for that case (e.g., $n = 69$ in the top panel's rightmost bar, means that 69 observations are in Eurasia and Papunesia with the population frequency of \textit{ASPM}-D > 0.28, and for those only a minority of $\approx 6\%$ have tone). It can be seen that in the bottom panel, a low frequency of \textit{MCPH1}-D seems to be a proxy for Africa.}
+  \caption{Decision trees for \textit{tone1} including \textit{macroarea} as a predictor (top) or not (bottom). Please note that in these decision tree plots ``ASPM.D'' and ``MCPH1.D'' stand for \textit{ASPM}-D and \textit{MCPH1}-D, respectively. Each split is a binary decision based on the values or conditions on the branches (with the $p$-value in parentheses). The bars at the bottom of the plots show the distribution of ``No'' (light gray') and ``Yes'' (dark gray) values and the number of observations for that case (e.g., $n = 69$ in the top panel's rightmost bar, means that 69 observations are in Eurasia and Papunesia with the population frequency of \textit{ASPM}-D > 0.28, and for those only a minority of $\approx 6\%$ have tone). It can be seen that in the bottom panel, a low frequency of \textit{MCPH1}-D seems to be a proxy for Africa.}
   \label{Fig:tone1_decision_trees}
-\end{figure*}
+\end{figure}
 
 
 \paragraph{Random forests}
@@ -970,6 +970,332 @@ In contrast, it seems that there is a negative effect of \textit{ASPM}-D on \tex
 
 While the original hypothesis in \citet{dediu_ladd_2007} concerns strictly he presence of tone, here I capitalise on the availability of data allowing the comparison of languages with a complex tone system versus those without tone or with a simple system -- this is embodied in the \textit{tone2} variable, where ``Yes'' represents complex tone systems.
 
+When selecting all unique observations with non-missing data for \textit{tone1}, \textit{ASPM}-D and \textit{MCPH1}-D, there are 165 observations, distributed among 108 unique Glottolg codes (languages) in 35 families (the number of languages per family ranges from 1 to 44, with mean 4.7 and median 2).
+There are 25 (15.2\%) languages with complex tone (``Yes'') in the dataset ($\chi^2_{1} = 80.2$, $p < 2.2\cdot10^{-16}$), and the distribution by macroarea is 30 (7 = 23.3\% ``Yes'') in Africa, 115 (16 = 13.9\%) in Eurasia, 10 (1 = 10\%) in America, and 10 (1 = 10\%) in Papunesia (between macroareas $\chi^2_{3} = 2.1$, $p = 0.55$); see Figure \ref{Fig:tone2_distribution}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{../../code/figures/tone2_distribution}
+  \caption{Distribution (as counts) of \textit{tone2} (no and simple tone vs complex tone) across the full database (left) and by macroarea (right). Same conventions as in Figure \ref{Fig:tone1_distribution}.}
+  \label{Fig:tone2_distribution}
+\end{figure}
+
+The relationship between \textit{tone2} and the population frequency of the two ``derived'' alleles is shown in Figure \ref{Fig:tone2_genes}.
+It can seen that, globally, it seems that languages with complex tone tend to be found when \textit{ASPM}-D has a low frequency, which seems to be the case also in Eurasia.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{../../code/figures/tone2_genes}
+  \caption{Relationship between tone2 and the population frequency of \textit{ASPM}-D and \textit{MCPH1}-D in the whole database and separately by macroarea. Same conventions as in Figure \ref{Fig:tone1_genes}.}
+  \label{Fig:tone2_genes}
+\end{figure}
+
+
+\paragraph{Regressions}
+
+On the whole data, \textit{tone2} is almost completely clustered within families ($ICC(tone2) =94.6\%$).
+Thus, it is not surprising that the interactions do not contribute (\textit{p}(\textit{ASPM}-D:\textit{MCPH}-D) = 0.56, \textit{p}(\textit{ASPM}-D:\textit{macroarea} + \textit{MCPH}-D:\textit{macroarea}) = 0.66), that \textit{macroarea} does not predict \textit{tone2} ($p = 0.49$, $R^2 = 2.2\%$), and neither do the two ``derived'' alleles together ($p = 0.23$, $R^2 = 3.4\%$) nor individually (\textit{ASPM}-D: $\beta = -5.9 \pm 4.2$, $p = 0.14$, $R^2 = 2.4\%$; \textit{MCPH1}-D $\beta = -3.9 \pm 2.7$, $p = 0.14$, $R^2 = 2.0\%$).
+
+However, permuting the observations shows that \textit{ASPM}-D seems to have a negative effect on \textit{tone2} (except when restricting the permutations within families while controlling for macroarea), but \textit{MCPH1}-D seems to have a negative effect only for unrestricted permutations when not controlling for macroarea.
+Please see Figure \ref{Fig:tone2_regressions_permuted}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{../../code/figures/tone2_regressions_permuted}
+  \caption{Distribution of the permutation regressions for \textit{tone2}. Same conventions as in Figure \ref{Fig:tone1_regressions_permuted}.}
+  \label{Fig:tone2_regressions_permuted}
+\end{figure}
+
+Repeated restricted sampling also shows a clear negative effect of \textit{ASPM}-D on \textit{tone2} even when controlling for macroarea and \textit{MCPH1}-D (100\% of the $\beta$'s < 0, with a mean $\overline{\beta} = -7.6$), and arguably no effect for \textit{MCPH1}-D (35.8\% of the $\beta$'s < 0, with a mean $\overline{\beta} = 2.27$); see Figure \ref{Fig:tone2_regressions_restricted}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.6\textwidth]{../../code/figures/tone2_regressions_restricted}
+  \caption{Distribution of the restricted sampling regressions for \textit{tone2}. Same conventions as in Figure \ref{Fig:tone1_regressions_restricted}.}
+  \label{Fig:tone2_regressions_restricted}
+\end{figure}
+
+
+\paragraph{Mediation analysis}
+
+On the full dataset, there is no significant total effect for neither of the two ``derived'' alleles (\textit{ASPM}-D: $0.13$, 95\%CI $(-0.01, 0.30)$, $p=0.074$, \textit{MCPH1}-D: $0.11$, 95\%CI $(-0.03, 0.29)$, $p=0.17$).
+
+However, restricted sampling (Figure \ref{Fig:tone2_mediation_restricted} and Table \ref{Tab:tone2_mediation_restricted}), finds that while for both ``derived'' alleles there are positive and comparably strong total ($TE$) and direct ($ADE$) effects, only \textit{ASPM}-D shows a positive indirect effect ($ACME$), but pretty much none of these effects are individually significant.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{../../code/figures/tone2_mediation_restricted}
+  \caption{Mediation analysis for 1,000 restricted samples for \textit{tone2}. Same conventions as in Figure \ref{Fig:tone1_mediation_restricted}. See Table \ref{Tab:tone2_mediation_restricted} for the numeric summaries.}
+  \label{Fig:tone2_mediation_restricted}
+\end{figure}
+
+\begin{table}[h]
+  \caption{Summaries of the mediation analysis for 1,000 restricted samples for \textit{tone2}. Same conventions as in Table \ref{Tab:tone1_mediation_restricted}.}
+  \label{Tab:tone2_mediation_restricted}
+  \centering
+  \begin{tabular}{|l|l|r|r|l|}
+    \toprule
+    \textbf{Allele} & \textbf{Estimate} & \textbf{Mean} & \textbf{Median} & \textbf{Compared to 0} \\
+    \midrule
+    \multirow{5}{*}{\textit{ASPM}-D} & $TE$ & 0.11 & 0.12 & > 0: 90.8\%, $t = 39.7$, $p < 2.2\cdot10^{-16}$ \\
+    & $ADE$ & 0.024 & 0.021 & > 0: 59.3\%, $t = 9.9$, $p < 2.2\cdot10^{-16}$ \\
+    & $ACME$ & 0.087 & 0.086 & > 0: 100.0\%, $t = 104.1$, $p < 2.2\cdot10^{-16}$ \\
+    & $\beta$(Africa $\rightarrow$ allele) & -0.15 &  -0.15 & < 0: 100.0\%, $t = -245.4$, $p < 2.2\cdot10^{-16}$ \\
+    & $\beta$(allele $\rightarrow$ tone $\mid$ Africa) & -4.3 & -4.2 & < 0: 100.0\%, $t =  -120.0$, $p < 2.2\cdot10^{-16}$ \\
+    \midrule
+    \multirow{5}{*}{\textit{MCPH1}-D} & $TE$ & 0.1 & 0.11 & > 0: 82.8\%, $t = 36.1$, $p < 2.2\cdot10^{-16}$ \\
+    & $ADE$ & 0.092 & 0.098 & > 0: 68.0\%, $t = 17.7$, $p < 2.2\cdot10^{-16}$ \\
+    & $ACME$ & 0.0099 & 0.0044 & > 0: 50.9\%, $t = 2.0$, $p = 0.023$ \\
+    & $\beta$(Africa $\rightarrow$ allele) & -0.64 & -0.64 & < 0: 100.0\%, $t = -959.7$, $p < 2.2\cdot10^{-16}$ \\
+    & $\beta$(allele $\rightarrow$ tone $\mid$ Africa) & 0.33 & 0.28 & < 0: 46.7\%, $t = 4.2$, $p = 1$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+\paragraph{Path analysis}
+
+As above, I only report here the numeric coding.
+On the full dataset, the model fits the data very well ($\chi^2(1) = 0.06$, $p = 0.81$; $CFI=1.00$, $TLI=1.02$, $NNFI=1.02$ and $RFI=1.00$), and, as shown in Figure \ref{Fig:tone2_path_all}, being in Africa has no direct effect on complex tone, but has a significant negative effect on \textit{ASPM}-D which has a negative significant effect on complex tone, but while it has a stronger significant negative effect on \textit{MCHP1}-D this has no effect on complex tone.
+The same pattern is also found by restricted sampling, except that here there is also a hint of a negative effect of \textit{MCHP1}-D on complex tone (see Figure \ref{Fig:tone2_path_restricted} and Table \ref{Tab:tone2_path_restricted}).
+
+\begin{figure}[h]
+  \centering
+
+  \begin{tikzpicture}[node distance=4.0cm]
+  \node(iv) {\textit{Africa}};
+  \node(dv)[right of=iv] {\textit{tone2}};
+  \node(m1)[above of=dv] {\textit{ASPM}-D};
+  \node(m2)[below of=dv] {\textit{MCPH1}-D};
+  \draw[->, thin, gray, dotted] (iv) -- (dv) node[midway, above] {-0.07 (0.67)};
+  \draw[->, very thick, blue] (iv) -- (m1) node[midway, left] {-0.51 (0.000)};
+  \draw[->, very thick, blue] (m1) -- (dv) node[midway, right] {-0.29 (0.000)};
+  \draw[->, very thick, blue] (iv) -- (m2) node[midway, left] {-0.87 (0.000)};
+  \draw[->, thin, gray, dotted] (m2) -- (dv) node[midway, right] {-0.03 (0.82)};
+  \end{tikzpicture}
+
+  \caption{The path model for \textit{tone2} fitted on all the data, showing the standardized path coefficients (and their \textit{p}-values in parentheses). Same conventions as in Figure \ref{Fig:tone1_path_all}. }
+  \label{Fig:tone2_path_all}
+\end{figure}
+
+
+\begin{figure}[h]
+  \centering
+
+  \begin{tikzpicture}[node distance=4.0cm]
+  \node(iv) {\textit{Africa}};
+  \node(dv)[right of=iv] {\textit{tone2}};
+  \node(m1)[above of=dv] {\textit{ASPM}-D};
+  \node(m2)[below of=dv] {\textit{MCPH1}-D};
+  \draw[->, thin, gray, dotted] (iv) -- (dv) node[midway, above] {-0.02 (0.34)};
+  \draw[->, very thick, blue] (iv) -- (m1) node[midway, left] {-0.15 (0.03)};
+  \draw[->, very thick, blue] (m1) -- (dv) node[midway, right] {-0.49 (0.19)};
+  \draw[->, very thick, blue] (iv) -- (m2) node[midway, left] {-0.64 (0.03)};
+  \draw[->, thin, gray, dotted] (m2) -- (dv) node[midway, right] {-0.07 (0.51)};
+  \end{tikzpicture}
+
+  \caption{Summary of the 1,000 path models for \textit{tone2} fitted to restricted samples, showing the medians of the standardized path coefficients (and their IQR, in parentheses). Same conventions as in Figure \ref{Fig:tone1_path_restricted}. }
+  \label{Fig:tone2_path_restricted}
+\end{figure}
+
+\begin{table}[h]
+  \caption{Summaries of the path analysis for 1,000 restricted samples for \textit{tone2}. Similar conventions as for Table \ref{Tab:tone1_mediation_restricted}.}
+  \label{Tab:tone2_path_restricted}
+  \centering
+  \begin{tabular}{|l|l|r|r|l|}
+    \toprule
+    \textbf{Type} & \textbf{Estimate} & \textbf{Mean (SD)} & \textbf{Median (IQR)} & \textbf{Compared to 0} \\
+    \midrule
+    \multirow{5}{*}{Fit} & $\chi^2$ test & 99.5\% n.s. & - & - \\
+    & $CFI$  & 0.99 (0.01) & 1.00 (0.01) & - \\
+    & $TLI$  & 1.00 (0.08) & 1.02 (0.13) & - \\
+    & $NNFI$ & 1.00 (0.08) & 1.02 (0.13) & - \\
+    & $RFI$  & 0.92 (0.07) & 0.94 (0.12) & - \\
+    \midrule
+    \multirow{4}{*}{Path} & Africa $\rightarrow$ complex tone & -0.03 (0.24) & -0.02 (0.34) & 46.4\% > 0 \\
+    & Africa $\rightarrow$ \textit{ASPM}-D  & -0.15 (0.02) & -0.15 (0.03) & 100.0\% < 0 \\
+    & \textit{ASPM}-D  $\rightarrow$ complex tone & -0.50 (0.14) & -0.49 (0.19) & 100.0\% < 0 \\
+    & Africa $\rightarrow$ \textit{MCPH1}-D & -0.64 (0.02) & -0.64 (0.03) & 100.0\% < 0 \\
+    & \textit{MCPH1}-D $\rightarrow$ complex tone &  -0.07 (0.36) &  -0.07 (0.51) & 56.4\% < 0 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+\paragraph{Decision trees}
+
+The decision trees including or excluding macroarea are the same and trivial in that they uniformly predict just the majority value ``No'' and have only one split depending on the frequency of \textit{ASPM}-D ($\leq$ or > $\approx 0.27$, $p < 0.001$).
+
+
+\paragraph{Random forests}
+
+If macroarea is included as a predictor, the random forests fit the data well (accuracy = 85.0\% $\pm$0.5\%, sensitivity = 55.6\% $\pm$15.5\%, specificity = 85.7\% $\pm$0.3\%, precision = 7.8\% $\pm$2.2\%, recall = 55.6\% $\pm$15.5\%), and the conditional random forests are even better (accuracy = 87.3\% $\pm$0.1\%, sensitivity = 100.0\% $\pm$0.0\%, specificity = 87.0\% $\pm$0.1\%, precision = 16.1\% $\pm$0.6\%, recall = 100.0\% $\pm$0.0\%), and all measures of variable importance find that \textit{ASPM}-D > \textit{MCPH1}-D > macroarea.
+
+Leaving macroarea out has very little effect on the fit (random forests: accuracy = 87.3\% $\pm$0.6\%, sensitivity = 64.0\% $\pm$2.9\%, specificity = 89.5\% $\pm$0.4\%, precision = 36.8\% $\pm$3.0\%, recall = 64.0\% $\pm$2.9\%; conditional random forests: accuracy = 89.1\% $\pm$0.1\%, sensitivity = 88.6\% $\pm$1.5\%, specificity = 89.1\% $\pm$0.0\%, precision = 32.0\% $\pm$0.0\%, recall = 88.6\% $\pm$1.5\%), and all three criteria agree that \textit{ASPM}-D > \textit{MCPH1}-D.
+
+
+\paragraph{Conclusions}
+
+Complex tone is much rarer than no tone and simple tone, so that the distribution of \textit{tone2} is very skewed, and the results much less clear-cut than for \textit{tone1}, but it seems that there might still be a negative effect of \textit{ASPM}-D on complex tone (while for \textit{MCPH1}-D not much can be said).
+
+
+
+
+\subsection{Tone (\textit{counts})}
+
+There are 184 unique observations with non-missing data for tone \textit{counts}, \textit{ASPM}-D and \textit{MCPH1}-D, distributed among 121 unique Glottolg codes (languages) in 35 families (the number of languages per family ranges from 1 to 47, with mean 5.3 and median 2); see Figure \ref{Fig:tone_counts_distribution}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{../../code/figures/tone_counts_distribution}
+  \caption{Distribution of tone \textit{counts} across the full database (left-most panel) and by macroarea (the following 4 panels). Same conventions as in Figure \ref{Fig:tone1_distribution}.}
+  \label{Fig:tone_counts_distribution}
+\end{figure}
+
+The relationship between the tone \textit{counts} and the population frequency of the two ``derived'' alleles is shown in Figure \ref{Fig:tone_counts_genes}.
+It can seen that, globally, languages with higher tone counts tend to be found when \textit{ASPM}-D has a low frequency, but this does not seem to be a clearly linear relationship.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{../../code/figures/tone_counts_genes}
+  \caption{Relationship between tone \textit{counts} and the population frequency of \textit{ASPM}-D and \textit{MCPH1}-D in the whole database and separately by macroarea. Same conventions as in Figure \ref{Fig:tone1_genes}.}
+  \label{Fig:tone_counts_genes}
+\end{figure}
+
+
+\paragraph{Regressions}
+
+On the whole data, the Poisson regression model is not overdispersed ($\chi^2(182) = 112.6$, $p = 1$) and tone \textit{counts} are clustered within families ($ICC(counts) = 65.3\%$).
+\textit{macroarea} predicts tone \textit{counts} ($p = 0.013$, $R^2 = 16.8\%$), \textit{ASPM}-D does not ($\beta = -2.2 \pm 1.2$, $p = 0.061$, $R^2 = 4.7\%$), while \textit{MCPH1}-D has a negative effect by itself ($\beta = -1.7 \pm 0.7$, $p = 0.016$, $R^2 = 6.5\%$) but this fully overlaps with that of \textit{macroarea}.
+
+Permuting the observations suggests that there is a negative effect of both ``derived'' alleles when not controlling for macroarea and family; see Figure \ref{Fig:tone_counts_regressions_permuted}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{../../code/figures/tone_counts_regressions_permuted}
+  \caption{Distribution of the permutation regressions for tone \textit{counts}. Same conventions as in Figure \ref{Fig:tone1_regressions_permuted}.}
+  \label{Fig:tone_counts_regressions_permuted}
+\end{figure}
+
+On the other hand, restricted sampling shows a clear negative effect of \textit{ASPM}-D even when controlling for macroarea and \textit{MCPH1}-D (96.7\% of the $\beta$'s < 0, with a mean $\overline{\beta} = -3.16$), and arguably no effect for \textit{MCPH1}-D (37.6\% of the $\beta$'s < 0, with a mean $\overline{\beta} = 1.02$); see Figure \ref{Fig:tone_counts_regressions_restricted}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.6\textwidth]{../../code/figures/tone_counts_regressions_restricted}
+  \caption{Distribution of the restricted sampling regressions for tone \textit{counts}. Same conventions as in Figure \ref{Fig:tone1_regressions_restricted}.}
+  \label{Fig:tone_counts_regressions_restricted}
+\end{figure}
+
+
+\paragraph{Mediation analysis}
+
+On the full dataset, both models find a significant positive total effect ($TE$) of macroarea on tone (\textit{ASPM}-D: $0.95$, 95\%CI $(0.42, 1.66)$, $p < 2\cdot10^{-16}$; \textit{MCPH1}-D:  $0.69$, 95\%CI $(0.32, 1.09)$, $p < 2\cdot10^{-16}$), but there is no significant direct effect ($ADE$) for neither (\textit{ASPM}-D: $-0.17$, 95\%CI $(-0.62, 0.29)$, $p = 0.47$; \textit{MCPH1}-D:  $0.43$, 95\%CI $(-0.51, 1.36)$, $p = 0.30$), and also no significant indirect effect ($ACME$) for \textit{MCPH1}-D ($0.25$, 95\%CI $(-0.59, 1.11)$, $p = 0.53$).
+However, there is a significant positive $ACME$ mediated by \textit{ASPM}-D ($1.12$, 95\%CI $(0.65, 1.87)$, $p < 2\cdot10^{-16}$, mediating $\approx 100\%$ of the effect), composed of a significant negative effect of being in Africa on \textit{ASPM}-D ($-0.22 \pm0.03$, $p = 1.6\cdot10^{-15}$) and a significant negative effect of \textit{ASPM}-D on tone \textit{counts} ($-4.36 \pm0.70$, $p = 4.2\cdot10^{-10}$).
+
+Restricted sampling (Figure \ref{Fig:tone_counts_mediation_restricted} and Table \ref{Tab:tone_counts_mediation_restricted}), finds that while for both ``derived'' alleles there are positive and comparably strong total ($TE$) and direct ($ADE$) effects, only \textit{ASPM}-D shows a positive indirect effect ($ACME$).
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{../../code/figures/tone_counts_mediation_restricted}
+  \caption{Mediation analysis for 1,000 restricted samples for tone \textit{counts}. Same conventions as in Figure \ref{Fig:tone1_mediation_restricted}. See Table \ref{Tab:tone_counts_mediation_restricted} for the numeric summaries.}
+  \label{Fig:tone_counts_mediation_restricted}
+\end{figure}
+
+\begin{table}[h]
+  \caption{Summaries of the mediation analysis for 1,000 restricted samples for tone \textit{counts}. Same conventions as in Table \ref{Tab:tone1_mediation_restricted}.}
+  \label{Tab:tone_counts_mediation_restricted}
+  \centering
+  \begin{tabular}{|l|l|r|r|l|}
+    \toprule
+    \textbf{Allele} & \textbf{Estimate} & \textbf{Mean} & \textbf{Median} & \textbf{Compared to 0} \\
+    \midrule
+    \multirow{5}{*}{\textit{ASPM}-D} & $TE$ & 1.2 & 1.2 & > 0: 100.0\%, $t = 78.7$, $p < 2.2\cdot10^{-16}$ \\
+    & $ADE$ & 0.7 & 0.7 & > 0: 96.7\%, $t = 55.4$, $p < 2.2\cdot10^{-16}$ \\
+    & $ACME$ & 0.54 & 0.50 & > 0: 98.6\%, $t = 54.3$, $p < 2.2\cdot10^{-16}$ \\
+    & $\beta$(Africa $\rightarrow$ allele) & -0.15 &  -0.15 & < 0: 100.0\%, $t = -233.1$, $p < 2.2\cdot10^{-16}$ \\
+    & $\beta$(allele $\rightarrow$ tone $\mid$ Africa) & -2.2 & -2.2 & < 0: 98.6\%, $t =  -67.2$, $p < 2.2\cdot10^{-16}$ \\
+    \midrule
+    \multirow{5}{*}{\textit{MCPH1}-D} & $TE$ & 1.1 & 1.1 & > 0: 100.0\%, $t = 82.5$, $p < 2.2\cdot10^{-16}$ \\
+    & $ADE$ & 3.9 & 2 & > 0: 84.9\%, $t = 15.9$, $p < 2.2\cdot10^{-16}$ \\
+    & $ACME$ & -2.8 & -0.92 & > 0: 35.4\%, $t = -11.4$, $p = 1$ \\
+    & $\beta$(Africa $\rightarrow$ allele) & -0.64 & -0.64 & < 0: 100.0\%, $t = -914.8$, $p < 2.2\cdot10^{-16}$ \\
+    & $\beta$(allele $\rightarrow$ tone $\mid$ Africa) & 0.53 & 0.40 & < 0: 46.7\%, $t = 11.1$, $p = 1$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+\paragraph{Path analysis}
+
+On the full dataset, the model fits the data very well ($\chi^2(1) = 0.29$, $p = 0.59$; $CFI=1.00$, $TLI=1.01$, $NNFI=1.01$ and $RFI=1.00$), and, as shown in Figure \ref{Fig:tone_counts_path_all}, being in Africa has no direct effect on tone counts, but has a significant negative effect on \textit{ASPM}-D which has a negative significant effect on tone counts, but while it has a stronger significant negative effect on \textit{MCHP1}-D this has no effect on tone counts.
+The same pattern is also found by restricted sampling, except that here there is also a hint of a negative effect of \textit{MCHP1}-D on complex tone (see Figure \ref{Fig:tone_counts_path_restricted} and Table \ref{Tab:tone_counts_path_restricted}).
+
+\begin{figure}[h]
+  \centering
+
+  \begin{tikzpicture}[node distance=4.0cm]
+  \node(iv) {\textit{Africa}};
+  \node(dv)[right of=iv] {\textit{tone counts}};
+  \node(m1)[above of=dv] {\textit{ASPM}-D};
+  \node(m2)[below of=dv] {\textit{MCPH1}-D};
+  \draw[->, thin, gray, dotted] (iv) -- (dv) node[midway, above] {-0.08 (0.66)};
+  \draw[->, very thick, blue] (iv) -- (m1) node[midway, left] {-0.54 (0.000)};
+  \draw[->, very thick, blue] (m1) -- (dv) node[midway, right] {-0.34 (0.000)};
+  \draw[->, very thick, blue] (iv) -- (m2) node[midway, left] {-0.89 (0.000)};
+  \draw[->, thin, gray, dotted] (m2) -- (dv) node[midway, right] {-0.09 (0.57)};
+  \end{tikzpicture}
+
+  \caption{The path model for tone \textit{counts} fitted on all the data, showing the standardized path coefficients (and their \textit{p}-values in parentheses). Same conventions as in Figure \ref{Fig:tone1_path_all}. }
+  \label{Fig:tone_counts_path_all}
+\end{figure}
+
+
+\begin{figure}[h]
+  \centering
+
+  \begin{tikzpicture}[node distance=4.0cm]
+  \node(iv) {\textit{Africa}};
+  \node(dv)[right of=iv] {\textit{tone counts}};
+  \node(m1)[above of=dv] {\textit{ASPM}-D};
+  \node(m2)[below of=dv] {\textit{MCPH1}-D};
+  \draw[->, thin, blue] (iv) -- (dv) node[midway, above] {0.73 (1.70)};
+  \draw[->, very thick, blue] (iv) -- (m1) node[midway, left] {-0.15 (0.03)};
+  \draw[->, very thick, blue] (m1) -- (dv) node[midway, right] {-1.90 (1.30)};
+  \draw[->, very thick, blue] (iv) -- (m2) node[midway, left] {-0.64 (0.03)};
+  \draw[->, thin, gray, dotted] (m2) -- (dv) node[midway, right] {0.066 (2.50)};
+  \end{tikzpicture}
+
+  \caption{Summary of the 1,000 path models for tone \textit{counts} fitted to restricted samples, showing the medians of the standardized path coefficients (and their IQR, in parentheses). Same conventions as in Figure \ref{Fig:tone1_path_restricted}. }
+  \label{Fig:tone_counts_path_restricted}
+\end{figure}
+
+\begin{table}[h]
+  \caption{Summaries of the path analysis for 1,000 restricted samples for tone \textit{counts}. Similar conventions as for Table \ref{Tab:tone1_mediation_restricted}.}
+  \label{Tab:tone_counts_path_restricted}
+  \centering
+  \begin{tabular}{|l|l|r|r|l|}
+    \toprule
+    \textbf{Type} & \textbf{Estimate} & \textbf{Mean (SD)} & \textbf{Median (IQR)} & \textbf{Compared to 0} \\
+    \midrule
+    \multirow{5}{*}{Fit} & $\chi^2$ test & 98.1\% n.s. & - & - \\
+    & $CFI$  & 0.99 (0.01) & 1.00 (0.01) & - \\
+    & $TLI$  & 0.99 (0.09) & 1.01 (0.15) & - \\
+    & $NNFI$ & 0.99 (0.09) & 1.01 (0.15) & - \\
+    & $RFI$  & 0.91 (0.08) & 0.93 (0.13) & - \\
+    \midrule
+    \multirow{4}{*}{Path} & Africa $\rightarrow$ tone counst & 0.73 (1.10) & 0.73 (1.70) & 72.1\% > 0 \\
+    & Africa $\rightarrow$ \textit{ASPM}-D  & -0.15 (0.02) & -0.15 (0.03) & 100.0\% < 0 \\
+    & \textit{ASPM}-D  $\rightarrow$ tone counts & -2.00 (0.93) & -1.90 (1.30) & 98.4\% < 0 \\
+    & Africa $\rightarrow$ \textit{MCPH1}-D & -0.64 (0.02) & -0.64 (0.03) & 100.0\% < 0 \\
+    & \textit{MCPH1}-D $\rightarrow$ tone counts & 0.009 (1.70) & 0.066 (2.50) & 48.6\% < 0 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+\paragraph{Conclusions}
+
+The actual number of tones/tone symbols has a skewed distribution, and the results are less clear, but it seems that there is a negative effect of \textit{ASPM}-D on tone counts above and beyond the confounding effects of macroarea and family (but not for \textit{MCPH1}-D).
 
 
 
@@ -977,14 +1303,50 @@ While the original hypothesis in \citet{dediu_ladd_2007} concerns strictly he pr
 
 \section{Discussion and conclusions}
 
-\
+I found that the population frequencies of the two ``derived'' alleles (denoted \textit{ASPM}-D and \textit{MCPH1}-D), as well as the distribution of tone, coded as as presence/absence (denoted \textit{tone1}), as complex tone systems (\textit{tone2}) or as the actual number of tones/tone symbols (tone \textit{counts}), are strongly clustered within language families and macroareas.
+This is not surprising given that they are all shaped by large-scale demographic processes, have a strong vertical transmission (inheritance) but also influenced by horizontal processes (contact).
+However, this is a very important result, as it confirms the need to properly disentangle the confounding effects of inheritance (using the language families as proxy) and contact (using the macroareas as proxy), from the potential causal effects of the two ``derived'' alleles on tone.
+On the other hand, by blindly controlling for family and macroarea, we may risk ``throwing the baby with the bathwater'' in the sense that this type of causal effect is expected to act on similar timescales to the processes affecting languages and the genetic structure of populations.
+
+Therefore, I used multiple methods of controlling for their effects, including the ``standard'' mixed-effects regression approach of modelling family as a random effect and macroarea as a fixed effect, but also by permuting the language and genetic data according to multiple types of constraints (none, within families, and within macroareas), and by repeatedly sampling only one data point from each family.
+Moreover, besides the regression approach which quantifies the ``extra'' effect of the alleles on tone left after removing the effects of macroarea and family on tone, I also used mediation and path analysis, which allow the explicit modelling of the interplay between macroarea, tone and the alleles, as well as decision trees and random forests, which quantify the capacity and relative importance of macroarea and the two alleles in predicting tone.
+
+With these, the overall picture is one of a \emph{negative effect} of the population frequency of \textit{ASPM}-D on tone above and beyond the effects of contact (macroarea) and inheritance (family), but these effects are largely overlapping in the sense that, on the one hand, samples from the same family tend to be very similar to each other genetically and linguistically, while, on the other, being a sample from Africa or from outside Africa has a major effect on \textit{ASPM}-D and (much less so) on tone.
+This ``extra'' negative of \textit{ASPM}-D on tone means that languages spoken by populations with a high frequency of \textit{ASPM}-D tend, overall, to not use tone, and, if they do, to have a simpler tone system than expected.
+It is interesting to note that the distribution of tone languages is clearly skewed relative to the high frequencies of \textit{ASPM}-D, and it is interesting to note that there is a qualitative change around 25\% from \textit{Abau} (glottocode abau1245, Sepik; simple system; 57.5\% \textit{ASPM}-D), \textit{Swedish} (swed1254, Indo-European; simple ``pitch accent''; two samples with 49.5\% and 43.8\%), \textit{Western Balochi} (west2368, Indo-European; simple; 32.0\%), \textit{Eastern Panjabi} (panj1256, Indo-European; simple system; 30.7\%), \textit{Burushaski} (buru1296, Burushaski; probably not?; 28.0\%), \textit{Awngi} (awng1244, Afro-Asiatic; simple; 27.4\%), and a set of 7 Austronesian languages (cemu1238, fwai1237, kara1486, labu1248, kuma1276, xara1244 and yabe1254) ambiguously matching the ``Micronesians'' (ALFRED SA004382R) genetic sample with 27.3\% \textit{ASPM}-D with simple tone systems, to \textit{L\"{u}} and \textit{Tai N\"{u}a} (luuu1242 and tain1252, Tai-Kadai; complex to systems; 25.0\%), \textit{Sichuan Yi} (sich1238, Sino-Tibetan; simple; 25.0\%), \textit{She} (shee1238, Hmong-Mien; complex; 23.4\%) and \textit{Mandarin Chinese} and \textit{Yue Chinese} (mand1415 and yuec1235, Sino-Tibetan; complex; 23.1\%).
+At the other extreme, a low frequency of \textit{ASPM}-D clearly does not require the presence of tone.
+
+However, while \textit{MCPH1}-D apparently also has a negative effect on tone on its own, this effect seems to be fully driven by its very skewed distribution within versus outside of Africa.
+
+Thus, the more (and, in some cases, more refined) data that became available since 2007 concerning both the population frequency of the two ``derived'' alleles (either directly, or inferred through proxies in high linkage disequilibrium) and tone, and the newer methods that became popular since, support a weak negative effect of \textit{ASPM}-D but not of \textit{MCPH1}-D after removing the effects of contact (macroareas) and inheritance (language families).
+Interestingly, while the original data and analyses \citep{dediu_ladd_2007} did not find anything that would suggest a qualitative difference between \textit{ASPM}-D and \textit{MCPH1}-D in how they affect tone, the results reported here do, with the effect of \textit{MCPH1}-D apparently fully confounded by its skewed distribution inside versus outside Africa.
+This is consonant with the experimental findings of \citet{wong_plosone_2012} and \citet{wong_sciadv_2020}, which supported a (negative) effect of \textit{ASPM}-D on tone perception/processing, but failed to find any association between \textit{MCPH1}-D and tone.
+
+Methodologically, the mixed-effects regressions with family as random effect and macroarea as fixed effect were the most conservative, systematically failing to find an effect of the ``derived'' alleles on tone, but randomising the data allows a better insight into the effect of the confounds and the differences between \textit{ASPM}-D and \textit{MCPH1}-D.
+Repeatedly sampling only one language per family (``restricted sampling'') coupled with regression modelling and controlling for macroarea is better at disentangling the negative effect of \textit{ASPM}-D on tone.
+The mediation and path analyses, especially when coupled with restricted sampling (controlling thus for inheritance), clearly show that the main confound is being or not an African sample/language and that this shapes both the distribution of the two ``derived'' alleles and of tone, but also that while it fully explains the apparent effect of \textit{MCPH1}-D it only partly accounts for that of \textit{ASPM}-D on tone.
+The decision trees and random forests must be seen only as providing some supporting evidence that indeed \textit{ASPM}-D is an important predictor of tone besides macroarea.
+
+Finally, I think this may be one of the most beautiful illustrations of the joys and perils of \emph{exploratory analyses}: rather than being fishy ``fishing expeditions'' that no decent scientist should embark on, they are essential tools for the advancement of science, generating the hypotheses that other methods are designed to test.
+However, there are costs and benefits to everything, and the relationship between the two should be an open decision, adapted to each field and question: too high an aversion for potential false positives and there goes the effect of \textit{ASPM}-D on tone; too liberal, and \textit{MCPH1}-D is allowed to ``sneak'' into the rather select club of genes that do something to tone.
+Luckily, due to the nature of linguistics, temporarily accepting \textit{MCPH1}-D in the ``causal'' club (very probably a false positive of \citealp{dediu_ladd_2007}) together with \textit{ASPM}-D (seemingly a true positive of that study) did not kill any patients, blow up any multi-billion euro infrastructure, contribute to climate inaction, nor radicalise any vulnerable persons.
+On the other hand, missing the effects of \textit{ASPM}-D on tone would have arguably delayed the reintegration of language in its wider environment and the current ``renaissance'' of extra-linguistic explanations for language evolution, change and diversity \citep{blasi_human_2019,dediu_language_2017,everett_language_2016,dediu_glossa_2019,lupyan_why_2016}, which is part of a larger paradigm shift within the language sciences that matters beyond linguistics.
+
+To be clear, I am as far as imaginable from arguing for the unbridled dredging of databases for correlations between acacia trees and car accidents \citep{ladd_correlational_2015,roberts_traffic_2013}!
+Exploratory studies are complex endeavours that must use high-quality data, an up-to-date methodological toolkit, and a proper understanding of the substantive issues at hand, in order to weed out as many of the false positives and spurious correlations as possible.
+We must keep in mind that there’s no such thing as a free lunch: while missing connections (false negatives) comes at the expense of failing to push the boundaries of science, being too accepting and/or methodologically weak results in too many false positives which, as dramatically shown by the ``replicability crises'' in medicine \citep{ioannidis_why_2005} and social sciences – as only the most visible cases – has tremendous negative consequences for science in terms of wasted resources, loss of trust, and factually wrong views becoming widespread among the public at large with real-life consequences \citep{bregman_humankind_2020}.
+
+
+
+
 
 
 %------------------------------------------------
 
 \section*{Acknowledgements}
 
-I wish to thank D. Robert Ladd and Patrick Wong. \textbf{Huma-num}.
+Special thanks D. Robert Ladd and Patrick Wong.
+I also wish to thank \textit{Huma-num} (\url{https://www.huma-num.fr}) for the use of their computing infrastructure for parts of this project.
 
 
 %------------------------------------------------
@@ -1041,38 +1403,38 @@ The meta-information used for matching samples and (meta)populations is containe
 
 A summary is given in Figure \ref{Fig:tone_agreement_sources}, but for full details please see the \texttt{HTML} analysis report \verb|./data/genetics/code/tone-genes.html|.
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{../../code/figures/tone_agreement_sources}
   \caption{The agreement between the 5 sources for tone. Each panel shows a pair of sources (e.g., the top-left panel shows \textit{LAPSyD} on the vertical axis and \textit{DL} on the horizontal axis); please note that the pairs are symmetric, so that the \textit{DL} vs \textit{LAPSyD} panel is not shown (is white); likewise, the identity panels (e.g., \textit{LAPSyD} vs \textit{LAPSyD}) on the diagonal are also not shown (white). Each panel shows the number of languages with each possible combination of values from the two sources (e.g., for ``None'' vs ``No'', there are 12 languages, but there's no language for ``None'' vs ``Yes''). The shade of blue varies between white (the lowest count) to light blue (highest count). A high agreement between two sources results in little discrepancy between corresponding values (e.g., all ``None'' in LAPSyD map to ``No'' in DL and vice-versa, while ``Marginal'', ``Simple'', ``Moderately complex'' and ``Complex'' map to ``Yes'').}
   \label{Fig:tone_agreement_sources}
-\end{figure*}
+\end{figure}
 
 
 \subsection{Agreement classification of tone vs the sources} \label{SM:tone_agreeemnt_with_sources}
 
 A summary is given in Figures \ref{Fig:tone_agreement_with_sources_binary},  \ref{Fig:tone_agreement_with_sources_3way}, and  \ref{Fig:tone_agreement_with_sources_counts}, but for full details please see the \texttt{HTML} analysis report \verb|./data/genetics/code/tone-genes.html|.
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{../../code/figures/tone_agreement_with_sources_binary}
   \caption{The agreement binary classification of tone versus the original sources \textit{WALS}, \textit{LAPSyD} and \textit{DL}. The same conventions as for Figure \ref{Fig:tone_agreement_sources}).}
   \label{Fig:tone_agreement_with_sources_binary}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{../../code/figures/tone_agreement_with_sources_3way}
   \caption{The agreement 3-way classification of tone versus the original sources \textit{WALS}, \textit{LAPSyD} and \textit{DL}. The same conventions as for Figure \ref{Fig:tone_agreement_sources}).}
   \label{Fig:tone_agreement_with_sources_3way}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[h]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{../../code/figures/tone_agreement_with_sources_counts}
   \caption{The agreement for tone counts versus the original sources \textit{LAPSyD}, \textit{PHOIBLE} and \textit{WPHON}. The same conventions as for Figure \ref{Fig:tone_agreement_sources}).}
   \label{Fig:tone_agreement_with_sources_counts}
-\end{figure*}
+\end{figure}
 
 
 

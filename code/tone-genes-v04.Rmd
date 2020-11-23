@@ -1,7 +1,7 @@
 ---
-title: "An update on *tone*, *ASPM* and *MCPH1*"
-subtitle: "New data and analyses confirm the weak negative effect of the first, but find no effect for the second"
-author: "Dan Dediu (ddediu@gmail.com)"
+title: "Tone and genes: new data and methods support the negative effect of *ASPM* but not of *Microcephalin*"
+subtitle: "Full statistical analyses and plots"
+author: "Dan Dediu (dan.dediu@univ-lyon2.fr)"
 date: '`r date()`'
 output:
   html_document: 
@@ -18,10 +18,6 @@ editor_options:
 bibliography: bibliography.bib
 csl: apa-6th-edition.csl
 ---
-
-# TODO
-
-- update conclusions (tone types & overall) to include the restricted sampling for mediation and path analysis
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE);
