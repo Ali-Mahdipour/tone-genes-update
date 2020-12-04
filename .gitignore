@@ -56,3 +56,6 @@ code/tone-genes-v*_cache/*
 data/language/input/wals-2014/language.csv
 data/language/input/wals-2014/README.txt
 data/language/input/phoible-v2.0.1/cldf-*
+
+# Specific papers:
+/paper/PLoS1
