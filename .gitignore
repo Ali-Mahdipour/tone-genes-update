@@ -57,5 +57,10 @@ data/language/input/wals-2014/language.csv
 data/language/input/wals-2014/README.txt
 data/language/input/phoible-v2.0.1/cldf-*
 
-# Specific papers:
-/paper/PLoS1
+# Ignore the paper:
+/paper/*
+
+code/tone-genes-stan-v05.Rmd
+code/tone-genes-v04.Rmd
+code/tone-genes-v06.Rmd
+code/tone-genes-v07.Rmd
