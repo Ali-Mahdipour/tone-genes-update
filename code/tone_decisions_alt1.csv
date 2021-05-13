@@ -1,0 +1,6 @@
+cond_PWLSDH	cond_description	binary_action	binary_decision	binary_confidence	3way_action	3way_decision	3way_confidence
+*1****	WALS trumps everything	ifelse(.TW == 'None', 'No', 'Yes')	'WALS'	1	.TW	'WALS'	1
+*0***1	no WALS but WPHON	ifelse(.TH == 0, 'No', 'Yes')	'WPHON'	0.99	ifelse(.TH == 0, 'None', ifelse(.TH <= 3, 'Simple', 'Complex'))	'WPHON'	0.99
+*01**0	no WALS and WPHON but LAPSyD	ifelse(.TL == 'None', 'No', 'Yes')	'LAPSyD'	0.99	ifelse(.TL == 'None', 'None', ifelse(.TL  == 'Simple', 'Simple', 'Complex'))	'LAPSyD'	0.99
+*00*10	no WALS, WPHON and LAPSyD but DL2007	.TD	'Dediu & Ladd (2007)'	0.95	ifelse(.TP == 0, 'None', ifelse(.TP <= 2, 'Simple', 'Complex'))	'PHOIBLE'	0
+100*00	just PHOIBLE	ifelse(.TP == 0, 'No', 'Yes')	'PHOIBLE'	0	ifelse(.TP == 0, 'None', ifelse(.TP <= 2, 'Simple', 'Complex'))	'PHOIBLE'	0

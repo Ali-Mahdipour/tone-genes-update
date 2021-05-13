@@ -2,7 +2,7 @@
 #
 # Here we assemble and preprocess the allele frequency data from several databases
 #
-# (c) Dan Dediu, 2020
+# (c) Dan Dediu, 2020-2021
 #
 ######################################################################################
 
@@ -238,26 +238,50 @@ d_gnomAD_keep <- d_gnomAD[ (d_gnomAD$Population %in% c("asj", "kor", "jpn", "fin
 
 
 ##
+## Mark the new samples and the proxy SNPs ####
+##
+
+# MB2005:
+d_MB2005$New_sample <- FALSE; d_MB2005$Proxy_SNP <- FALSE;
+# W2020:
+d_W2020$New_sample <- TRUE; d_W2020$Proxy_SNP <- (d_W2020$SNP != "rs41310927");
+# ALFRED:
+d_ALFRED$New_sample <- TRUE; d_ALFRED$Proxy_SNP <- (d_ALFRED$SNP != "rs41310927");
+# LDLink:
+d_LDLink_keep$New_sample <- TRUE; d_LDLink_keep$Proxy_SNP <- (d_LDLink_keep$SNP != "rs41310927");
+# dbSNP:
+d_dbSNP_keep$New_sample <- TRUE; d_dbSNP_keep$Proxy_SNP <- (d_dbSNP_keep$SNP != "rs41310927");
+# gnomAD:
+d_gnomAD_keep$New_sample <- TRUE; d_gnomAD_keep$Proxy_SNP <- (d_gnomAD_keep$SNP != "rs41310927");
+
+
+##
 ## Combine the SNPs in a single genetic info ####
 ##
 
 # Keep only the essential info and go wide-format:
-d_MB2005_wide <- d_MB2005[,c("SNP", "Pop_UID", "N_alleles", "MAF")]; d_MB2005_wide <- dcast(setDT(d_MB2005_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles"));
-d_W2020_wide <- d_W2020[,c("SNP", "Pop_UID", "N_alleles", "MAF")]; d_W2020_wide <- dcast(setDT(d_W2020_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles"));
-d_ALFRED_wide <- d_ALFRED[,c("SNP", "Pop_UID", "N_alleles", "MAF")]; d_ALFRED_wide <- dcast(setDT(d_ALFRED_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles"));
-d_LDLink_wide <- d_LDLink_keep[,c("SNP", "Pop_UID", "N_alleles", "MAF")]; d_LDLink_wide <- dcast(setDT(d_LDLink_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles"));
-d_dbSNP_wide <- d_dbSNP_keep[,c("SNP", "Pop_UID", "N_alleles", "MAF")]; d_dbSNP_wide <- dcast(setDT(d_dbSNP_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles"));
-d_gnomAD_wide <- d_gnomAD_keep[,c("SNP", "Pop_UID", "N_alleles", "MAF")]; d_gnomAD_wide <- dcast(setDT(d_gnomAD_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles"));
+d_MB2005_wide <- d_MB2005[,c("SNP", "Pop_UID", "N_alleles", "MAF", "New_sample", "Proxy_SNP")]; 
+d_MB2005_wide <- dcast(setDT(d_MB2005_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles", "New_sample", "Proxy_SNP"));
+d_W2020_wide <- d_W2020[,c("SNP", "Pop_UID", "N_alleles", "MAF", "New_sample", "Proxy_SNP")]; 
+d_W2020_wide <- dcast(setDT(d_W2020_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles", "New_sample", "Proxy_SNP"));
+d_ALFRED_wide <- d_ALFRED[,c("SNP", "Pop_UID", "N_alleles", "MAF", "New_sample", "Proxy_SNP")]; 
+d_ALFRED_wide <- dcast(setDT(d_ALFRED_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles", "New_sample", "Proxy_SNP"));
+d_LDLink_wide <- d_LDLink_keep[,c("SNP", "Pop_UID", "N_alleles", "MAF", "New_sample", "Proxy_SNP")]; 
+d_LDLink_wide <- dcast(setDT(d_LDLink_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles", "New_sample", "Proxy_SNP"));
+d_dbSNP_wide <- d_dbSNP_keep[,c("SNP", "Pop_UID", "N_alleles", "MAF", "New_sample", "Proxy_SNP")]; 
+d_dbSNP_wide <- dcast(setDT(d_dbSNP_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles", "New_sample", "Proxy_SNP"));
+d_gnomAD_wide <- d_gnomAD_keep[,c("SNP", "Pop_UID", "N_alleles", "MAF", "New_sample", "Proxy_SNP")]; 
+d_gnomAD_wide <- dcast(setDT(d_gnomAD_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles", "New_sample", "Proxy_SNP"));
 
-d_all_wide <- merge(d_MB2005_wide, d_W2020_wide, by="Pop_UID", suffixes=c("_MB", "_W"), all=TRUE);
-d_all_wide <- merge(d_all_wide, d_ALFRED_wide, by="Pop_UID", suffixes=c("", "_AL"), all=TRUE);
-d_all_wide <- merge(d_all_wide, d_LDLink_wide, by="Pop_UID", suffixes=c("", "_LD"), all=TRUE);
-d_all_wide <- merge(d_all_wide, d_dbSNP_wide, by="Pop_UID", suffixes=c("", "_SN"), all=TRUE);
-d_all_wide <- merge(d_all_wide, d_gnomAD_wide, by="Pop_UID", suffixes=c("", "_GN"), all=TRUE);
-d_all_wide <- as.data.frame(d_all_wide);
+d_all_wide1 <- merge(d_MB2005_wide, d_W2020_wide, by="Pop_UID", suffixes=c("_MB", "_W"), all=TRUE);
+d_all_wide1 <- merge(d_all_wide1, d_ALFRED_wide, by="Pop_UID", suffixes=c("", "_AL"), all=TRUE);
+d_all_wide1 <- merge(d_all_wide1, d_LDLink_wide, by="Pop_UID", suffixes=c("", "_LD"), all=TRUE);
+d_all_wide1 <- merge(d_all_wide1, d_dbSNP_wide, by="Pop_UID", suffixes=c("", "_SN"), all=TRUE);
+d_all_wide1 <- merge(d_all_wide1, d_gnomAD_wide, by="Pop_UID", suffixes=c("", "_GN"), all=TRUE);
+d_all_wide1 <- as.data.frame(d_all_wide1);
 
 # Correlations:
-pairs(d_all_wide[,grep("MAF_",names(d_all_wide),fixed=TRUE)], 
+pairs(d_all_wide1[,grep("MAF_",names(d_all_wide1),fixed=TRUE)], 
       upper.panel=function(x, y, ...)
         { 
           par(usr = c(0, 1, 0, 1)); 
@@ -267,17 +291,55 @@ pairs(d_all_wide[,grep("MAF_",names(d_all_wide),fixed=TRUE)],
         });
 
 # This confirms that they are very highly correlated: so, combine them into a single MAF per population:
-snps <- substring(names(d_all_wide)[ grep("MAF_", names(d_all_wide), fixed=TRUE) ], nchar("MAF_")+1); # select the loci:
-d_all_wide$N_alleles_total <- rowSums(d_all_wide[,paste0("N_alleles_",snps)], na.rm=TRUE); # total number of alleles
-d_all_wide$N_databases <- rowSums(!is.na(d_all_wide[,paste0("MAF_",snps)]), na.rm=TRUE); # number of databases with actual data
-d_all_wide$MAF_avg <- rowMeans(d_all_wide[,paste0("MAF_",snps)], na.rm=TRUE); # raw average of the MAFs
-d_all_wide$MAF_wavg <- rowSums(d_all_wide[,paste0("MAF_",snps)] * d_all_wide[,paste0("N_alleles_",snps)], na.rm=TRUE) / 
-  rowSums(d_all_wide[,paste0("N_alleles_",snps)], na.rm=TRUE); # weigthed average of the MAFs
-cor.test(d_all_wide$MAF_avg, d_all_wide$MAF_wavg); # the raw average and weighted average are highly correlated
+snps <- substring(names(d_all_wide1)[ grep("MAF_", names(d_all_wide1), fixed=TRUE) ], nchar("MAF_")+1); # select the loci:
+
+# How much data is due to proxy SNPs:
+m_all     <- !is.na(d_all_wide1[,paste0("MAF_",snps)]); sum(m_all); # number of samples x SNPs with frequency data (all SNPs)
+m_noproxy <- m_all & (!is.na(d_all_wide1[,paste0("Proxy_SNP_",snps)]) & (d_all_wide1[,paste0("Proxy_SNP_",snps)] == FALSE)); sum(m_noproxy); # number of samples x SNPs with frequency data (excluding proxy SNPs)
+d_all_wide1_noproxy <- d_all_wide1; # put all proxy data on NA
+for(i in snps)
+{
+  if( any(!is.na(d_all_wide1[,paste0("Proxy_SNP_",i)]) & (d_all_wide1[,paste0("Proxy_SNP_",i)] == TRUE)) )
+  {
+    d_all_wide1_noproxy[,paste0("MAF_",i)] <- d_all_wide1_noproxy[,paste0("N_alleles_",i)] <- NA;
+  }
+}
+
+# How much data is due to samples post MB2005:
+snps_unique <- unique(vapply(strsplit(snps,"_",fixed=TRUE), function(x) x[1], character(1)));
+samples_by_snps <- expand.grid("Pop_UID"=unique(d_all_wide1$Pop_UID), "SNP"=snps_unique);
+d_new_samples1 <- do.call(rbind, lapply(1:nrow(samples_by_snps), function(i)
+  {
+    s <- as.matrix(d_all_wide1[ d_all_wide1$Pop_UID == samples_by_snps$Pop_UID[i], grep(paste0("N_alleles_",samples_by_snps$SNP[i]), names(d_all_wide1), fixed=TRUE), drop=FALSE ]);
+    if( is.null(s) || nrow(s) == 0 || ncol(s) == 0 || sum(!is.na(s)) == 0 ) return (NULL); # nothing for this sample and SNP
+    data.frame("Pop_UID"=samples_by_snps$Pop_UID[i], "New_sample"=!(samples_by_snps$Pop_UID[i] %in% d_MB2005_wide$Pop_UID),
+               "SNP"=samples_by_snps$SNP[i], "Proxy_SNP"=!(samples_by_snps$SNP[i] %in% c("A44871G","rs41310927")), 
+               "N_alleles"=c(s)); # convert to vector column-wise
+  }));
+d_new_samples1 <- d_new_samples1[ !is.na(d_new_samples1$N_alleles), ];
+
+# Combine the data:
+d_all_wide1$N_alleles_total <- rowSums(d_all_wide1[,paste0("N_alleles_",snps)], na.rm=TRUE); # total number of alleles
+d_all_wide1$N_databases <- rowSums(!is.na(d_all_wide1[,paste0("MAF_",snps)]), na.rm=TRUE); # number of databases with actual data
+d_all_wide1$MAF_avg <- rowMeans(d_all_wide1[,paste0("MAF_",snps)], na.rm=TRUE); # raw average of the MAFs
+d_all_wide1$MAF_wavg <- rowSums(d_all_wide1[,paste0("MAF_",snps)] * d_all_wide1[,paste0("N_alleles_",snps)], na.rm=TRUE) / 
+  rowSums(d_all_wide1[,paste0("N_alleles_",snps)], na.rm=TRUE); # weighed average of the MAFs
+cor.test(d_all_wide1$MAF_avg, d_all_wide1$MAF_wavg); # the raw average and weighted average are highly correlated
+# ... also excluding the proxy SNPs:
+d_all_wide1_noproxy$N_alleles_total <- rowSums(d_all_wide1_noproxy[,paste0("N_alleles_",snps)], na.rm=TRUE); # total number of alleles
+d_all_wide1_noproxy$N_databases <- rowSums(!is.na(d_all_wide1_noproxy[,paste0("MAF_",snps)]), na.rm=TRUE); # number of databases with actual data
+d_all_wide1_noproxy$MAF_avg <- rowMeans(d_all_wide1_noproxy[,paste0("MAF_",snps)], na.rm=TRUE); # raw average of the MAFs
+d_all_wide1_noproxy$MAF_wavg <- rowSums(d_all_wide1_noproxy[,paste0("MAF_",snps)] * d_all_wide1_noproxy[,paste0("N_alleles_",snps)], na.rm=TRUE) / 
+  rowSums(d_all_wide1_noproxy[,paste0("N_alleles_",snps)], na.rm=TRUE); # weighed average of the MAFs
 
 # Make it clear that this is about ASPM (and replace MAF by the frequency of the "derived" allele, and rearrange columns):
-d_all_wide <- d_all_wide[,c("Pop_UID", "N_alleles_total", "MAF_avg", "MAF_wavg", "N_databases")];
-names(d_all_wide) <- c("Pop_UID","ASPM_n_alleles", "ASPM_freq_avg", "ASPM_freq_wavg", "ASPM_n_databases");
+d_all_wide1 <- d_all_wide1[,c("Pop_UID", "N_alleles_total", "MAF_avg", "MAF_wavg", "N_databases")];
+names(d_all_wide1) <- c("Pop_UID","ASPM_n_alleles", "ASPM_freq_avg", "ASPM_freq_wavg", "ASPM_n_databases");
+d_all_wide1 <- d_all_wide1[ d_all_wide1$ASPM_n_alleles > 0, ];
+# ... also excluding the proxy SNPs:
+d_all_wide1_noproxy <- d_all_wide1_noproxy[,c("Pop_UID", "N_alleles_total", "MAF_avg", "MAF_wavg", "N_databases")];
+names(d_all_wide1_noproxy) <- c("Pop_UID","ASPM_n_alleles", "ASPM_freq_avg", "ASPM_freq_wavg", "ASPM_n_databases");
+d_all_wide1_noproxy <- d_all_wide1_noproxy[ d_all_wide1_noproxy$ASPM_n_alleles > 0, ];
 
 
 
@@ -469,15 +531,36 @@ d_dbSNP_keep <- d_dbSNP[ (d_dbSNP$Database == "gnomAD - Exomes" & d_dbSNP$Popula
 
 
 ##
+## Mark the new samples and the proxy SNPs ####
+##
+
+# MB2005:
+d_MB2005$New_sample <- FALSE; d_MB2005$Proxy_SNP <- FALSE;
+# W2020:
+d_W2020$New_sample <- TRUE; d_W2020$Proxy_SNP <- (d_W2020$SNP != "rs930557");
+# ALFRED:
+d_ALFRED$New_sample <- TRUE; d_ALFRED$Proxy_SNP <- (d_ALFRED$SNP != "rs930557");
+# LDLink:
+d_LDLink$New_sample <- TRUE; d_LDLink$Proxy_SNP <- (d_LDLink$SNP != "rs930557");
+# dbSNP:
+d_dbSNP_keep$New_sample <- TRUE; d_dbSNP_keep$Proxy_SNP <- (d_dbSNP_keep$SNP != "rs930557");
+
+
+##
 ## Combine the SNPs in a single genetic info ####
 ##
 
 # Keep only the essential info and go wide-format:
-d_MB2005_wide <- d_MB2005[,c("SNP", "Pop_UID", "N_alleles", "MAF")]; d_MB2005_wide <- dcast(setDT(d_MB2005_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles"));
-d_W2020_wide <- d_W2020[,c("SNP", "Pop_UID", "N_alleles", "MAF")]; d_W2020_wide <- dcast(setDT(d_W2020_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles"));
-d_ALFRED_wide <- d_ALFRED[,c("SNP", "Pop_UID", "N_alleles", "MAF")]; d_ALFRED_wide <- dcast(setDT(d_ALFRED_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles"));
-d_LDLink_wide <- d_LDLink[,c("SNP", "Pop_UID", "N_alleles", "MAF")]; d_LDLink_wide <- dcast(setDT(d_LDLink_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles"));
-d_dbSNP_wide <- d_dbSNP_keep[,c("SNP", "Pop_UID", "N_alleles", "MAF")]; d_dbSNP_wide <- dcast(setDT(d_dbSNP_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles"));
+d_MB2005_wide <- d_MB2005[,c("SNP", "Pop_UID", "N_alleles", "MAF", "New_sample", "Proxy_SNP")]; 
+d_MB2005_wide <- dcast(setDT(d_MB2005_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles", "New_sample", "Proxy_SNP"));
+d_W2020_wide <- d_W2020[,c("SNP", "Pop_UID", "N_alleles", "MAF", "New_sample", "Proxy_SNP")]; 
+d_W2020_wide <- dcast(setDT(d_W2020_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles", "New_sample", "Proxy_SNP"));
+d_ALFRED_wide <- d_ALFRED[,c("SNP", "Pop_UID", "N_alleles", "MAF", "New_sample", "Proxy_SNP")]; 
+d_ALFRED_wide <- dcast(setDT(d_ALFRED_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles", "New_sample", "Proxy_SNP"));
+d_LDLink_wide <- d_LDLink[,c("SNP", "Pop_UID", "N_alleles", "MAF", "New_sample", "Proxy_SNP")]; 
+d_LDLink_wide <- dcast(setDT(d_LDLink_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles", "New_sample", "Proxy_SNP"));
+d_dbSNP_wide <- d_dbSNP_keep[,c("SNP", "Pop_UID", "N_alleles", "MAF", "New_sample", "Proxy_SNP")]; 
+d_dbSNP_wide <- dcast(setDT(d_dbSNP_wide), Pop_UID ~ SNP, value.var=c("MAF", "N_alleles", "New_sample", "Proxy_SNP"));
 
 d_all_wide2 <- merge(d_MB2005_wide, d_W2020_wide, by="Pop_UID", suffixes=c("_MB", "_W"), all=TRUE);
 d_all_wide2 <- merge(d_all_wide2, d_ALFRED_wide, by="Pop_UID", suffixes=c("", "_AL"), all=TRUE);
@@ -497,23 +580,69 @@ pairs(d_all_wide2[,grep("MAF_",names(d_all_wide2),fixed=TRUE)],
 
 # This confirms that they are very highly correlated: so, combine them into a single MAF per population:
 snps <- substring(names(d_all_wide2)[ grep("MAF_", names(d_all_wide2), fixed=TRUE) ], nchar("MAF_")+1); # select the loci:
+
+# How much data is due to proxy SNPs:
+m2_all     <- !is.na(d_all_wide2[,paste0("MAF_",snps)]); sum(m2_all); # number of samples x SNPs with frequency data (all SNPs)
+m2_noproxy <- m2_all & (!is.na(d_all_wide2[,paste0("Proxy_SNP_",snps)]) & (d_all_wide2[,paste0("Proxy_SNP_",snps)] == FALSE)); sum(m2_noproxy); # number of samples x SNPs with frequency data (excluding proxy SNPs)
+d_all_wide2_noproxy <- d_all_wide2; # put all proxy data on NA
+for(i in snps)
+{
+  if( any(!is.na(d_all_wide2[,paste0("Proxy_SNP_",i)]) & (d_all_wide2[,paste0("Proxy_SNP_",i)] == TRUE)) )
+  {
+    d_all_wide2_noproxy[,paste0("MAF_",i)] <- d_all_wide2_noproxy[,paste0("N_alleles_",i)] <- NA;
+  }
+}
+
+# How much data is due to samples post MB2005:
+snps_unique <- unique(vapply(strsplit(snps,"_",fixed=TRUE), function(x) x[1], character(1)));
+samples_by_snps <- expand.grid("Pop_UID"=unique(d_all_wide2$Pop_UID), "SNP"=snps_unique);
+d_new_samples2 <- do.call(rbind, lapply(1:nrow(samples_by_snps), function(i)
+{
+  s <- as.matrix(d_all_wide2[ d_all_wide2$Pop_UID == samples_by_snps$Pop_UID[i], grep(paste0("N_alleles_",samples_by_snps$SNP[i]), names(d_all_wide2), fixed=TRUE), drop=FALSE ]);
+  if( is.null(s) || nrow(s) == 0 || ncol(s) == 0 || sum(!is.na(s)) == 0 ) return (NULL); # nothing for this sample and SNP
+  data.frame("Pop_UID"=samples_by_snps$Pop_UID[i], "New_sample"=!(samples_by_snps$Pop_UID[i] %in% d_MB2005_wide$Pop_UID),
+             "SNP"=samples_by_snps$SNP[i], "Proxy_SNP"=!(samples_by_snps$SNP[i] %in% c("G37995C","rs930557")), 
+             "N_alleles"=c(s)); # convert to vector column-wise
+}));
+d_new_samples2 <- d_new_samples2[ !is.na(d_new_samples2$N_alleles), ];
+
+# Combine the data:
 d_all_wide2$N_alleles_total <- rowSums(d_all_wide2[,paste0("N_alleles_",snps)], na.rm=TRUE); # total number of alleles
 d_all_wide2$N_databases <- rowSums(!is.na(d_all_wide2[,paste0("MAF_",snps)]), na.rm=TRUE); # number of databases with actual data
 d_all_wide2$MAF_avg <- rowMeans(d_all_wide2[,paste0("MAF_",snps)], na.rm=TRUE); # raw average of the MAFs
 d_all_wide2$MAF_wavg <- rowSums(d_all_wide2[,paste0("MAF_",snps)] * d_all_wide2[,paste0("N_alleles_",snps)], na.rm=TRUE) / 
   rowSums(d_all_wide2[,paste0("N_alleles_",snps)], na.rm=TRUE); # weigthed average of the MAFs
 cor.test(d_all_wide2$MAF_avg, d_all_wide2$MAF_wavg); # the raw average and weighted average are highly correlated
+# ... also excluding the proxy SNPs:
+d_all_wide2_noproxy$N_alleles_total <- rowSums(d_all_wide2_noproxy[,paste0("N_alleles_",snps)], na.rm=TRUE); # total number of alleles
+d_all_wide2_noproxy$N_databases <- rowSums(!is.na(d_all_wide2_noproxy[,paste0("MAF_",snps)]), na.rm=TRUE); # number of databases with actual data
+d_all_wide2_noproxy$MAF_avg <- rowMeans(d_all_wide2_noproxy[,paste0("MAF_",snps)], na.rm=TRUE); # raw average of the MAFs
+d_all_wide2_noproxy$MAF_wavg <- rowSums(d_all_wide2_noproxy[,paste0("MAF_",snps)] * d_all_wide2_noproxy[,paste0("N_alleles_",snps)], na.rm=TRUE) / 
+  rowSums(d_all_wide2_noproxy[,paste0("N_alleles_",snps)], na.rm=TRUE); # weighed average of the MAFs
 
 # Make it clear that this about MCPH1 (and replace MAF by the frequency of the "derived" allele, and rearrange columns):
 d_all_wide2 <- d_all_wide2[,c("Pop_UID", "N_alleles_total", "MAF_avg", "MAF_wavg", "N_databases")];
 names(d_all_wide2) <- c("Pop_UID", "MCPH1_n_alleles", "MCPH1_freq_avg", "MCPH1_freq_wavg", "MCPH1_n_databases");
 d_all_wide2 <- d_all_wide2[ -grep("1KG_",d_all_wide2$Pop_UID,fixed=TRUE), ]; # remove the 1000 genomes generic populations
+d_all_wide2 <- d_all_wide2[ d_all_wide2$MCPH1_n_alleles > 0, ];
+# ... also excluding the proxy SNPs:
+d_all_wide2_noproxy <- d_all_wide2_noproxy[,c("Pop_UID", "N_alleles_total", "MAF_avg", "MAF_wavg", "N_databases")];
+names(d_all_wide2_noproxy) <- c("Pop_UID", "MCPH1_n_alleles", "MCPH1_freq_avg", "MCPH1_freq_wavg", "MCPH1_n_databases");
+d_all_wide2_noproxy <- d_all_wide2_noproxy[ -grep("1KG_",d_all_wide2_noproxy$Pop_UID,fixed=TRUE), ]; # remove the 1000 genomes generic populations
+d_all_wide2_noproxy <- d_all_wide2_noproxy[ d_all_wide2_noproxy$MCPH1_n_alleles > 0, ];
 
 # We're talking about the "derived" allele, so make the frequencies about it:
-d_all_wide2$MCPH1_freq_avg <- (1.0 - d_all_wide2$MCPH1_freq_avg); d_all_wide2$MCPH1_freq_wavg <- (1.0 - d_all_wide2$MCPH1_freq_wavg);
+d_all_wide2$MCPH1_freq_avg         <- (1.0 - d_all_wide2$MCPH1_freq_avg); d_all_wide2$MCPH1_freq_wavg <- (1.0 - d_all_wide2$MCPH1_freq_wavg);
+d_all_wide2_noproxy$MCPH1_freq_avg <- (1.0 - d_all_wide2_noproxy$MCPH1_freq_avg); d_all_wide2_noproxy$MCPH1_freq_wavg <- (1.0 - d_all_wide2_noproxy$MCPH1_freq_wavg);
 
-# Add this info the the ASPM data:
-d_all_wide <- merge(d_all_wide, d_all_wide2, by="Pop_UID", all=TRUE);
+
+##
+## Combine ASPM and MCPH1 data ####
+##
+d_all_wide         <- merge(d_all_wide1, d_all_wide2, by="Pop_UID", all=TRUE);
+d_all_wide_noproxy <- merge(d_all_wide1_noproxy, d_all_wide2_noproxy, by="Pop_UID", all=TRUE);
+d_new_samples      <- rbind(cbind(d_new_samples1, "Gene"="ASPM"),
+                            cbind(d_new_samples2, "Gene"="MCPH1"));
 
 
 
@@ -554,6 +683,40 @@ d_all_wide_lgs <- d_all_wide_lgs[,c("Pop_UID", "Metapopulation_ID", "Metapopulat
                                     "ASPM_n_alleles", "ASPM_freq_avg", "ASPM_freq_wavg", "ASPM_n_databases", 
                                     "MCPH1_n_alleles", "MCPH1_freq_avg", "MCPH1_freq_wavg", "MCPH1_n_databases")];
 
+
+# ... and when excluding proxies:
+d_all_wide_noproxy_lgs <- do.call(rbind, lapply(1:nrow(d_all_wide_noproxy), function(i)
+{
+  # Get the Pop_UID:
+  pop_uid <- d_all_wide_noproxy$Pop_UID[i];
+  if( is.na(pop_uid) || pop_uid == "" ) stop(paste0("Undefined Pop_UID for entry ",i," !\n"));
+  
+  # Find the entry/entries with defined ISO codes:
+  s <- (d_pops$Pop_UID == pop_uid & !is.na(d_pops$Language_ISOs) & d_pops$Language_ISOs != "");
+  if( sum(s) == 0 )
+  {
+    warning(paste0("No language info for Pop_UID ",pop_uid,": ignoring it..."));
+    return (NULL);
+  }
+  isos <- trimws(unlist(strsplit(as.character(d_pops$Language_ISOs[s]), ",", fixed=TRUE)));
+  isos <- isos[ !is.na(isos) & isos != "" & isos != "?" ]; 
+  if( is.null(isos) || length(isos) == 0 )
+  {
+    warning(paste0("No usable language info for Pop_UID ",pop_uid,": ignoring it..."));
+    return (NULL);
+  } else
+  {
+    return (cbind(Pop_UID=d_all_wide_noproxy[i,1], "ISO_639_3"=isos, d_all_wide_noproxy[i,2:ncol(d_all_wide_noproxy)], row.names = NULL));
+  }
+}));
+
+# Add meta-population info:
+d_all_wide_noproxy_lgs <- merge(d_all_wide_noproxy_lgs, unique(d_pops[!is.na(d_pops$Metapopulation_ID), c("Pop_UID", "Metapopulation_ID", "Metapopulation_name")]), by="Pop_UID", all.x=TRUE, all.y=FALSE);
+d_all_wide_noproxy_lgs <- d_all_wide_noproxy_lgs[,c("Pop_UID", "Metapopulation_ID", "Metapopulation_name", 
+                                                    "ISO_639_3", 
+                                                    "ASPM_n_alleles", "ASPM_freq_avg", "ASPM_freq_wavg", "ASPM_n_databases", 
+                                                    "MCPH1_n_alleles", "MCPH1_freq_avg", "MCPH1_freq_wavg", "MCPH1_n_databases")];
+
   
 
 ##
@@ -563,26 +726,26 @@ d_all_wide_lgs <- d_all_wide_lgs[,c("Pop_UID", "Metapopulation_ID", "Metapopulat
 d <- unique(d_all_wide_lgs[, -which("ISO_639_3" == names(d_all_wide_lgs))]); # remove language info
 # for ASPM:
 tmp <- d %>%
-  filter(!is.na(ASPM_freq_wavg)) %>%
-  select(Pop_UID, starts_with("Metapopulation_"), starts_with("ASPM_")) %>%
-  group_by(Metapopulation_ID) %>%
-  filter(n() > 1) %>%
-  summarise("Metapopulation_name"=unique(Metapopulation_name), "N_samples"=n(),
-            "range_ASPM"=max(ASPM_freq_wavg)-min(ASPM_freq_wavg), "min_ASPM"=min(ASPM_freq_wavg), "max_ASPM"=max(ASPM_freq_wavg), 
-            "mean_ASPM"=mean(ASPM_freq_wavg), "Wmean_ASPM"=sum(ASPM_freq_wavg * ASPM_n_alleles) / sum(ASPM_n_alleles)) %>%
-  arrange(desc(range_ASPM));
+  dplyr::filter(!is.na(ASPM_freq_wavg)) %>%
+  dplyr::select(Pop_UID, starts_with("Metapopulation_"), starts_with("ASPM_")) %>%
+  dplyr::group_by(Metapopulation_ID) %>%
+  dplyr::filter(n() > 1) %>%
+  dplyr::summarise("Metapopulation_name"=unique(Metapopulation_name), "N_samples"=n(),
+                   "range_ASPM"=max(ASPM_freq_wavg)-min(ASPM_freq_wavg), "min_ASPM"=min(ASPM_freq_wavg), "max_ASPM"=max(ASPM_freq_wavg), 
+                   "mean_ASPM"=mean(ASPM_freq_wavg), "Wmean_ASPM"=sum(ASPM_freq_wavg * ASPM_n_alleles) / sum(ASPM_n_alleles)) %>%
+  dplyr::arrange(desc(range_ASPM));
 # View(tmp) # -> some are pretty big, so let's keep these separate
 
 # for MCPH1:
 tmp <- d %>%
-  filter(!is.na(MCPH1_freq_wavg)) %>%
-  select(Pop_UID, starts_with("Metapopulation_"), starts_with("MCPH1_")) %>%
-  group_by(Metapopulation_ID) %>%
-  filter(n() > 1) %>%
-  summarise("Metapopulation_name"=unique(Metapopulation_name), "N_samples"=n(),
-            "range_MCPH1"=max(MCPH1_freq_wavg)-min(MCPH1_freq_wavg), "min_MCPH1"=min(MCPH1_freq_wavg), "max_MCPH1"=max(MCPH1_freq_wavg), 
-            "mean_MCPH1"=mean(MCPH1_freq_wavg), "Wmean_MCPH1"=sum(MCPH1_freq_wavg * MCPH1_n_alleles) / sum(MCPH1_n_alleles)) %>%
-  arrange(desc(range_MCPH1));
+  dplyr::filter(!is.na(MCPH1_freq_wavg)) %>%
+  dplyr::select(Pop_UID, starts_with("Metapopulation_"), starts_with("MCPH1_")) %>%
+  dplyr::group_by(Metapopulation_ID) %>%
+  dplyr::filter(n() > 1) %>%
+  dplyr::summarise("Metapopulation_name"=unique(Metapopulation_name), "N_samples"=n(),
+                   "range_MCPH1"=max(MCPH1_freq_wavg)-min(MCPH1_freq_wavg), "min_MCPH1"=min(MCPH1_freq_wavg), "max_MCPH1"=max(MCPH1_freq_wavg), 
+                   "mean_MCPH1"=mean(MCPH1_freq_wavg), "Wmean_MCPH1"=sum(MCPH1_freq_wavg * MCPH1_n_alleles) / sum(MCPH1_n_alleles)) %>%
+  dplyr::arrange(desc(range_MCPH1));
 # View(tmp) # -> some are pretty big, so let's keep these separate
 
 
@@ -593,99 +756,149 @@ tmp <- d %>%
 
 # What are the ALFRED sample UID's corresponding for these populations?
 d_all_wide_lgs$ALFRED_SUID <- NA;
+d_all_wide_noproxy_lgs$ALFRED_SUID <- NA;
 
 # For those that already have ALFRED UIDs', it's simple:
 s <- grep("SA", d_all_wide_lgs$Pop_UID, fixed=TRUE); d_all_wide_lgs$ALFRED_SUID[s] <- trimws(as.character(d_all_wide_lgs$Pop_UID[s]));
+s <- grep("SA", d_all_wide_noproxy_lgs$Pop_UID, fixed=TRUE); d_all_wide_noproxy_lgs$ALFRED_SUID[s] <- trimws(as.character(d_all_wide_noproxy_lgs$Pop_UID[s]));
 
-# Now, do it manually for the others, trying to find the best matching ALFRED sample with enough genetic data (+ we prefer to use samples already in our database):
-# remember that we do this mapping so that we can compute geentic distances between populations, so a degree of approximation is ok...
+# Now, do it manually for the others, trying to find the best matching ALFRED sample with enough genetic data
+# (+ we prefer to use samples already in our database; a degree of approximation is ok)...
 
 # See which populations (still) have no ALFRED equivalents
 if( FALSE ) unique(d_all_wide_lgs[ is.na(d_all_wide_lgs$ALFRED_SUID), c("Pop_UID", "Metapopulation_ID", "Metapopulation_name") ]); 
+if( FALSE ) unique(d_all_wide_noproxy_lgs[ is.na(d_all_wide_noproxy_lgs$ALFRED_SUID), c("Pop_UID", "Metapopulation_ID", "Metapopulation_name") ]); 
 
 # Wong et al. 2020 can be mapped to "SA004059S" (Han Chinese South, China (CHS), part of the 1000 Genomes) as the samples from Hong Kong are genotyped at very few loci:
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "WONG2020" ] <- "SA004059S";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "WONG2020" ] <- "SA004059S";
 
 # Genetic variation in the Estonian population & gnomAD[est] maps to "SA003028N" (Estonian):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID %in% c("ESTONIAN_VAR", "gnomAD_est") ] <- "SA003028N";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID %in% c("ESTONIAN_VAR", "gnomAD_est") ] <- "SA003028N";
 
 # The Avon Longitudinal Study of Parents and Children & UK 10K study - Twins map to "SA004050J"	(British from England and Scotland (GBR)):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID %in% c("AVON", "UK10K") ] <- "SA004050J";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID %in% c("AVON", "UK10K") ] <- "SA004050J";
 
 # Genetic variation in the Northern Sweden population & gnomAD[swe] maps to "SA003445Q" (individuals with Swedish names):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID %in% c("ACPOP", "gnomAD_swe") ] <- "SA003445Q";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID %in% c("ACPOP", "gnomAD_swe") ] <- "SA003445Q";
 
 # A Vietnamese Genetic Variation Database maps to "SA004249T"	(Kinh in Ho Chi Minh City, Vietnam (KHV)):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "VIETNAM_VAR" ] <- "SA004249T";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "VIETNAM_VAR" ] <- "SA004249T";
 
 # Ashkenazi Jewish maps to "SA004372Q" (Ashkenazi):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID %in% c("gnomADexomes_AshkenaziJewish", "gnomADgenomes_AshkenaziJewish", "gnomAD_asj") ] <- "SA004372Q";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID %in% c("gnomADexomes_AshkenaziJewish", "gnomADgenomes_AshkenaziJewish", "gnomAD_asj") ] <- "SA004372Q";
 
 # gnomAD[bgr] maps to "SA003452O" (unrelated Bulgarians):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "gnomAD_bgr" ] <- "SA003452O";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "gnomAD_bgr" ] <- "SA003452O";
 
 # gnomAD[jpn] maps to "SA004060K"	(Japanese in Tokyo, Japan (JPT)):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "gnomAD_jpn" ] <- "SA004060K";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "gnomAD_jpn" ] <- "SA004060K";
 
 # gnomAD[kor] maps to "SA003027M"	(Koreans):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "gnomAD_kor" ] <- "SA003027M";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "gnomAD_kor" ] <- "SA003027M";
 
 # gnomAD[fin] maps to "SA004049R" (Finnish in Finland (FIN)):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "gnomAD_fin" ] <- "SA004049R";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "gnomAD_fin" ] <- "SA004049R";
 
 # Mekel-Bobrov et al. 2005's "Turu" arguably maps to "SA001819T" (Bantu (Kenya), HGDP-CEPH):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "MB2005_Turu" ] <- "SA001819T";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "MB2005_Turu" ] <- "SA001819T";
 
 # Mekel-Bobrov et al. 2005's "Bamoun" arguably maps to "SA001838U" (healthy, unrelated Bamileke and Bantu individuals from Cameroon):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "MB2005_Bamoun" ] <- "SA001838U";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "MB2005_Bamoun" ] <- "SA001838U";
 
 # Mekel-Bobrov et al. 2005's "Bakola Pygmy" arguably maps to "SA002256P" (Biaka Pygmies, HGDP-CEPH):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "MB2005_BakolaPygmy" ] <- "SA002256P";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "MB2005_BakolaPygmy" ] <- "SA002256P";
 
 # Mekel-Bobrov et al. 2005's "Zime" arguably maps to "SA000405J" (Chadians):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "MB2005_Zime" ] <- "SA000405J";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "MB2005_Zime" ] <- "SA000405J";
 
 # The PAGE Study's "AfricanAmerican" maps to "SA004047P" (African Ancestry in SW USA (ASW)):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "PAGE_AfricanAmerican" ] <- "SA004047P";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "PAGE_AfricanAmerican" ] <- "SA004047P";
 
 # The PAGE Study's "Mexican" maps to "SA004110G" (Mexican Ancestry in Los Angeles, CA (MXL)):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "PAGE_Mexican" ] <- "SA004110G";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "PAGE_Mexican" ] <- "SA004110G";
 
 # The PAGE Study's "PuertoRican" maps to "SA004111H" (Puerto Rican in Puerto Rico (PUR)):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "PAGE_PuertoRican" ] <- "SA004111H";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "PAGE_PuertoRican" ] <- "SA004111H";
 
 # The PAGE Study's "NativeHawaiian" arguably maps to "SA004382R" (Micronesians):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "PAGE_NativeHawaiian" ] <- "SA004382R";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "PAGE_NativeHawaiian" ] <- "SA004382R";
 
 # The PAGE Study's "Cuban" arguably maps to "SA001532L" (unrelated randomly selected Mestizos from La Habana, Cuba):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "PAGE_Cuban" ] <- "SA001532L";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "PAGE_Cuban" ] <- "SA001532L";
 
 # The PAGE Study's "Dominican" arguably maps to "SA004242M" (African Caribbean in Barbados (ACB)):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "PAGE_Dominican" ] <- "SA004242M";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "PAGE_Dominican" ] <- "SA004242M";
 
 # The PAGE Study's "CentralAmerican" arguably maps to "SA004110G" (Mexican Ancestry in Los Angeles, CA (MXL)):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "PAGE_CentralAmerican" ] <- "SA004110G";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "PAGE_CentralAmerican" ] <- "SA004110G";
 
 # The PAGE Study's "SouthAmerican" arguably maps to "SA004109O" (Colombian in Medellín, Colombia (CLM)):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "PAGE_SouthAmerican" ] <- "SA004109O";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "PAGE_SouthAmerican" ] <- "SA004109O";
 
 # The FINRISK's "Finnish" arguably maps to "SA004049R" (Finns):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "FINRISK" ] <- "SA004049R";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "FINRISK" ] <- "SA004049R";
 
 # The KRGDB's "Koreans" arguably maps to "SA003027M" (Koreans):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "KRGDB" ] <- "SA003027M";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "KRGDB" ] <- "SA003027M";
 
 # The GenDan's "Danes" arguably maps to "SA004392S" (Danes):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "GenDan" ] <- "SA004392S";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "GenDan" ] <- "SA004392S";
 
 # The GenNed5's "Dutch" arguably maps to "SA004045N" (Dutch Europeans):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "GenNed5" ] <- "SA004045N";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "GenNed5" ] <- "SA004045N";
 
 # The Qatari's "Dutch" arguably maps to "SA001127L" (Qatari):
 d_all_wide_lgs$ALFRED_SUID[ d_all_wide_lgs$Pop_UID == "Qatari" ] <- "SA001127L";
+d_all_wide_noproxy_lgs$ALFRED_SUID[ d_all_wide_noproxy_lgs$Pop_UID == "Qatari" ] <- "SA001127L";
 
 
-# Save these to file:
+# Add meatinfo to the d_new_samples as well:
+d_new_samples <- merge(d_new_samples, unique(d_all_wide_lgs[,c("Pop_UID", "Metapopulation_ID", "Metapopulation_name")]), by="Pop_UID", all.x=FALSE, all.y=FALSE);
+d_new_samples <- d_new_samples[ order(d_new_samples$Gene, d_new_samples$SNP, d_new_samples$Metapopulation_name, d_new_samples$Pop_UID), ];
+
+
+##
+## Save to file ####
+##
+
 d_all_wide_lgs <- unique(d_all_wide_lgs); # remove any duplicates
 write.table(d_all_wide_lgs, "./data/genetics/output/gene_freqs.tsv", sep="\t", quote=FALSE, row.names=FALSE);
+# ... and excluding proxy SNPs:
+d_all_wide_noproxy_lgs <- unique(d_all_wide_noproxy_lgs); # remove any duplicates
+write.table(d_all_wide_noproxy_lgs, "./data/genetics/output/gene_freqs_no_proxy_snps.tsv", sep="\t", quote=FALSE, row.names=FALSE);
+
+write.table(d_new_samples, "./data/genetics/output/samples_snps_metainfo.tsv", sep="\t", quote=FALSE, row.names=FALSE);
+
+cat("Various summaries:\n", file="./data/genetics/output/summary.txt", append=FALSE);
+cat(paste0("ASPM: samples x SNPs (total): ",sum(m_all),"\n"), file="./data/genetics/output/summary.txt", append=TRUE);
+cat(paste0("ASPM: samples x SNPs (excluding proxy SNPs): ",sum(m_noproxy),"\n"), file="./data/genetics/output/summary.txt", append=TRUE);
+cat(paste0("MCPH1: samples x SNPs (total): ",sum(m2_all),"\n"), file="./data/genetics/output/summary.txt", append=TRUE);
+cat(paste0("MCPH1: samples x SNPs (excluding proxy SNPs): ",sum(m2_noproxy),"\n"), file="./data/genetics/output/summary.txt", append=TRUE);
+cat("\n", file="./data/genetics/output/summary.txt", append=TRUE);
 
