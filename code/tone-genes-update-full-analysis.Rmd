@@ -12,6 +12,7 @@ output:
     toc: yes
     toc_depth: 6
     toc_float: yes
+    self_contained: true
   word_document: default
 editor_options: 
   chunk_output_type: console
@@ -20,7 +21,17 @@ csl: apa-6th-edition.csl
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE);
+if( FALSE ) # don't optimize PNG images by default (it takes **a lot** of extra processing, needs external dependencies, and only saves about 10% of the final size)...
+{
+  # Optimize images (needs optipng installed and accessible and adds extra processing time!):
+  knitr::knit_hooks$set(optipng = knitr::hook_optipng);
+  
+  knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE, optipng='-o7');
+} else
+{
+  # Default PNG images:
+  knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE);
+}
 ```
 
 ```{r libraries and setup stuff}

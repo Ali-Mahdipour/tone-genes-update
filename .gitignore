@@ -32,11 +32,16 @@ vignettes/*.pdf
 /cache/
 code/cache_results/*
 
+# high-quality figures for the paper:
+code/figures/
+
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
 code/tone-genes-v*_files/*
 code/tone-genes-v*_cache/*
+code/tone-genes-update*_files/*
+code/tone-genes-update*_cache/*
 
 # R Environment Variables
 .Renviron
@@ -60,7 +65,5 @@ data/language/input/phoible-v2.0.1/cldf-*
 # Ignore the paper:
 /paper/*
 
-code/tone-genes-stan-v05.Rmd
-code/tone-genes-v04.Rmd
-code/tone-genes-v06.Rmd
-code/tone-genes-v07.Rmd
+code/tone-genes-stan-v*.Rmd
+code/tone-genes-v*.Rmd
