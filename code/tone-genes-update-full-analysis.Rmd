@@ -40,6 +40,9 @@ library(pander);
 library(stringr);
 library(ggplot2);
 library(gridExtra);
+library(tiff);
+library(jpeg);
+library(png);
 library(parallel);
 library(performance);
 library(lmerTest);
@@ -63,13 +66,6 @@ library(cowplot);
 library(e1071);
 library(dagitty);
 
-#if( !require(rethinking) )
-#{
-#  # Attempt to install rethinking
-#  install.packages(c("coda","mvtnorm","devtools","loo","dagitty"));
-#  devtools::install_github("rmcelreath/rethinking");
-#  library(rethinking);
-#}
 library(brms);
 brms_ncores  <- max(detectCores(all.tests=TRUE, logical=FALSE), 4, na.rm=TRUE); # try to use multiple cores, if present
 library(bayestestR);
@@ -78,6 +74,11 @@ library(grid); # assemble multiple plots
 library(tidybayes);
 
 # The working path is the path of this document!
+
+
+# Where and in which format to save for the figures to be included in the paper?
+figures_paper_format <- c("pdf", "eps", "tiff", "tiff+jpeg", "tiff+png")[4];
+figures_paper_folder <- "./figures/"; # must end with trailing "/"!
 
 
 # Random seed for reproducibility:
@@ -1436,7 +1437,21 @@ pander(cor.test(~ wp_tone + ph_n_tones, data=d, method="spearman")); cat("\n");
 
 ```{r include=FALSE}
 # Plot for paper
-cairo_pdf("./figures/Fig_S1__tone_agreement_sources.pdf", width=4*3.5, height=4*3.5);
+figure_file_name <- "Fig_S1__tone_agreement_sources"; figure_dimensions <- c(width=4*3.5, height=4*3.5);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(tone_agreement_dl_la + theme(legend.position = "none"), 
              nullGrob(),           
              nullGrob(),           
@@ -1455,7 +1470,16 @@ grid.arrange(tone_agreement_dl_la + theme(legend.position = "none"),
              tone_agreement_wp_ph + theme(legend.position = "none"), 
              nrow=4);
 dev.off();
-
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 
@@ -1978,27 +2002,98 @@ pander(cor.test(~ wp_tone + n_tones_raw, data=d, method="spearman"));
 
 ```{r include=FALSE}
 # Plot for paper
-cairo_pdf("./figures/Fig_S2__tone_agreement_with_sources_binary.pdf", width=3*3.5, height=1*3.5);
+figure_file_name <- "Fig_S2__tone_agreement_with_sources_binary"; figure_dimensions <- c(width=3*3.5, height=1*3.5);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(tone_agr_wa_b + theme(legend.position = "none"), 
              tone_agr_la_b + theme(legend.position = "none"), 
              tone_agr_dl_b + theme(legend.position = "none"),
              ncol=3);
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 
-cairo_pdf("./figures/Fig_S3__tone_agreement_with_sources_3way.pdf", width=3*3.5, height=1*3.5);
+figure_file_name <- "Fig_S3__tone_agreement_with_sources_3way"; figure_dimensions <- c(width=3*3.5, height=1*3.5);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(tone_agr_wa_3 + theme(legend.position = "none"),           
              tone_agr_la_3 + theme(legend.position = "none"), 
              tone_agr_dl_3 + theme(legend.position = "none"), 
              ncol=3);
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 
-cairo_pdf("./figures/Fig_S4__tone_agreement_with_sources_counts.pdf", width=3*3.5, height=1*3.5);
+figure_file_name <- "Fig_S4__tone_agreement_with_sources_counts"; figure_dimensions <- c(width=3*3.5, height=1*3.5);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(tone_agr_la_c + theme(legend.position = "none"),
              tone_agr_ph_c + theme(legend.position = "none"), 
              tone_agr_wp_c + theme(legend.position = "none"), 
              ncol=3);
 dev.off();
-
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 ```{r}
@@ -2269,9 +2364,33 @@ map_tone_c;
 
 ```{r include=FALSE}
 # Map of tone for the paper:
-cairo_pdf("./figures/Fig_03__map_tone.pdf", width=10, height=8); 
+figure_file_name <- "Fig_03__map_tone"; figure_dimensions <- c(width=10, height=8);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(map_tone_b, map_tone_3, map_tone_c, ncol=2);
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 ##### Counts (unrounded)
@@ -2608,9 +2727,33 @@ map_mcph1_new_samples;
 
 ```{r include=FALSE}
 # Map of "D"-alleles for the paper:
-cairo_pdf("./figures/Fig_01__map_alleles.pdf", width=10, height=4);
+figure_file_name <- "Fig_01__map_alleles"; figure_dimensions <- c(width=10, height=4);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(map_aspm, map_mcph1, ncol=2);
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 
 # Languages per sample:
 lgs_per_sample <- rowSums(table(unique(data_all[,c("pop_ID","glottocode")])));
@@ -2812,15 +2955,63 @@ grid.arrange(plot_tone1_alleles_p1, plot_tone1_alleles_p2, plot_tone1_alleles_p3
 
 ```{r include=FALSE}
 # Plots for paper
-cairo_pdf("./figures/Fig_07__tone1_distribution.pdf", width=2*3.5, height=1*3.5);
+figure_file_name <- "Fig_07__tone1_distribution"; figure_dimensions <- c(width=2*3.5, height=1*3.5);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(distrib_all + ggtitle("Overall distribution") + theme(legend.position="right") + xlab(""), 
              distrib_macroarea + ggtitle("By macroarea") + theme(legend.position="none") + xlab(""),
              nrow=1);
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 
-cairo_pdf("./figures/Fig_08__tone1_alleles.pdf", width=5*2.5, height=3*2.75);
+figure_file_name <- "Fig_08__tone1_alleles"; figure_dimensions <- c(width=5*2.5, height=3*2.75);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(plot_tone1_alleles_p1, plot_tone1_alleles_p2, plot_tone1_alleles_p3, nrow=3);
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 
@@ -3186,7 +3377,21 @@ grid.arrange(p1 + theme(legend.position = "none") + ggtitle(expression(italic("A
 
 ```{r include=FALSE}
 # Plots for paper
-cairo_pdf("./figures/Fig_09__tone1_regressions_permuted.pdf", width=6*1.25, height=2*1.50+0.15);
+figure_file_name <- "Fig_09__tone1_regressions_permuted"; figure_dimensions <- c(width=6*1.25, height=2*1.50+0.15);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(p1 + theme(legend.position = "none") + ggtitle(expression(italic("ASPM")-"D")), p2 + ggtitle(expression(italic("MCPH1")-"D")), l, 
              layout_matrix=rbind(c(1,1,1, 2,2,2), 
                                  c(1,1,1, 2,2,2), 
@@ -3199,6 +3404,16 @@ grid.arrange(p1 + theme(legend.position = "none") + ggtitle(expression(italic("A
                                  c(1,1,1, 2,2,2), 
                                  c(NA,NA, 3,3, NA,NA))); 
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 
@@ -3283,13 +3498,37 @@ ggplot(tmp, aes(x=beta, fill=model)) +
 
 ```{r include=FALSE}
 # Plots for paper
-cairo_pdf("./figures/Fig_10__tone1_regressions_restricted.pdf", width=2*2.5, height=1*2.5+0.25);
+figure_file_name <- "Fig_10__tone1_regressions_restricted"; figure_dimensions <- c(width=2*2.5, height=1*2.5+0.25);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 ggplot(tmp, aes(x=beta, fill=model)) + 
   geom_density(alpha=0.25) + geom_vline(xintercept=0.0, color="black", linetype="dotted") + xlim(-3,3) + xlab("β") +
   #facet_wrap(. ~ gene, scales="free_y", labeller=labeller(gene=c("ASPM"=expression(italic("ASPM")-"D"), "MCPH1"=expression(italic("MCPH1")-"D")))) + 
   facet_wrap(. ~ gene, scales="free_y", labeller=label_bquote(italic(.(gene))-"D")) + 
   theme(legend.position="bottom") + scale_fill_discrete(name="Model");
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 
@@ -3665,7 +3904,21 @@ grid.arrange(p1 + theme(legend.position = "none"), p2, p3 + theme(legend.positio
 
 ```{r include=FALSE}
 # Plots for paper
-cairo_pdf("./figures/Fig_11__tone1_mediation_restricted.pdf", width=3*3.3, height=2*2.5+0.15); 
+figure_file_name <- "Fig_11__tone1_mediation_restricted"; figure_dimensions <- c(width=3*3.3, height=2*2.5+0.15);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(p1 + theme(legend.position = "none"), p2, p3 + theme(legend.position = "none"), p4, p5, p6, l1, l3, 
              layout_matrix=rbind(c(1,1, 2,2, 3,3), 
                                  c(1,1, 2,2, 3,3), 
@@ -3691,6 +3944,16 @@ grid.arrange(p1 + theme(legend.position = "none"), p2, p3 + theme(legend.positio
                                  
                                  c(NA,7,7,NA, 8,8))); 
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 For *ASPM*-D:
@@ -4169,12 +4432,36 @@ dev.off();
 library(tiff);
 panel_15A <- readTIFF("./figures/Fig_15A__tone1_decision_trees_macroarea.tiff");
 panel_15B <- readTIFF("./figures/Fig_15B__tone1_decision_trees_nomacroarea.tiff");
-cairo_pdf("./figures/Fig_15__tone1_decision_trees.pdf", width=1*6.0, height=2*4.0);
+figure_file_name <- "Fig_15__tone1_decision_trees"; figure_dimensions <- c(width=1*6.0, height=2*4.0);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 par(mar=rep(0,4));
 layout(matrix(1:2, ncol=1, byrow=TRUE));
 plot(NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", bty="n"); rasterImage(panel_15A, 0, 0, 1, 1);
 plot(NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", bty="n"); rasterImage(panel_15B, 0, 0, 1, 1);
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 
 # Remove the panels:
 file.remove("./figures/Fig_15A__tone1_decision_trees_macroarea.tiff", "./figures/Fig_15B__tone1_decision_trees_nomacroarea.tiff");
@@ -4652,15 +4939,63 @@ Please note that the distribution of this variable is very skewed, so the result
 
 ```{r include=FALSE}
 # Plots for paper
-cairo_pdf("./figures/Fig_16__tone2_distribution.pdf", width=2*3.5, height=1*3.5);
+figure_file_name <- "Fig_16__tone2_distribution"; figure_dimensions <- c(width=2*3.5, height=1*3.5);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(distrib_all + ggtitle("Overall distribution") + theme(legend.position="right") + xlab(""), 
              distrib_macroarea + ggtitle("By macroarea") + theme(legend.position="none") + xlab(""),
              nrow=1);
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 
-cairo_pdf("./figures/Fig_17__tone2_alleles.pdf", width=5*2.5, height=3*2.75);
+figure_file_name <- "Fig_17__tone2_alleles"; figure_dimensions <- c(width=5*2.5, height=3*2.75);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(plot_tone2_alleles_p1, plot_tone2_alleles_p2, plot_tone2_alleles_p3, nrow=3);
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 ### Regressions
@@ -4824,7 +5159,21 @@ grid.arrange(p1 + theme(legend.position = "none") + ggtitle(expression(italic("A
 
 ```{r include=FALSE}
 # Plots for paper
-cairo_pdf("./figures/Fig_18__tone2_regressions_permuted.pdf", width=6*1.25, height=2*1.50+0.15);
+figure_file_name <- "Fig_18__tone2_regressions_permuted"; figure_dimensions <- c(width=6*1.25, height=2*1.50+0.15);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(p1 + theme(legend.position = "none") + ggtitle(expression(italic("ASPM")-"D")), p2 + ggtitle(expression(italic("MCPH1")-"D")), l, 
              layout_matrix=rbind(c(1,1,1, 2,2,2), 
                                  c(1,1,1, 2,2,2), 
@@ -4837,6 +5186,16 @@ grid.arrange(p1 + theme(legend.position = "none") + ggtitle(expression(italic("A
                                  c(1,1,1, 2,2,2), 
                                  c(NA,NA, 3,3, NA,NA))); 
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 
@@ -4906,13 +5265,37 @@ ggplot(tmp, aes(x=beta, fill=model)) +
 
 ```{r include=FALSE}
 # Plots for paper
-cairo_pdf("./figures/Fig_19__tone2_regressions_restricted.pdf", width=2*2.5, height=1*2.5+0.25);
+figure_file_name <- "Fig_19__tone2_regressions_restricted"; figure_dimensions <- c(width=2*2.5, height=1*2.5+0.25);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 ggplot(tmp, aes(x=beta, fill=model)) + 
   geom_density(alpha=0.25) + geom_vline(xintercept=0.0, color="black", linetype="dotted") + xlim(-5,5) + xlab("β") +
   #facet_wrap(. ~ gene, scales="free_y", labeller=labeller(gene=c("ASPM"=expression(italic("ASPM")-"D"), "MCPH1"=expression(italic("MCPH1")-"D")))) + 
   facet_wrap(. ~ gene, scales="free_y", labeller=label_bquote(italic(.(gene))-"D")) + 
   theme(legend.position="bottom") + scale_fill_discrete(name="Model");
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 
@@ -5238,7 +5621,21 @@ grid.arrange(p1 + theme(legend.position = "none"), p2, p3 + theme(legend.positio
 
 ```{r include=FALSE}
 # Plots for paper
-cairo_pdf("./figures/Fig_20__tone2_mediation_restricted.pdf", width=3*3.3, height=2*2.5+0.15); 
+figure_file_name <- "Fig_20__tone2_mediation_restricted"; figure_dimensions <- c(width=3*3.3, height=2*2.5+0.15);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(p1 + theme(legend.position = "none"), p2, p3 + theme(legend.position = "none"), p4, p5, p6, l1, l3, 
              layout_matrix=rbind(c(1,1, 2,2, 3,3), 
                                  c(1,1, 2,2, 3,3), 
@@ -5264,6 +5661,16 @@ grid.arrange(p1 + theme(legend.position = "none"), p2, p3 + theme(legend.positio
                                  
                                  c(NA,7,7,NA, 8,8))); 
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 For *ASPM*-D:
@@ -6005,7 +6412,21 @@ grid.arrange(plot_tone2_alleles_p1, plot_tone2_alleles_p2, plot_tone2_alleles_p3
 
 ```{r include=FALSE}
 # Plots for paper
-cairo_pdf("./figures/Fig_24__tone_counts_distribution.pdf", width=5*2.0, height=6*0.5);
+figure_file_name <- "Fig_24__tone_counts_distribution"; figure_dimensions <- c(width=5*2.0, height=6*0.5);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(distrib_all + theme(legend.position = "none"), distrib_africa, distrib_eurasia, distrib_america, distrib_papunesia, l, 
              layout_matrix=rbind(c(1,2,3,4,5), 
                                  c(1,2,3,4,5), 
@@ -6015,10 +6436,44 @@ grid.arrange(distrib_all + theme(legend.position = "none"), distrib_africa, dist
                                  c(NA,NA,6,NA,NA))); 
 
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 
-cairo_pdf("./figures/Fig_25__tone_counts_alleles.pdf", width=5*2.5, height=3*2.75);
+figure_file_name <- "Fig_25__tone_counts_alleles"; figure_dimensions <- c(width=5*2.5, height=3*2.75);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(plot_tone2_alleles_p1, plot_tone2_alleles_p2, plot_tone2_alleles_p3, nrow=3);
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 
@@ -6209,7 +6664,21 @@ grid.arrange(p1 + theme(legend.position = "none") + ggtitle("ASPM"), p2 + ggtitl
 
 ```{r include=FALSE}
 # Plots for paper
-cairo_pdf("./figures/Fig_26__tone_counts_regressions_permuted.pdf", width=6*1.25, height=2*1.50+0.15); 
+figure_file_name <- "Fig_26__tone_counts_regressions_permuted"; figure_dimensions <- c(width=6*1.25, height=2*1.50+0.15);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(p1 + theme(legend.position = "none") + ggtitle(expression(italic("ASPM")-"D")), p2 + ggtitle(expression(italic("MCPH1")-"D")), l, 
              layout_matrix=rbind(c(1,1,1, 2,2,2), 
                                  c(1,1,1, 2,2,2), 
@@ -6222,6 +6691,16 @@ grid.arrange(p1 + theme(legend.position = "none") + ggtitle(expression(italic("A
                                  c(1,1,1, 2,2,2), 
                                  c(NA,NA, 3,3, NA,NA))); 
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 
@@ -6290,13 +6769,37 @@ ggplot(tmp, aes(x=beta, fill=model)) +
 
 ```{r include=FALSE}
 # Plots for paper
-cairo_pdf("./figures/Fig_27__tone_counts_regressions_restricted.pdf", width=2*2.5, height=1*2.5+0.25);
+figure_file_name <- "Fig_27__tone_counts_regressions_restricted"; figure_dimensions <- c(width=2*2.5, height=1*2.5+0.25);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 ggplot(tmp, aes(x=beta, fill=model)) + 
   geom_density(alpha=0.25) + geom_vline(xintercept=0.0, color="black", linetype="dotted") + xlim(-2.5,2.5) + xlab("β") +
   #facet_wrap(. ~ gene, scales="free_y", labeller=labeller(gene=c("ASPM"=expression(italic("ASPM")-"D"), "MCPH1"=expression(italic("MCPH1")-"D")))) + 
   facet_wrap(. ~ gene, scales="free_y", labeller=label_bquote(italic(.(gene))-"D")) + 
   theme(legend.position="bottom") + scale_fill_discrete(name="Model");
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 
@@ -6612,7 +7115,21 @@ grid.arrange(p1 + theme(legend.position = "none"), p2, p3 + theme(legend.positio
 
 ```{r include=FALSE}
 # Plots for paper
-cairo_pdf("./figures/Fig_28__tone_counts_mediation_restricted.pdf", width=3*3.3, height=2*2.5+0.15); 
+figure_file_name <- "Fig_28__tone_counts_mediation_restricted"; figure_dimensions <- c(width=3*3.3, height=2*2.5+0.15);
+if( figures_paper_format == "pdf" )
+{
+  cairo_pdf(paste0(figures_paper_folder,figure_file_name,".pdf"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format == "eps" )
+{
+  setEPS();
+  postscript(paste0(figures_paper_folder,figure_file_name,".eps"), figure_dimensions["width"], figure_dimensions["height"]);
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  tiff(paste0(figures_paper_folder,figure_file_name,".tiff"), figure_dimensions["width"], figure_dimensions["height"], units="in", compression="lzw", res=600);
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 grid.arrange(p1 + theme(legend.position = "none"), p2, p3 + theme(legend.position = "none"), p4, p5, p6, l1, l3, 
              layout_matrix=rbind(c(1,1, 2,2, 3,3), 
                                  c(1,1, 2,2, 3,3), 
@@ -6638,6 +7155,16 @@ grid.arrange(p1 + theme(legend.position = "none"), p2, p3 + theme(legend.positio
                                  
                                  c(NA,7,7,NA, 8,8))); 
 dev.off();
+if( figures_paper_format == "tiff+jpeg" )
+{
+  # Convert TIFF to JPEG:
+  jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+}
+if( figures_paper_format == "tiff+png" )
+{
+  # Convert TIFF to JPEG:
+  png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+}
 ```
 
 For *ASPM*-D:
@@ -18584,6 +19111,8 @@ data_all_papunesia <- data_all[ data_all$macroarea == "Papunesia", ];
 library(DiagrammeR);
 library(DiagrammeRsvg); # for conversion to svg
 library(rsvg);          # for saving svg
+library(pdftools);      # for converting from PDF to other formats
+library(magick);        # image conversion
 ```
 
 
@@ -18612,11 +19141,51 @@ grmodel <- DiagrammeR::grViz('
 }
 ');
 grmodel;
-
+```
+```{r include=FALSE}
 # 2. Convert to SVG, then save:
 grmodel_svg = DiagrammeRsvg::export_svg(grmodel);
 grmodel_svg = charToRaw(grmodel_svg); # flatten
-rsvg::rsvg_pdf(grmodel_svg, "./figures/Fig_05__mediation_model.pdf");
+figure_file_name <- "Fig_05__mediation_model";
+rsvg::rsvg_pdf(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".pdf"));
+if( figures_paper_format == "pdf" )
+{
+  # Nothing to do (already saved as PDF)...
+} else if( figures_paper_format == "eps" )
+{
+  rsvg::rsvg_ps(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".eps")); # as PS
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  # To TIFF:
+  if( "tiff" %in% (pdftools::poppler_config())$supported_image_formats )
+  {
+    pdftools::pdf_convert(paste0(figures_paper_folder,figure_file_name,".pdf"), 
+                          format="tiff", dpi=600, antialias=TRUE, page=1, 
+                          filenames=paste0(figures_paper_folder,figure_file_name,".tiff"));
+    # Compress it:
+    magick::image_write(magick::image_read(paste0(figures_paper_folder,figure_file_name,".tiff")), 
+                        paste0(figures_paper_folder,figure_file_name,".tiff"), format="tiff", flatten=TRUE, compression="lzw");
+  } else
+  {
+    stop("Cannot convert diagram to TIFF: please check pdftools and poppler!\n");
+  }
+  
+  if( figures_paper_format == "tiff+jpeg" )
+  {
+    # Convert TIFF to JPEG:
+    jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+  }
+  if( figures_paper_format == "tiff+png" )
+  {
+    # Convert TIFF to PNG:
+    png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+  }
+  
+  file.remove(paste0(figures_paper_folder,figure_file_name,".pdf")); # delete intermediate PDF file
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 ```
 
 
@@ -18648,11 +19217,51 @@ grmodel <- DiagrammeR::grViz('
 }
 ');
 grmodel;
-
+```
+```{r include=FALSE}
 # 2. Convert to SVG, then save:
 grmodel_svg = DiagrammeRsvg::export_svg(grmodel);
 grmodel_svg = charToRaw(grmodel_svg); # flatten
-rsvg::rsvg_pdf(grmodel_svg, "./figures/Fig_06__path_model.pdf");
+figure_file_name <- "Fig_06__path_model";
+rsvg::rsvg_pdf(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".pdf"));
+if( figures_paper_format == "pdf" )
+{
+  # Nothing to do (already saved as PDF)...
+} else if( figures_paper_format == "eps" )
+{
+  rsvg::rsvg_ps(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".eps")); # as PS
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  # To TIFF:
+  if( "tiff" %in% (pdftools::poppler_config())$supported_image_formats )
+  {
+    pdftools::pdf_convert(paste0(figures_paper_folder,figure_file_name,".pdf"), 
+                          format="tiff", dpi=600, antialias=TRUE, page=1, 
+                          filenames=paste0(figures_paper_folder,figure_file_name,".tiff"));
+    # Compress it:
+    magick::image_write(magick::image_read(paste0(figures_paper_folder,figure_file_name,".tiff")), 
+                        paste0(figures_paper_folder,figure_file_name,".tiff"), format="tiff", flatten=TRUE, compression="lzw");
+  } else
+  {
+    stop("Cannot convert diagram to TIFF: please check pdftools and poppler!\n");
+  }
+  
+  if( figures_paper_format == "tiff+jpeg" )
+  {
+    # Convert TIFF to JPEG:
+    jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+  }
+  if( figures_paper_format == "tiff+png" )
+  {
+    # Convert TIFF to PNG:
+    png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+  }
+  
+  file.remove(paste0(figures_paper_folder,figure_file_name,".pdf")); # delete intermediate PDF file
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 ```
 
 
@@ -18684,11 +19293,51 @@ grmodel <- DiagrammeR::grViz('
 }
 ');
 grmodel;
-
+```
+```{r include=FALSE}
 # 2. Convert to SVG, then save:
 grmodel_svg = DiagrammeRsvg::export_svg(grmodel);
 grmodel_svg = charToRaw(grmodel_svg); # flatten
-rsvg::rsvg_pdf(grmodel_svg, "./figures/Fig_12__tone1_mediation_both.pdf");
+figure_file_name <- "Fig_12__tone1_mediation_both";
+rsvg::rsvg_pdf(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".pdf"));
+if( figures_paper_format == "pdf" )
+{
+  # Nothing to do (already saved as PDF)...
+} else if( figures_paper_format == "eps" )
+{
+  rsvg::rsvg_ps(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".eps")); # as PS
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  # To TIFF:
+  if( "tiff" %in% (pdftools::poppler_config())$supported_image_formats )
+  {
+    pdftools::pdf_convert(paste0(figures_paper_folder,figure_file_name,".pdf"), 
+                          format="tiff", dpi=600, antialias=TRUE, page=1, 
+                          filenames=paste0(figures_paper_folder,figure_file_name,".tiff"));
+    # Compress it:
+    magick::image_write(magick::image_read(paste0(figures_paper_folder,figure_file_name,".tiff")), 
+                        paste0(figures_paper_folder,figure_file_name,".tiff"), format="tiff", flatten=TRUE, compression="lzw");
+  } else
+  {
+    stop("Cannot convert diagram to TIFF: please check pdftools and poppler!\n");
+  }
+  
+  if( figures_paper_format == "tiff+jpeg" )
+  {
+    # Convert TIFF to JPEG:
+    jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+  }
+  if( figures_paper_format == "tiff+png" )
+  {
+    # Convert TIFF to PNG:
+    png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+  }
+  
+  file.remove(paste0(figures_paper_folder,figure_file_name,".pdf")); # delete intermediate PDF file
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 ```
 
 
@@ -18720,11 +19369,51 @@ grmodel <- DiagrammeR::grViz('
 }
 ');
 grmodel;
-
+```
+```{r include=FALSE}
 # 2. Convert to SVG, then save:
 grmodel_svg = DiagrammeRsvg::export_svg(grmodel);
 grmodel_svg = charToRaw(grmodel_svg); # flatten
-rsvg::rsvg_pdf(grmodel_svg, "./figures/Fig_13__tone1_path_analysis.pdf");
+figure_file_name <- "Fig_13__tone1_path_analysis";
+rsvg::rsvg_pdf(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".pdf"));
+if( figures_paper_format == "pdf" )
+{
+  # Nothing to do (already saved as PDF)...
+} else if( figures_paper_format == "eps" )
+{
+  rsvg::rsvg_ps(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".eps")); # as PS
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  # To TIFF:
+  if( "tiff" %in% (pdftools::poppler_config())$supported_image_formats )
+  {
+    pdftools::pdf_convert(paste0(figures_paper_folder,figure_file_name,".pdf"), 
+                          format="tiff", dpi=600, antialias=TRUE, page=1, 
+                          filenames=paste0(figures_paper_folder,figure_file_name,".tiff"));
+    # Compress it:
+    magick::image_write(magick::image_read(paste0(figures_paper_folder,figure_file_name,".tiff")), 
+                        paste0(figures_paper_folder,figure_file_name,".tiff"), format="tiff", flatten=TRUE, compression="lzw");
+  } else
+  {
+    stop("Cannot convert diagram to TIFF: please check pdftools and poppler!\n");
+  }
+  
+  if( figures_paper_format == "tiff+jpeg" )
+  {
+    # Convert TIFF to JPEG:
+    jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+  }
+  if( figures_paper_format == "tiff+png" )
+  {
+    # Convert TIFF to PNG:
+    png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+  }
+  
+  file.remove(paste0(figures_paper_folder,figure_file_name,".pdf")); # delete intermediate PDF file
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 ```
 
 
@@ -18756,11 +19445,51 @@ grmodel <- DiagrammeR::grViz('
 }
 ');
 grmodel;
-
+```
+```{r include=FALSE}
 # 2. Convert to SVG, then save:
 grmodel_svg = DiagrammeRsvg::export_svg(grmodel);
 grmodel_svg = charToRaw(grmodel_svg); # flatten
-rsvg::rsvg_pdf(grmodel_svg, "./figures/Fig_14__tone1_path_analysis_sampling.pdf");
+figure_file_name <- "Fig_14__tone1_path_analysis_sampling";
+rsvg::rsvg_pdf(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".pdf"));
+if( figures_paper_format == "pdf" )
+{
+  # Nothing to do (already saved as PDF)...
+} else if( figures_paper_format == "eps" )
+{
+  rsvg::rsvg_ps(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".eps")); # as PS
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  # To TIFF:
+  if( "tiff" %in% (pdftools::poppler_config())$supported_image_formats )
+  {
+    pdftools::pdf_convert(paste0(figures_paper_folder,figure_file_name,".pdf"), 
+                          format="tiff", dpi=600, antialias=TRUE, page=1, 
+                          filenames=paste0(figures_paper_folder,figure_file_name,".tiff"));
+    # Compress it:
+    magick::image_write(magick::image_read(paste0(figures_paper_folder,figure_file_name,".tiff")), 
+                        paste0(figures_paper_folder,figure_file_name,".tiff"), format="tiff", flatten=TRUE, compression="lzw");
+  } else
+  {
+    stop("Cannot convert diagram to TIFF: please check pdftools and poppler!\n");
+  }
+  
+  if( figures_paper_format == "tiff+jpeg" )
+  {
+    # Convert TIFF to JPEG:
+    jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+  }
+  if( figures_paper_format == "tiff+png" )
+  {
+    # Convert TIFF to PNG:
+    png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+  }
+  
+  file.remove(paste0(figures_paper_folder,figure_file_name,".pdf")); # delete intermediate PDF file
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 ```
 
 
@@ -18792,11 +19521,51 @@ grmodel <- DiagrammeR::grViz('
 }
 ');
 grmodel;
-
+```
+```{r include=FALSE}
 # 2. Convert to SVG, then save:
 grmodel_svg = DiagrammeRsvg::export_svg(grmodel);
 grmodel_svg = charToRaw(grmodel_svg); # flatten
-rsvg::rsvg_pdf(grmodel_svg, "./figures/Fig_21__tone2_mediation_both.pdf");
+figure_file_name <- "Fig_21__tone2_mediation_both";
+rsvg::rsvg_pdf(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".pdf"));
+if( figures_paper_format == "pdf" )
+{
+  # Nothing to do (already saved as PDF)...
+} else if( figures_paper_format == "eps" )
+{
+  rsvg::rsvg_ps(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".eps")); # as PS
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  # To TIFF:
+  if( "tiff" %in% (pdftools::poppler_config())$supported_image_formats )
+  {
+    pdftools::pdf_convert(paste0(figures_paper_folder,figure_file_name,".pdf"), 
+                          format="tiff", dpi=600, antialias=TRUE, page=1, 
+                          filenames=paste0(figures_paper_folder,figure_file_name,".tiff"));
+    # Compress it:
+    magick::image_write(magick::image_read(paste0(figures_paper_folder,figure_file_name,".tiff")), 
+                        paste0(figures_paper_folder,figure_file_name,".tiff"), format="tiff", flatten=TRUE, compression="lzw");
+  } else
+  {
+    stop("Cannot convert diagram to TIFF: please check pdftools and poppler!\n");
+  }
+  
+  if( figures_paper_format == "tiff+jpeg" )
+  {
+    # Convert TIFF to JPEG:
+    jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+  }
+  if( figures_paper_format == "tiff+png" )
+  {
+    # Convert TIFF to PNG:
+    png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+  }
+  
+  file.remove(paste0(figures_paper_folder,figure_file_name,".pdf")); # delete intermediate PDF file
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 ```
 
 
@@ -18828,11 +19597,51 @@ grmodel <- DiagrammeR::grViz('
 }
 ');
 grmodel;
-
+```
+```{r include=FALSE}
 # 2. Convert to SVG, then save:
 grmodel_svg = DiagrammeRsvg::export_svg(grmodel);
 grmodel_svg = charToRaw(grmodel_svg); # flatten
-rsvg::rsvg_pdf(grmodel_svg, "./figures/Fig_22__tone2_path_analysis.pdf");
+figure_file_name <- "Fig_22__tone2_path_analysis";
+rsvg::rsvg_pdf(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".pdf"));
+if( figures_paper_format == "pdf" )
+{
+  # Nothing to do (already saved as PDF)...
+} else if( figures_paper_format == "eps" )
+{
+  rsvg::rsvg_ps(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".eps")); # as PS
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  # To TIFF:
+  if( "tiff" %in% (pdftools::poppler_config())$supported_image_formats )
+  {
+    pdftools::pdf_convert(paste0(figures_paper_folder,figure_file_name,".pdf"), 
+                          format="tiff", dpi=600, antialias=TRUE, page=1, 
+                          filenames=paste0(figures_paper_folder,figure_file_name,".tiff"));
+    # Compress it:
+    magick::image_write(magick::image_read(paste0(figures_paper_folder,figure_file_name,".tiff")), 
+                        paste0(figures_paper_folder,figure_file_name,".tiff"), format="tiff", flatten=TRUE, compression="lzw");
+  } else
+  {
+    stop("Cannot convert diagram to TIFF: please check pdftools and poppler!\n");
+  }
+  
+  if( figures_paper_format == "tiff+jpeg" )
+  {
+    # Convert TIFF to JPEG:
+    jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+  }
+  if( figures_paper_format == "tiff+png" )
+  {
+    # Convert TIFF to PNG:
+    png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+  }
+  
+  file.remove(paste0(figures_paper_folder,figure_file_name,".pdf")); # delete intermediate PDF file
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 ```
 
 
@@ -18864,11 +19673,51 @@ grmodel <- DiagrammeR::grViz('
 }
 ');
 grmodel;
-
+```
+```{r include=FALSE}
 # 2. Convert to SVG, then save:
 grmodel_svg = DiagrammeRsvg::export_svg(grmodel);
 grmodel_svg = charToRaw(grmodel_svg); # flatten
-rsvg::rsvg_pdf(grmodel_svg, "./figures/Fig_23__tone2_path_analysis_sampling.pdf");
+figure_file_name <- "Fig_23__tone2_path_analysis_sampling";
+rsvg::rsvg_pdf(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".pdf"));
+if( figures_paper_format == "pdf" )
+{
+  # Nothing to do (already saved as PDF)...
+} else if( figures_paper_format == "eps" )
+{
+  rsvg::rsvg_ps(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".eps")); # as PS
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  # To TIFF:
+  if( "tiff" %in% (pdftools::poppler_config())$supported_image_formats )
+  {
+    pdftools::pdf_convert(paste0(figures_paper_folder,figure_file_name,".pdf"), 
+                          format="tiff", dpi=600, antialias=TRUE, page=1, 
+                          filenames=paste0(figures_paper_folder,figure_file_name,".tiff"));
+    # Compress it:
+    magick::image_write(magick::image_read(paste0(figures_paper_folder,figure_file_name,".tiff")), 
+                        paste0(figures_paper_folder,figure_file_name,".tiff"), format="tiff", flatten=TRUE, compression="lzw");
+  } else
+  {
+    stop("Cannot convert diagram to TIFF: please check pdftools and poppler!\n");
+  }
+  
+  if( figures_paper_format == "tiff+jpeg" )
+  {
+    # Convert TIFF to JPEG:
+    jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+  }
+  if( figures_paper_format == "tiff+png" )
+  {
+    # Convert TIFF to PNG:
+    png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+  }
+  
+  file.remove(paste0(figures_paper_folder,figure_file_name,".pdf")); # delete intermediate PDF file
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 ```
 
 
@@ -18900,11 +19749,51 @@ grmodel <- DiagrammeR::grViz('
 }
 ');
 grmodel;
-
+```
+```{r include=FALSE}
 # 2. Convert to SVG, then save:
 grmodel_svg = DiagrammeRsvg::export_svg(grmodel);
 grmodel_svg = charToRaw(grmodel_svg); # flatten
-rsvg::rsvg_pdf(grmodel_svg, "./figures/Fig_29__tone_counts_mediation_both.pdf");
+figure_file_name <- "Fig_29__tone_counts_mediation_both";
+rsvg::rsvg_pdf(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".pdf"));
+if( figures_paper_format == "pdf" )
+{
+  # Nothing to do (already saved as PDF)...
+} else if( figures_paper_format == "eps" )
+{
+  rsvg::rsvg_ps(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".eps")); # as PS
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  # To TIFF:
+  if( "tiff" %in% (pdftools::poppler_config())$supported_image_formats )
+  {
+    pdftools::pdf_convert(paste0(figures_paper_folder,figure_file_name,".pdf"), 
+                          format="tiff", dpi=600, antialias=TRUE, page=1, 
+                          filenames=paste0(figures_paper_folder,figure_file_name,".tiff"));
+    # Compress it:
+    magick::image_write(magick::image_read(paste0(figures_paper_folder,figure_file_name,".tiff")), 
+                        paste0(figures_paper_folder,figure_file_name,".tiff"), format="tiff", flatten=TRUE, compression="lzw");
+  } else
+  {
+    stop("Cannot convert diagram to TIFF: please check pdftools and poppler!\n");
+  }
+  
+  if( figures_paper_format == "tiff+jpeg" )
+  {
+    # Convert TIFF to JPEG:
+    jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+  }
+  if( figures_paper_format == "tiff+png" )
+  {
+    # Convert TIFF to PNG:
+    png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+  }
+  
+  file.remove(paste0(figures_paper_folder,figure_file_name,".pdf")); # delete intermediate PDF file
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 ```
 
 
@@ -18936,11 +19825,51 @@ grmodel <- DiagrammeR::grViz('
 }
 ');
 grmodel;
-
+```
+```{r include=FALSE}
 # 2. Convert to SVG, then save:
 grmodel_svg = DiagrammeRsvg::export_svg(grmodel);
 grmodel_svg = charToRaw(grmodel_svg); # flatten
-rsvg::rsvg_pdf(grmodel_svg, "./figures/Fig_30__tone_counts_path_analysis.pdf");
+figure_file_name <- "Fig_30__tone_counts_path_analysis";
+rsvg::rsvg_pdf(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".pdf"));
+if( figures_paper_format == "pdf" )
+{
+  # Nothing to do (already saved as PDF)...
+} else if( figures_paper_format == "eps" )
+{
+  rsvg::rsvg_ps(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".eps")); # as PS
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  # To TIFF:
+  if( "tiff" %in% (pdftools::poppler_config())$supported_image_formats )
+  {
+    pdftools::pdf_convert(paste0(figures_paper_folder,figure_file_name,".pdf"), 
+                          format="tiff", dpi=600, antialias=TRUE, page=1, 
+                          filenames=paste0(figures_paper_folder,figure_file_name,".tiff"));
+    # Compress it:
+    magick::image_write(magick::image_read(paste0(figures_paper_folder,figure_file_name,".tiff")), 
+                        paste0(figures_paper_folder,figure_file_name,".tiff"), format="tiff", flatten=TRUE, compression="lzw");
+  } else
+  {
+    stop("Cannot convert diagram to TIFF: please check pdftools and poppler!\n");
+  }
+  
+  if( figures_paper_format == "tiff+jpeg" )
+  {
+    # Convert TIFF to JPEG:
+    jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+  }
+  if( figures_paper_format == "tiff+png" )
+  {
+    # Convert TIFF to PNG:
+    png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+  }
+  
+  file.remove(paste0(figures_paper_folder,figure_file_name,".pdf")); # delete intermediate PDF file
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
 ```
 
 
@@ -18972,11 +19901,65 @@ grmodel <- DiagrammeR::grViz('
 }
 ');
 grmodel;
-
+```
+```{r include=FALSE}
 # 2. Convert to SVG, then save:
 grmodel_svg = DiagrammeRsvg::export_svg(grmodel);
 grmodel_svg = charToRaw(grmodel_svg); # flatten
-rsvg::rsvg_pdf(grmodel_svg, "./figures/Fig_31__tone_counts_path_analysis_sampling.pdf");
+figure_file_name <- "Fig_31__tone_counts_path_analysis_sampling";
+rsvg::rsvg_pdf(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".pdf"));
+if( figures_paper_format == "pdf" )
+{
+  # Nothing to do (already saved as PDF)...
+} else if( figures_paper_format == "eps" )
+{
+  rsvg::rsvg_ps(grmodel_svg, paste0(figures_paper_folder,figure_file_name,".eps")); # as PS
+} else if( figures_paper_format %in% c("tiff", "tiff+jpeg", "tiff+png") )
+{
+  # To TIFF:
+  if( "tiff" %in% (pdftools::poppler_config())$supported_image_formats )
+  {
+    pdftools::pdf_convert(paste0(figures_paper_folder,figure_file_name,".pdf"), 
+                          format="tiff", dpi=600, antialias=TRUE, page=1, 
+                          filenames=paste0(figures_paper_folder,figure_file_name,".tiff"));
+    # Compress it:
+    magick::image_write(magick::image_read(paste0(figures_paper_folder,figure_file_name,".tiff")), 
+                        paste0(figures_paper_folder,figure_file_name,".tiff"), format="tiff", flatten=TRUE, compression="lzw");
+  } else
+  {
+    stop("Cannot convert diagram to TIFF: please check pdftools and poppler!\n");
+  }
+  
+  if( figures_paper_format == "tiff+jpeg" )
+  {
+    # Convert TIFF to JPEG:
+    jpeg::writeJPEG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=TRUE), target=paste0(figures_paper_folder,figure_file_name,".jpg"), quality=0.7);
+  }
+  if( figures_paper_format == "tiff+png" )
+  {
+    # Convert TIFF to PNG:
+    png::writePNG(tiff::readTIFF(paste0(figures_paper_folder,figure_file_name,".tiff"), native=FALSE), target=paste0(figures_paper_folder,figure_file_name,".png"), dpi=150);
+  }
+  
+  file.remove(paste0(figures_paper_folder,figure_file_name,".pdf")); # delete intermediate PDF file
+} else
+{
+  stop(paste0("Unknown figure export format '",figures_paper_format,"'!\n"));
+}
+```
+
+
+
+```{r include=FALSE}
+# Save the figures in the paper's LaTeX folder...
+if( FALSE )
+{
+  fs <- list.files(path=figures_paper_folder, pattern=glob2rx("Fig_*__*"), full.names=FALSE, all.files=FALSE, include.dirs=FALSE, recursive=FALSE);
+  for( f in fs )
+  {
+    file.copy(paste0(figures_paper_folder, "/", f), paste0("../paper/PLOS1/", strsplit(f, "__", fixed=TRUE)[[1]][1], ".", tools::file_ext(f)), overwrite=TRUE);
+  }
+}
 ```
 
 
