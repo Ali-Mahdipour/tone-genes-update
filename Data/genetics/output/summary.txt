@@ -1,6 +1,0 @@
-Various summaries:
-ASPM: samples x SNPs (total): 396
-ASPM: samples x SNPs (excluding proxy SNPs): 107
-MCPH1: samples x SNPs (total): 251
-MCPH1: samples x SNPs (excluding proxy SNPs): 110
-
